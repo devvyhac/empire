@@ -8,16 +8,22 @@ import { SocialSignIn } from "./components/SocialSignIn.jsx";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { VITE_LOGIN_URL } = import.meta.env;
 
-  const { server, isLoggedIn, setIsLoggedIn, userData, setUserData } =
+  const { isLoggedIn, setIsLoggedIn, userData, setUserData } =
     useContext(AuthContext);
-  const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     rememberMe: false,
   });
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate(-1);
+    }
+  }, [isLoggedIn]);
 
   // const validate = () => {
   //   if (!formData.email) {
@@ -54,23 +60,7 @@ export default function LoginPage() {
     // This is a placeholder for a real API call.
     try {
       e.preventDefault();
-      const { rememberMe, ...userData } = formData;
-
-      const { data } = await axios.post(`${server}/api/auth/login`, userData, {
-        withCredentials: true,
-      });
-
-      if (data.success) {
-        toast.success(data.message);
-        setIsLoggedIn(true);
-        setUserData(data.user);
-        navigate(-1);
-        return;
-      } else {
-        toast.error(data.message);
-        return;
-      }
-
+      const { rememberMe, ...loginData } = formData;
       // Handle "remember me" state
       if (formData.rememberMe) {
         localStorage.setItem("rememberMeEmail", formData.email);
@@ -78,11 +68,25 @@ export default function LoginPage() {
         localStorage.removeItem("rememberMeEmail");
       }
 
-      setFormData({
-        email: "",
-        password: "",
-        rememberMe: false,
+      const { data } = await axios.post(VITE_LOGIN_URL, loginData, {
+        withCredentials: true,
       });
+
+      if (data.success) {
+        toast.success(data.message);
+        setIsLoggedIn(true);
+        setUserData(data.user);
+        setFormData({
+          email: "",
+          password: "",
+          rememberMe: false,
+        });
+        navigate(-1);
+        return;
+      } else {
+        toast.error(data.message);
+        return;
+      }
     } catch (error) {
       console.error("Login failed:", error);
       toast.error(error);

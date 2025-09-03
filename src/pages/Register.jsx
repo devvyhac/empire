@@ -1,6 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { motion } from "framer-motion";
 import { Github, Facebook, Apple } from "lucide-react";
+
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext.jsx";
 
 // Custom Google Icon component to handle the specific SVG
 const GoogleIcon = () => (
@@ -78,30 +83,32 @@ const SocialSignIn = () => (
 );
 
 export default function SignUpPage() {
+  const navigate = useNavigate();
+
+  const { VITE_REGISTER_URL } = import.meta.env;
+  const { isLoggedIn, setIsLoggedIn, userData, setUserData } =
+    useContext(AuthContext);
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
-    newsletter: false,
   });
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle");
-  const [message, setMessage] = useState("");
 
   // Simulating analytics and SEO on component mount
   useEffect(() => {
-    console.log("Analytics event tracked: register");
-    const metaTitle = "Sign Up - Create an Account";
-    const metaDescription =
-      "Join us today! Create your account to start shopping and get access to exclusive offers.";
-    console.log(`SEO Title: ${metaTitle}`);
-    console.log(`SEO Description: ${metaDescription}`);
-  }, []);
+    if (isLoggedIn) {
+      navigate(-1);
+    }
+  }, [isLoggedIn]);
 
   const validate = () => {
     let newErrors = {};
-    if (!formData.name) newErrors.name = "Name is required.";
+    if (!formData.firstName) newErrors.firstName = "First Name is required.";
+    if (!formData.lastName) newErrors.lastName = "Last Name is required.";
     if (!formData.email) {
       newErrors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -129,34 +136,38 @@ export default function SignUpPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) {
-      return;
-    }
+    if (!validate()) return;
     setStatus("submitting");
-    setMessage("");
-
-    // Express backend API call would go here
-    // Express API: /api/auth/register
-    // This is a placeholder for a real API call.
+    console.log(VITE_REGISTER_URL);
     try {
-      // Simulate API call with a delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      console.log("Registration data:", formData);
-      setStatus("success");
-      setMessage("Registration successful! You can now sign in.");
-
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-        newsletter: false,
+      const { data } = await axios.post(VITE_REGISTER_URL, formData, {
+        withCredentials: true,
       });
+
+      if (data.success) {
+        toast.success(data.message);
+        setIsLoggedIn(true);
+        setUserData(data.user);
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
+        localStorage.removeItem("shippingDetails");
+        localStorage.removeItem("cart");
+        navigate(-1);
+        return;
+      } else {
+        toast.error(data.message);
+        setStatus("error");
+        return;
+      }
     } catch (error) {
       console.error("Registration failed:", error);
       setStatus("error");
-      setMessage(error.message || "Registration failed. Please try again.");
+      toast.error(error);
     }
   };
 
@@ -176,26 +187,53 @@ export default function SignUpPage() {
           {/* Main Sign Up Form */}
           <div>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                  Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className={`mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm sm:text-sm dark:bg-gray-900 dark:text-gray-100 transition-colors ${
-                    errors.name ? "border-red-500" : ""
-                  }`}
-                />
-                {errors.name && (
-                  <p className="mt-1 text-sm text-red-500">{errors.name}</p>
-                )}
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label
+                    htmlFor="firstName"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    id="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className={`mt-1  block w-full p-3 text-xl rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors ${
+                      errors.firstName ? "border-red-500" : ""
+                    }`}
+                  />
+                  {errors.firstName && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.firstName}
+                    </p>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <label
+                    htmlFor="lastName"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    id="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className={`mt-1  block w-full p-3 text-xl rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors ${
+                      errors.lastName ? "border-red-500" : ""
+                    }`}
+                  />
+                  {errors.lastName && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.lastName}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <div>
@@ -211,7 +249,7 @@ export default function SignUpPage() {
                   id="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm sm:text-sm dark:bg-gray-900 dark:text-gray-100 transition-colors ${
+                  className={`mt-1  block w-full p-3 text-xl rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors ${
                     errors.email ? "border-red-500" : ""
                   }`}
                 />
@@ -233,7 +271,7 @@ export default function SignUpPage() {
                   id="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm sm:text-sm dark:bg-gray-900 dark:text-gray-100 transition-colors ${
+                  className={`mt-1  block w-full p-3 text-xl rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors ${
                     errors.password ? "border-red-500" : ""
                   }`}
                 />
@@ -255,7 +293,7 @@ export default function SignUpPage() {
                   id="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className={`mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm sm:text-sm dark:bg-gray-900 dark:text-gray-100 transition-colors ${
+                  className={`mt-1  block w-full p-3 text-xl rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors ${
                     errors.confirmPassword ? "border-red-500" : ""
                   }`}
                 />
@@ -265,17 +303,6 @@ export default function SignUpPage() {
                   </p>
                 )}
               </div>
-
-              {status === "success" && (
-                <div className="text-center text-green-500 font-semibold">
-                  {message}
-                </div>
-              )}
-              {status === "error" && (
-                <div className="text-center text-red-500 font-semibold">
-                  {message}
-                </div>
-              )}
 
               <div>
                 <motion.button
@@ -301,12 +328,12 @@ export default function SignUpPage() {
           <div className="mt-6 text-center">
             <p className="text-sm font-inter text-gray-700 dark:text-gray-300">
               Already a member?{" "}
-              <a
-                href="/login"
+              <Link
+                to="/login"
                 className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
               >
                 Sign in.
-              </a>
+              </Link>
             </p>
           </div>
         </div>

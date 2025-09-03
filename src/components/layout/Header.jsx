@@ -245,7 +245,7 @@ const Header = () => {
               <ul className="flex flex-col space-y-4">
                 <li>
                   <Link
-                    to="#"
+                    to="/"
                     className="block py-2 text-lg font-medium hover:text-indigo-600 transition-colors"
                   >
                     Home
@@ -253,7 +253,7 @@ const Header = () => {
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="/shop"
                     className="block py-2 text-lg font-medium hover:text-indigo-600 transition-colors"
                   >
                     Shop
@@ -261,7 +261,7 @@ const Header = () => {
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="blogs"
                     className="block py-2 text-lg font-medium hover:text-indigo-600 transition-colors"
                   >
                     Blog
@@ -269,7 +269,7 @@ const Header = () => {
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="about"
                     className="block py-2 text-lg font-medium hover:text-indigo-600 transition-colors"
                   >
                     About Us
@@ -277,36 +277,51 @@ const Header = () => {
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="contact"
                     className="block py-2 text-lg font-medium hover:text-indigo-600 transition-colors"
                   >
                     Contact
                   </Link>
                 </li>
                 <hr className="my-4 border-gray-200 dark:border-gray-700" />
-                <li className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <Heart className="w-6 h-6" />
-                    <span className="text-lg">Wishlist</span>
-                  </div>
-                  {wishlistCount > 0 && (
+                <li>
+                  <Link
+                    to="/wishlist"
+                    className="flex items-center justify-between"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Heart className="w-6 h-6" />
+                      <span className="text-lg">Wishlist</span>
+                    </div>
+                    {wishlistCount > 0 && (
+                      <span className="flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full">
+                        {wishlistCount}
+                      </span>
+                    )}
+                  </Link>
+                </li>
+                <li className="mb-6">
+                  <Link
+                    to="/profile"
+                    className="flex items-center justify-between"
+                  >
+                    <User className="w-6 h-6" />
+                    <span className="text-lg">Profile</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="flex items-center justify-between"
+                    to="/cart"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <ShoppingCart className="w-6 h-6" />
+                      <span className="flex-grow text-lg">Cart</span>
+                    </div>
                     <span className="flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full">
-                      {wishlistCount}
+                      {cartQuantity}
                     </span>
-                  )}
-                </li>
-                <li className="flex items-center space-x-3">
-                  <User className="w-6 h-6" />
-                  <span className="text-lg">Profile</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <ShoppingCart className="w-6 h-6" />
-                    <span className="flex-grow text-lg">Cart</span>
-                  </div>
-                  <span className="flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full">
-                    {cartQuantity}
-                  </span>
+                  </Link>
                 </li>
                 <li className="flex items-center justify-between">
                   <span className="text-lg">Dark Mode</span>
