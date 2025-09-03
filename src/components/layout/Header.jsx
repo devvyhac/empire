@@ -243,7 +243,7 @@ const Header = () => {
                 </button>
               </div>
               <ul className="flex flex-col space-y-4">
-                <li>
+                <li onClick={() => setIsMobileMenuOpen(false)}>
                   <Link
                     to="/"
                     className="block py-2 text-lg font-medium hover:text-indigo-600 transition-colors"
@@ -251,7 +251,7 @@ const Header = () => {
                     Home
                   </Link>
                 </li>
-                <li>
+                <li onClick={() => setIsMobileMenuOpen(false)}>
                   <Link
                     to="/shop"
                     className="block py-2 text-lg font-medium hover:text-indigo-600 transition-colors"
@@ -259,7 +259,7 @@ const Header = () => {
                     Shop
                   </Link>
                 </li>
-                <li>
+                <li onClick={() => setIsMobileMenuOpen(false)}>
                   <Link
                     to="blogs"
                     className="block py-2 text-lg font-medium hover:text-indigo-600 transition-colors"
@@ -267,7 +267,7 @@ const Header = () => {
                     Blog
                   </Link>
                 </li>
-                <li>
+                <li onClick={() => setIsMobileMenuOpen(false)}>
                   <Link
                     to="about"
                     className="block py-2 text-lg font-medium hover:text-indigo-600 transition-colors"
@@ -275,7 +275,7 @@ const Header = () => {
                     About Us
                   </Link>
                 </li>
-                <li>
+                <li onClick={() => setIsMobileMenuOpen(false)}>
                   <Link
                     to="contact"
                     className="block py-2 text-lg font-medium hover:text-indigo-600 transition-colors"
@@ -284,7 +284,7 @@ const Header = () => {
                   </Link>
                 </li>
                 <hr className="my-4 border-gray-200 dark:border-gray-700" />
-                <li>
+                <li onClick={() => setIsMobileMenuOpen(false)}>
                   <Link
                     to="/wishlist"
                     className="flex items-center justify-between"
@@ -300,16 +300,16 @@ const Header = () => {
                     )}
                   </Link>
                 </li>
-                <li className="mb-6">
+                <li className="mb-6" onClick={() => setIsMobileMenuOpen(false)}>
                   <Link
-                    to="/profile"
+                    to={isLoggedIn ? "/profile" : "/login"}
                     className="flex items-center justify-between"
                   >
                     <User className="w-6 h-6" />
                     <span className="text-lg">Profile</span>
                   </Link>
                 </li>
-                <li>
+                <li onClick={() => setIsMobileMenuOpen(false)}>
                   <Link
                     className="flex items-center justify-between"
                     to="/cart"
