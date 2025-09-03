@@ -1,5 +1,5 @@
 import { StarRating } from "./components/StarRatings";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -12,16 +12,19 @@ import {
 
 import { ProductCard, SkeletonCard } from "../../components/common/Card.jsx";
 import { CustomCheckbox } from "../../components/common/CustomCheckbox.jsx";
-import {
-  allProducts,
-  mockCategories,
-  mockBrands,
-  mockColors,
-} from "../../context/mockData.jsx";
+import { mockColors } from "../../context/mockData.jsx";
+import { ProductContext } from "../../context/ProductContext.jsx";
 
 import { FilterSection } from "./components/FilterSection.jsx";
 
 const Catalog = () => {
+  const { products: rawProducts, productLoading } = useContext(ProductContext);
+
+  const categories = [
+    "All",
+    ...new Set(rawProducts.map((item) => item.category.name)),
+  ];
+  const brands = ["All", ...new Set(rawProducts.map((item) => item.brand))];
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -43,53 +46,51 @@ const Catalog = () => {
   });
 
   const productsPerPage = 6;
-  const totalPages = Math.ceil(allProducts.length / productsPerPage);
+  const totalPages = Math.ceil(rawProducts.length / productsPerPage);
 
   useEffect(() => {
+    if (productLoading) {
+      return;
+    }
     setLoading(true);
-    const timer = setTimeout(() => {
-      let filteredProducts = allProducts.filter((product) => {
-        const matchesSearch =
-          product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          product.category.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesCategory =
-          filters.category === "All" || product.category === filters.category;
-        const matchesBrand =
-          filters.brand === "All" || product.brand === filters.brand;
-        const matchesPrice =
-          product.originalPrice >= filters.priceRange[0] &&
-          product.originalPrice <= filters.priceRange[1];
-        const matchesColor =
-          filters.color === "All" || filters.color === "Blue";
-        const matchesInStock = !filters.inStock || product.inStock;
-        return (
-          matchesSearch &&
-          matchesCategory &&
-          matchesBrand &&
-          matchesPrice &&
-          matchesColor &&
-          matchesInStock
-        );
-      });
+    let filteredProducts = rawProducts.filter((product) => {
+      const matchesSearch =
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory =
+        filters.category === "All" || product.category === filters.category;
+      const matchesBrand =
+        filters.brand === "All" || product.brand === filters.brand;
+      const matchesPrice =
+        product.originalPrice >= filters.priceRange[0] &&
+        product.originalPrice <= filters.priceRange[1];
+      const matchesColor = filters.color === "All" || filters.color === "Blue";
+      const matchesInStock = !filters.inStock || product.inStock;
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesBrand &&
+        matchesPrice &&
+        matchesColor &&
+        matchesInStock
+      );
+    });
 
-      switch (sortOrder) {
-        case "price_asc":
-          filteredProducts.sort((a, b) => a.originalPrice - b.originalPrice);
-          break;
-        case "price_desc":
-          filteredProducts.sort((a, b) => b.originalPrice - a.originalPrice);
-          break;
-        case "rating_desc":
-        default:
-          break;
-      }
+    switch (sortOrder) {
+      case "price_asc":
+        filteredProducts.sort((a, b) => a.originalPrice - b.originalPrice);
+        break;
+      case "price_desc":
+        filteredProducts.sort((a, b) => b.originalPrice - a.originalPrice);
+        break;
+      case "rating_desc":
+      default:
+        break;
+    }
 
-      setProducts(filteredProducts);
-      setLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery, filters, sortOrder]);
+    setProducts(filteredProducts);
+    setLoading(false);
+  }, [searchQuery, filters, sortOrder, rawProducts]);
 
   const handlePriceRangeChange = (e) => {
     const { name, value } = e.target;
@@ -180,9 +181,9 @@ const Catalog = () => {
               }
             >
               <div className="flex flex-col space-y-2">
-                {mockCategories.map((category) => (
+                {categories.map((category, index) => (
                   <CustomCheckbox
-                    key={category}
+                    key={index}
                     id={category}
                     label={category}
                     isChecked={filters.category === category}
@@ -234,7 +235,7 @@ const Catalog = () => {
               }
             >
               <div className="flex flex-col space-y-2">
-                {mockBrands.map((brand) => (
+                {brands.map((brand) => (
                   <CustomCheckbox
                     key={brand}
                     id={brand}
@@ -301,7 +302,7 @@ const Catalog = () => {
 
         {/* Products Grid */}
         <main className="w-full md:w-3/4 lg:w-3/4 ">
-          {loading ? (
+          {productLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
                 <SkeletonCard key={i} />
@@ -311,7 +312,7 @@ const Catalog = () => {
             <div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
                 {paginatedProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard key={product._id} product={product} />
                 ))}
               </div>
 
@@ -408,7 +409,7 @@ const Catalog = () => {
                 <div>
                   <h3 className="font-semibold mb-2">Category</h3>
                   <div className="flex flex-col space-y-2">
-                    {mockCategories.map((category) => (
+                    {categories.map((category) => (
                       <CustomCheckbox
                         key={category}
                         id={`mobile-${category}`}
@@ -448,7 +449,7 @@ const Catalog = () => {
                 <div>
                   <h3 className="font-semibold mb-2">Brand</h3>
                   <div className="flex flex-col space-y-2">
-                    {mockBrands.map((brand) => (
+                    {brands.map((brand) => (
                       <CustomCheckbox
                         key={brand}
                         id={`mobile-${brand}`}

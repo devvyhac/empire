@@ -22,7 +22,7 @@ import {
   Sparkles,
 } from "lucide-react";
 const Header = () => {
-  const { cartCount } = useContext(CartContext);
+  const { cartQuantity } = useContext(CartContext);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [wishlistCount] = useState(3);
@@ -51,8 +51,8 @@ const Header = () => {
   }, [isDarkMode]);
 
   // useEffect(() => {
-  //   setCartCount(cartItems.length);
-  //   console.log(cartCount);
+  //   setCartQuantity(cartItems.length);
+  //   console.log(cartQuantity);
   // }, [cartItems]);
 
   const toggleTheme = () => setIsDarkMode(!isDarkMode);
@@ -189,7 +189,7 @@ const Header = () => {
                 >
                   <ShoppingCart className="w-6 h-6" />
                   <span className="absolute p-[10px] -top-2 -right-2 flex items-center justify-center leading-none tracking-tight w-4 h-4 text-[12px] font-light text-white bg-red-500 rounded-full">
-                    {cartCount}
+                    {cartQuantity}
                   </span>
                 </Link>
               </motion.div>
@@ -305,7 +305,7 @@ const Header = () => {
                     <span className="flex-grow text-lg">Cart</span>
                   </div>
                   <span className="flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full">
-                    {cartCount}
+                    {cartQuantity}
                   </span>
                 </li>
                 <li className="flex items-center justify-between">

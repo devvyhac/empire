@@ -60,14 +60,12 @@ export default function LoginPage() {
         withCredentials: true,
       });
 
-      console.log(data);
-
       if (data.success) {
-        console.log(data);
         toast.success(data.message);
         setIsLoggedIn(true);
         setUserData(data.user);
         navigate(-1);
+        return;
       } else {
         toast.error(data.message);
         return;

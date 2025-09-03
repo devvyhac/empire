@@ -13,9 +13,9 @@ const OrderSummary = ({ cartItems, subtotal, shipping, tax, total }) => {
             {/* Cart Items */}
             {cartItems &&
               cartItems.map((item) => (
-                <div key={item.id} className="py-4 flex items-center">
+                <div key={item._id} className="py-4 flex items-center">
                   <img
-                    src={item.image}
+                    src={item.images[0].url}
                     alt={item.name}
                     className="w-16 h-16 rounded-md"
                   />
@@ -24,14 +24,14 @@ const OrderSummary = ({ cartItems, subtotal, shipping, tax, total }) => {
                       {item.name}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Qty: {item.count}
+                      Qty: {item.quantity}
                     </p>
                   </div>
                   <p className="font-semibold text-gray-900 dark:text-gray-100">
                     $
-                    {(item.salePrice !== null
-                      ? item.salePrice
-                      : item.originalPrice * item.count
+                    {(item.discountPrice
+                      ? item.discountPrice
+                      : item.originalPrice * item.quantity
                     ).toFixed(2)}
                   </p>
                 </div>

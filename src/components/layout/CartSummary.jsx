@@ -23,7 +23,6 @@ const CartSummary = ({ children }) => {
   const { cartItems, removeFromCart } = useContext(CartContext);
   const { isLoggedIn } = useContext(AuthContext);
 
-
   // Function to remove an item from the cart by its ID
   const removeItem = (item) => {
     removeFromCart(item);
@@ -68,9 +67,10 @@ const CartSummary = ({ children }) => {
     };
   }, []);
 
-  // Calculate the total salePrice of all items in the cart
+  // Calculate the total discountPrice of all items in the cart
   const cartTotal = cartItems.reduce(
-    (acc, item) => acc + (item.salePrice || item.originalPrice) * item.count,
+    (acc, item) =>
+      acc + (item.discountPrice || item.originalPrice) * item.quantity,
     0
   );
 
@@ -101,13 +101,13 @@ const CartSummary = ({ children }) => {
             {/* List of cart items */}
             <ul className="divide-y divide-gray-200">
               {cartItems.length > 0 ? (
-                cartItems.map((item) => (
+                cartItems.map((item, index) => (
                   <li
-                    key={item.id}
+                    key={item._id}
                     className="py-3 flex items-center justify-between"
                   >
                     <img
-                      src={item.image}
+                      src={item.images[0].url}
                       alt={item.name}
                       className="w-12 h-12 object-cover rounded-md mr-3 flex-shrink-0"
                     />
@@ -116,14 +116,16 @@ const CartSummary = ({ children }) => {
                       <p className="text-sm font-medium text-gray-700">
                         {item.name}
                       </p>
-                      <p className="text-xs text-gray-500">Qty: {item.count}</p>
+                      <p className="text-xs text-gray-500">
+                        Qty: {item.quantity}
+                      </p>
                     </div>
 
                     <div className="flex items-center">
                       <p className="text-sm font-semibold text-gray-900 mr-2">
                         $
-                        {item.salePrice !== null
-                          ? item.salePrice.toFixed(2)
+                        {item.discountPrice
+                          ? item.discountPrice.toFixed(2)
                           : item.originalPrice.toFixed(2)}
                       </p>
                       <button
@@ -161,13 +163,14 @@ const CartSummary = ({ children }) => {
                   >
                     Checkout
                   </Link>
-                ) : (<Link
+                ) : (
+                  <Link
                     onClick={() => toast.error("Your cart is empty!")}
                     className="disabled flex items-center justify-center w-full py-2 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600 transition-colors"
                   >
                     Checkout
-                  </Link>)
-                }
+                  </Link>
+                )}
               </span>
             </div>
           </div>

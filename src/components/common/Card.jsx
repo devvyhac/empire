@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useContext } from "react";
 import { Heart, ShoppingCart, ShoppingBag } from "lucide-react";
+import { toast } from "react-toastify";
 
 import { CartContext } from "../../context/CartContext";
 
@@ -13,7 +14,8 @@ export const ProductCard = ({ product }) => {
 
   const handleBuy = () => console.log(`Buying ${product.name}.`);
   const handleAddToCart = () => {
-    product.count = 1;
+    toast.success(`${product.name} Added to Cart`);
+    product.quantity += 1;
     addToCart(product);
   };
 
@@ -62,7 +64,7 @@ export const ProductCard = ({ product }) => {
       {/* Image with zoom effect */}
       <div className="relative w-full h-48 overflow-hidden rounded-t-xl mb-4">
         <motion.img
-          src={product.image}
+          src={product.images[0].url}
           alt={product.name}
           className="w-full h-full object-cover"
           whileHover={{ scale: 1.05 }}
@@ -76,15 +78,15 @@ export const ProductCard = ({ product }) => {
           {product.name}
         </h3>
         <p className="font-inter text-sm text-gray-500 dark:text-gray-400 mt-1">
-          {product.category}
+          {product.category.name}
         </p>
 
         {/* Price Display - fades out on hover */}
         <div className="flex items-center space-x-2 my-2 transition-opacity duration-300 group-hover:opacity-0">
-          {product.salePrice ? (
+          {product.discountPrice ? (
             <>
               <p className="font-inter text-xl font-bold text-gray-900 dark:text-gray-100">
-                ${product.salePrice.toFixed(2)}
+                ${product.discountPrice.toFixed(2)}
               </p>
               <p className="font-inter text-sm text-gray-400 dark:text-gray-500 line-through">
                 ${product.originalPrice.toFixed(2)}
@@ -108,7 +110,7 @@ export const ProductCard = ({ product }) => {
         >
           Buy{" "}
           <span className="ml-2 font-bold">
-            ${(product.salePrice || product.originalPrice).toFixed(2)}
+            ${(product.discountPrice || product.originalPrice).toFixed(2)}
           </span>
         </motion.button>
         <motion.button
