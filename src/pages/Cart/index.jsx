@@ -37,8 +37,8 @@ const Cart = () => {
   const subtotal = cartItems.reduce(
     (acc, item) =>
       acc +
-      (item.salePrice !== null ? item.salePrice : item.originalPrice) *
-        item.count,
+      (item.discountPrice ? item.discountPrice : item.originalPrice) *
+        item.quantity,
     0
   );
   const shipping = subtotal > 0 ? 5.0 : 0;
@@ -50,7 +50,7 @@ const Cart = () => {
     if (newQuantity < 1) return;
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === id ? { ...item, count: newQuantity } : item
+        item._id === id ? { ...item, quantity: newQuantity } : item
       )
     );
   };
@@ -148,14 +148,14 @@ const Cart = () => {
             <div className="md:col-span-2 space-y-4">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
                 {cartItems.map((item) => (
-                  <CartItem key={item.id} item={item} />
+                  <CartItem key={item._id} item={item} />
                 ))}
               </div>
             </div>
 
             {/* Right Column: Order Summary */}
             <div className="relative md:sticky md:top-8 h-full">
-              <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
                 <h2 className="font-poppins text-2xl font-extrabold text-gray-900 dark:text-gray-100 mb-4">
                   Order Summary
                 </h2>

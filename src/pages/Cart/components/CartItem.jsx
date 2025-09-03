@@ -14,7 +14,7 @@ const CartItem = ({ item }) => {
       <div className="flex-shrink-0">
         <img
           className="h-20 w-20 object-cover rounded-md"
-          src={item.image}
+          src={item.images[0].url}
           alt={item.name}
         />
       </div>
@@ -29,8 +29,8 @@ const CartItem = ({ item }) => {
         </p> */}
         <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
           $
-          {item.salePrice !== null
-            ? item.salePrice.toFixed(2)
+          {item.discountPrice
+            ? item.discountPrice.toFixed(2)
             : item.originalPrice.toFixed(2)}
         </p>
       </div>
@@ -52,7 +52,7 @@ const CartItem = ({ item }) => {
             </motion.button>
             <input
               type="number"
-              value={item.count || 1}
+              value={item.quantity || 1}
               onChange={(e) =>
                 updateItemQuantity(item, parseInt(e.target.value))
               }
@@ -73,8 +73,8 @@ const CartItem = ({ item }) => {
           <p className="font-bold text-lg text-gray-900 dark:text-gray-100 w-20 text-right">
             $
             {(
-              (item.salePrice !== null ? item.salePrice : item.originalPrice) *
-              item.count
+              (item.discountPrice ? item.discountPrice : item.originalPrice) *
+              item.quantity
             ).toFixed(2)}
           </p>
         </div>
