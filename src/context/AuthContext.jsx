@@ -4,23 +4,24 @@ import axios from "axios";
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
+  const { VITE_REFRESH_TOKEN_URL, VITE_GET_USER_URL } = import.meta.env;
   const server = import.meta.env.VITE_BACKEND_URL;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUserData] = useState([]);
 
   const checkAuth = async () => {
     try {
-      const res = await axios.get(`${server}/api/user/me`, {
+      const res = await axios.get(VITE_GET_USER_URL, {
         withCredentials: true,
       });
 
       setUserData(res.data.user);
       setIsLoggedIn(true);
     } catch (error) {
-      if (error.code === 401) {
+      if (error.status === 401) {
         try {
           const refreshRes = await axios.post(
-            `${server}/api/auth/refresh-token`,
+            VITE_REFRESH_TOKEN_URL,
             {},
             {
               withCredentials: true,
