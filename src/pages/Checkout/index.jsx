@@ -10,7 +10,7 @@ import { Truck } from "lucide-react";
 
 import CollapsibleSection from "./components/CollapsibleSection.jsx";
 import ShippingSectionForm from "./components/ShippingSectionForm.jsx";
-import PaymentSectionForm from "./components/PaymentSectionForm.jsx";
+// import PaymentSectionForm from "./components/PaymentSectionForm.jsx";
 import OrderSummary from "./components/OrderSummary.jsx";
 import ProgressBar from "./components/ProgressBar.jsx";
 import CheckoutHeader from "./components/CheckoutHeader.jsx";
@@ -80,10 +80,9 @@ export default function Checkout() {
   };
 
   // Handle payment popup closure
-const handleClose = () => {
-  toast.error("Payment canceled!");
-};
-
+  const handleClose = () => {
+    toast.error("Payment canceled!");
+  };
 
   const [formData, setFormData] = useState(
     shippingDetails
@@ -97,6 +96,22 @@ const handleClose = () => {
           country: "",
         }
   );
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setFormData((prevData) => ({
+        ...prevData,
+        email: user?.email,
+      }));
+    }
+  }, [isLoggedIn, user]);
+
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      toast.info("Your cart is empty. Redirecting to shop.");
+      navigate("/shop");
+    }
+  }, [cartItems, navigate]);
 
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);

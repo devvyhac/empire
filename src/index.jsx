@@ -6,12 +6,16 @@ import App from "./App.jsx";
 import { AuthContextProvider } from "./context/AuthContext.jsx";
 import { CartContextProvider } from "./context/CartContext.jsx";
 import { ProductContextProvider } from "./context/ProductContext.jsx";
+import { WishlistContextProvider } from "./context/WishlistContext.jsx";
+
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <AuthContextProvider>
       <CartContextProvider>
         <ProductContextProvider>
-          <App />
+          <WishlistContextProvider>
+            <App />
+          </WishlistContextProvider>
         </ProductContextProvider>
       </CartContextProvider>
     </AuthContextProvider>

@@ -1,4 +1,3 @@
-import { StarRating } from "./components/StarRatings";
 import { useState, useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -115,7 +114,7 @@ const Catalog = () => {
   const totalFilteredItems = products.length;
 
   return (
-    <div className="container mx-auto min-h-screen bg-white dark:bg-gray-900 font-inter px- text-gray-900 dark:text-gray-100">
+    <div className="container mx-auto min-h-screen bg-white dark:bg-gray-900 font-inter sm:px-4 text-gray-900 dark:text-gray-100">
       {/* Sticky Search Bar */}
       <div className=" dark:bg-gray-800 p-4 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
         <div className="flex items-center w-full md:w-auto">

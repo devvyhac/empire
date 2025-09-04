@@ -4,10 +4,10 @@ import axios from "axios";
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const { VITE_REFRESH_TOKEN_URL, VITE_GET_USER_URL } = import.meta.env;
+  const { VITE_REFRESH_TOKEN_URL, VITE_GET_USER_URL, VITE_LOGOUT_URL } =
+    import.meta.env;
   const server = import.meta.env.VITE_BACKEND_URL;
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUserData] = useState([]);
+  const [user, setUserData] = useState(null);
 
   const checkAuth = async () => {
     try {
@@ -16,9 +16,8 @@ export const AuthContextProvider = ({ children }) => {
       });
 
       setUserData(res.data.user);
-      setIsLoggedIn(true);
     } catch (error) {
-      if (error.status === 401) {
+      if (error.response.status === 401) {
         try {
           const refreshRes = await axios.post(
             VITE_REFRESH_TOKEN_URL,
@@ -28,15 +27,14 @@ export const AuthContextProvider = ({ children }) => {
             }
           );
           setUserData(refreshRes);
-          setIsLoggedIn(true);
         } catch (refreshError) {
-          setIsLoggedIn(false);
           setUserData(null);
         }
       }
     }
   };
 
+  const isLoggedIn = !!user;
   useEffect(() => {
     checkAuth();
   }, []);
@@ -44,9 +42,9 @@ export const AuthContextProvider = ({ children }) => {
   const payload = {
     server,
     isLoggedIn,
-    setIsLoggedIn,
     user,
     setUserData,
+    VITE_LOGOUT_URL,
   };
 
   return (

@@ -6,8 +6,10 @@ import CartSummary from "./CartSummary";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { CartContext } from "../../context/CartContext.jsx";
+import { WishlistContext } from "../../context/WishlistContext.jsx";
 import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
+const { VITE_LOGOUT_URL } = import.meta.env;
 
 import {
   ShoppingCart,
@@ -23,12 +25,12 @@ import {
 } from "lucide-react";
 const Header = () => {
   const { cartQuantity } = useContext(CartContext);
+  const { wishListQuantity } = useContext(WishlistContext);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [wishlistCount] = useState(3);
   const location = useLocation();
   const { pathname: page } = location;
-  const { server, isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
 
   // ####################################################################################
@@ -50,24 +52,17 @@ const Header = () => {
     }
   }, [isDarkMode]);
 
-  // useEffect(() => {
-  //   setCartQuantity(cartItems.length);
-  //   console.log(cartQuantity);
-  // }, [cartItems]);
-
   const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
   const handleLogout = async (e) => {
     try {
       e.preventDefault();
       const { data } = await axios.post(
-        `${server}/api/auth/logout`,
+        VITE_LOGOUT_URL,
         {},
         { withCredentials: true }
       );
-      console.log(data);
       if (data.success) {
-        setIsLoggedIn(false);
         toast.success(data.message);
         navigate("/");
       }
@@ -85,7 +80,7 @@ const Header = () => {
           <div className="flex items-center space-x-8">
             <div className="flex items-center space-x-2">
               <Sparkles className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
-              <span className="font-poppins text-2xl font-bold">Gadgets</span>
+              <span className="font-poppins text-2xl font-bold">Empire</span>
             </div>
 
             {/* Navigation Links (Desktop) */}
@@ -143,9 +138,9 @@ const Header = () => {
                 className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors"
               >
                 <Heart className="w-6 h-6" />
-                {wishlistCount > 0 && (
+                {wishListQuantity > 0 && (
                   <span className="absolute p-[10px] -top-2 -right-2 flex items-center justify-center leading-none tracking-tight w-4 h-4 text-[12px] font-light text-white bg-red-500 rounded-full">
-                    {wishlistCount}
+                    {wishListQuantity}
                   </span>
                 )}
               </Link>
@@ -188,9 +183,11 @@ const Header = () => {
                   className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors"
                 >
                   <ShoppingCart className="w-6 h-6" />
-                  <span className="absolute p-[10px] -top-2 -right-2 flex items-center justify-center leading-none tracking-tight w-4 h-4 text-[12px] font-light text-white bg-red-500 rounded-full">
-                    {cartQuantity}
-                  </span>
+                  {cartQuantity > 0 && (
+                    <span className="absolute p-[10px] -top-2 -right-2 flex items-center justify-center leading-none tracking-tight w-4 h-4 text-[12px] font-light text-white bg-red-500 rounded-full">
+                      {cartQuantity}
+                    </span>
+                  )}
                 </Link>
               </motion.div>
             </CartSummary>
@@ -293,9 +290,9 @@ const Header = () => {
                       <Heart className="w-6 h-6" />
                       <span className="text-lg">Wishlist</span>
                     </div>
-                    {wishlistCount > 0 && (
+                    {wishListQuantity > 0 && (
                       <span className="flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full">
-                        {wishlistCount}
+                        {wishListQuantity}
                       </span>
                     )}
                   </Link>

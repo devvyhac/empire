@@ -1,32 +1,42 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useContext } from "react";
+import { useState, useContext, use, useEffect } from "react";
 import { Heart, ShoppingCart, ShoppingBag } from "lucide-react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 import { CartContext } from "../../context/CartContext";
+import { AuthContext } from "../../context/AuthContext";
+import { WishlistContext } from "../../context/WishlistContext";
 
 // Reusable ProductCard component for the grid
 export const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
+  const { isLoggedIn } = useContext(AuthContext);
+  const { addToWishlist, removeFromWishlist } = useContext(WishlistContext);
 
   // State to manage the heart icon's fill status
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(
+    product._id
+      ? use(WishlistContext).wishlistItems.some(
+          (item) => item._id === product._id
+        )
+      : false
+  );
 
-  const handleBuy = () => console.log(`Buying ${product.name}.`);
+  const handleBuy = () => {
+    product.quantity += 1;
+    addToCart(product);
+    if (isLoggedIn) {
+      navigate("/checkout");
+      return;
+    }
+    toast.info("Please log in to proceed to checkout");
+  };
   const handleAddToCart = () => {
     toast.success(`${product.name} Added to Cart`);
     product.quantity += 1;
     addToCart(product);
-  };
-
-  // Function to toggle the wishlist state and log the action
-  const handleAddToWishlist = () => {
-    setIsWishlisted(!isWishlisted);
-    console.log(
-      `${isWishlisted ? "Removing" : "Adding"} ${product.name} ${
-        isWishlisted ? "from" : "to"
-      } wishlist.`
-    );
   };
 
   return (
@@ -48,7 +58,14 @@ export const ProductCard = ({ product }) => {
 
       {/* Wishlist Button - now toggles fill on click */}
       <motion.button
-        onClick={handleAddToWishlist}
+        onClick={() => {
+          if (isWishlisted) {
+            removeFromWishlist(product);
+          } else {
+            addToWishlist(product);
+          }
+          setIsWishlisted(!isWishlisted);
+        }}
         className={`absolute top-4 right-4 z-10 p-1 flex items-center justify-center transition-colors ${
           isWishlisted ? "text-red-500" : "text-gray-500 dark:text-gray-400"
         }`}
@@ -101,7 +118,7 @@ export const ProductCard = ({ product }) => {
       </div>
 
       {/* Buy and Add to Cart Buttons - hidden by default, slides up on hover */}
-      <div className="absolute inset-x-0 bottom-0 px-4 pb-4 flex space-x-2 bg-gray-50 dark:bg-gray-800 transition-transform duration-300 transform translate-y-full group-hover:translate-y-0">
+      <div className="absolute inset-x-0 bottom-0 px-4 pb-4 flex space-x-2 bg-gray-50 dark:bg-gray-800 transition-transform duration-300 transform md:translate-y-full md:group-hover:translate-y-0">
         <motion.button
           onClick={handleBuy}
           className="w-full py-2 rounded-lg bg-[#3a41a3] text-white flex items-center justify-center transition-colors"

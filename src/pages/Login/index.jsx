@@ -2,16 +2,17 @@ import { useState, useEffect, useContext } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { SocialSignIn } from "./components/SocialSignIn.jsx";
 
+const { VITE_LOGIN_URL } = import.meta.env;
+
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { VITE_LOGIN_URL } = import.meta.env;
+  const location = useLocation();
 
-  const { isLoggedIn, setIsLoggedIn, userData, setUserData } =
-    useContext(AuthContext);
+  const { user, setUserData } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -19,11 +20,13 @@ export default function LoginPage() {
     rememberMe: false,
   });
 
+  const from = location.state?.from?.pathname || "/shop";
+
   useEffect(() => {
-    if (isLoggedIn) {
-      navigate(-1);
+    if (user) {
+      navigate(from, { replace: true }); // Redirect to the page the user was trying to access before login
     }
-  }, [isLoggedIn]);
+  }, [user, navigate, from]);
 
   // const validate = () => {
   //   if (!formData.email) {
@@ -55,9 +58,6 @@ export default function LoginPage() {
   };
 
   const handleSubmit = async (e) => {
-    // Express backend API call would go here
-    // Express API: /api/auth/login
-    // This is a placeholder for a real API call.
     try {
       e.preventDefault();
       const { rememberMe, ...loginData } = formData;
@@ -74,7 +74,6 @@ export default function LoginPage() {
 
       if (data.success) {
         toast.success(data.message);
-        setIsLoggedIn(true);
         setUserData(data.user);
         setFormData({
           email: "",
@@ -88,8 +87,9 @@ export default function LoginPage() {
         return;
       }
     } catch (error) {
-      console.error("Login failed:", error);
-      toast.error(error);
+      const errorMessage =
+        error.response?.data?.message || "An unexpected error occurred.";
+      toast.error(errorMessage);
     }
   };
 
@@ -161,12 +161,12 @@ export default function LoginPage() {
                   </label>
                 </div>
                 <div className="text-sm">
-                  <a
-                    href="#"
+                  <Link
+                    to="#"
                     className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
                   >
                     Forgot password?
-                  </a>
+                  </Link>
                 </div>
               </div>
 

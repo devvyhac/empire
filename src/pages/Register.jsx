@@ -95,6 +95,7 @@ export default function SignUpPage() {
     password: "",
     confirmPassword: "",
   });
+  
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle");
 

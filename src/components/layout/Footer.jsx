@@ -12,7 +12,9 @@ import {
   CreditCard,
   Apple,
   Lock,
+  Sparkles,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -31,12 +33,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-y-12 lg:gap-x-8">
           {/* Branding Section */}
           <div className="lg:col-span-2">
-            <a href="/" className="inline-block mb-4">
-              {/* This is a placeholder logo. You can replace this with an SVG or image */}
-              <span className="text-3xl font-extrabold text-white tracking-wide">
-                Store Name
-              </span>
-            </a>
+            <Link to="/" className="inline-block mb-4">
+              <div className="flex items-center space-x-2">
+                <Sparkles className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
+                <span className="font-poppins text-2xl font-bold">Empire</span>
+              </div>
+            </Link>
             <p className="text-sm leading-relaxed mb-4">
               Your one-stop shop for quality products.
             </p>

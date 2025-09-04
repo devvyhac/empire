@@ -64,6 +64,7 @@ export const CartContextProvider = ({ children }) => {
 
   const clearCart = async () => {
     setCartItems([]);
+    localStorage.setItem("cart", JSON.stringify([]));
   };
 
   const removeFromCart = async (item) => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingCart,
@@ -9,6 +9,12 @@ import {
   ArrowRight,
   Package,
 } from "lucide-react";
+
+import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
+
+import { WishlistContext } from "../context/WishlistContext.jsx";
+import { CartContext } from "../context/CartContext.jsx";
 
 // Reusable StarRating component for product cards
 const StarRating = ({ rating }) => {
@@ -53,7 +59,10 @@ const WishlistItemCard = ({ item, onRemove, onAddToCart }) => {
     >
       {/* Remove Button */}
       <motion.button
-        onClick={() => onRemove(item.id)}
+        onClick={() => {
+          onRemove(item);
+          toast.info(`Removed ${item.name} from wishlist!`);
+        }}
         className="absolute top-2 right-2 z-10 p-2 rounded-full bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300 transition-colors"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -63,7 +72,7 @@ const WishlistItemCard = ({ item, onRemove, onAddToCart }) => {
 
       {/* Product Image */}
       <img
-        src={item.image}
+        src={item.images[0].url}
         alt={item.name}
         className="w-full h-48 object-cover rounded-lg mb-4"
       />
@@ -76,10 +85,10 @@ const WishlistItemCard = ({ item, onRemove, onAddToCart }) => {
         </p>
 
         <div className="flex items-center space-x-2 my-2">
-          {item.salePrice ? (
+          {item.discountPrice ? (
             <>
               <p className="font-bold text-xl text-gray-900 dark:text-gray-100">
-                ${item.salePrice.toFixed(2)}
+                ${item.discountPrice.toFixed(2)}
               </p>
               <p className="text-sm text-gray-400 dark:text-gray-500 line-through">
                 ${item.originalPrice.toFixed(2)}
@@ -95,7 +104,10 @@ const WishlistItemCard = ({ item, onRemove, onAddToCart }) => {
 
       {/* Add to Cart Button */}
       <motion.button
-        onClick={() => onAddToCart(item)}
+        onClick={() => {
+          onAddToCart(item);
+          toast.success(`Added ${item.name} to cart!`);
+        }}
         className="w-full py-3 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center space-x-2 mt-4"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -107,135 +119,15 @@ const WishlistItemCard = ({ item, onRemove, onAddToCart }) => {
   );
 };
 
-// Mock data for wishlisted products, now including an SKU
-const initialWishlistItems = [
-  {
-    id: "2",
-    name: "Wireless Headphones",
-    sku: "WHP-101",
-    originalPrice: 99.99,
-    salePrice: 71.99,
-    tag: "-50%",
-    category: "Electronics",
-    brand: "AudioPlus",
-    image: "https://placehold.co/400x300/E5E7EB/1F2937?text=Headphones",
-  },
-  {
-    id: "5",
-    name: "Running Shoes Pro",
-    sku: "RSP-202",
-    originalPrice: 120.0,
-    salePrice: null,
-    tag: "Special",
-    category: "Footwear",
-    brand: "RunFast",
-    image: "https://placehold.co/400x300/E5E7EB/1F2937?text=Running+Shoes",
-  },
-  {
-    id: "9",
-    name: "Designer T-Shirt",
-    sku: "DTS-303",
-    originalPrice: 45.0,
-    salePrice: 30.0,
-    tag: "-50%",
-    category: "Apparel",
-    brand: "UrbanStyle",
-    image: "https://placehold.co/400x300/E5E7EB/1F2937?text=Designer+T-shirt",
-  },
-  {
-    id: "10",
-    name: "Smartwatch V2",
-    sku: "SW-V2",
-    originalPrice: 199.99,
-    salePrice: 159.99,
-    category: "Electronics",
-    brand: "TechGear",
-    image: "https://placehold.co/400x300/E5E7EB/1F2937?text=Smartwatch",
-  },
-  {
-    id: "11",
-    name: "Premium Backpack",
-    sku: "PB-404",
-    originalPrice: 85.0,
-    salePrice: null,
-    category: "Apparel",
-    brand: "AdventureCo",
-    image: "https://placehold.co/400x300/E5E7EB/1F2937?text=Backpack",
-  },
-  {
-    id: "12",
-    name: "Wireless Mouse",
-    sku: "WM-505",
-    originalPrice: 25.0,
-    salePrice: null,
-    category: "Electronics",
-    brand: "AudioPlus",
-    image: "https://placehold.co/400x300/E5E7EB/1F2937?text=Mouse",
-  },
-];
-
-// Mock API functions
-const fetchWishlist = () => {
-  return new Promise((resolve) =>
-    setTimeout(() => {
-      resolve(initialWishlistItems);
-    }, 1000)
-  );
-};
-
-const removeItemApi = (id) => {
-  return new Promise((resolve) =>
-    setTimeout(() => {
-      console.log(`Simulating API call: removeItem(${id})`);
-      resolve({ success: true });
-    }, 500)
-  );
-};
-
 export default function WishlistPage() {
-  const [wishlist, setWishlist] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [wishlist, setWishlist] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { removeFromWishlist, wishlistItems: wishlist } =
+    useContext(WishlistContext);
 
-  // Simulate data fetching and analytics tracking
-  useEffect(() => {
-    // Analytics tracking
-    console.log("Analytics event tracked: view_wishlist");
+  const { addToCart } = useContext(CartContext);
 
-    // SEO meta tags
-    const metaTitle = "Your Wishlist - Gadgets Shop";
-    const metaDescription =
-      "Keep track of your favorite items from Gadgets Shop. Add to cart or remove them from your personal list.";
-    console.log(`SEO Title: ${metaTitle}`);
-    console.log(`SEO Description: ${metaDescription}`);
-
-    // Simulate API call to get wishlist items
-    const getWishlist = async () => {
-      setLoading(true);
-      try {
-        const items = await fetchWishlist();
-        setWishlist(items);
-      } catch (error) {
-        console.error("Failed to fetch wishlist:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getWishlist();
-  }, []);
-
-  const handleRemoveItem = async (id) => {
-    await removeItemApi(id);
-    setWishlist(wishlist.filter((item) => item.id !== id));
-  };
-
-  const handleAddToCart = (item) => {
-    console.log(`Added ${item.name} to cart.`);
-    // In a real app, you would dispatch a cart-related action or call a cart API.
-    // For this example, we'll just remove it from the wishlist to simulate a common flow.
-    handleRemoveItem(item.id);
-  };
-
-  const isWishlistEmpty = wishlist.length === 0 && !loading;
+  const isWishlistEmpty = wishlist?.length === 0 && !loading;
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 font-inter text-gray-900 dark:text-gray-100 flex flex-col">
@@ -290,10 +182,10 @@ export default function WishlistPage() {
               >
                 {wishlist.map((item) => (
                   <WishlistItemCard
-                    key={item.id}
+                    key={item._id}
                     item={item}
-                    onRemove={handleRemoveItem}
-                    onAddToCart={handleAddToCart}
+                    onRemove={removeFromWishlist}
+                    onAddToCart={addToCart}
                   />
                 ))}
               </motion.div>
@@ -301,15 +193,6 @@ export default function WishlistPage() {
           </AnimatePresence>
         </div>
       </main>
-
-      {/* Simple Page Footer */}
-      <footer className="bg-gray-900 dark:bg-gray-950 text-gray-300 dark:text-gray-400 py-6 mt-auto">
-        <div className="container mx-auto text-center">
-          <p className="text-sm">
-            &copy; 2024 Gadgets Shop. All rights reserved.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
