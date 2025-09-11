@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useContext, use, useEffect } from "react";
 import { Heart, ShoppingCart, ShoppingBag } from "lucide-react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
@@ -10,6 +10,7 @@ import { WishlistContext } from "../../context/WishlistContext";
 
 // Reusable ProductCard component for the grid
 export const ProductCard = ({ product }) => {
+  const { slug } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
   const { isLoggedIn } = useContext(AuthContext);
@@ -79,7 +80,10 @@ export const ProductCard = ({ product }) => {
       </motion.button>
 
       {/* Image with zoom effect */}
-      <div className="relative w-full h-48 overflow-hidden rounded-t-xl mb-4">
+      <div
+        onClick={() => navigate(`/product/${product._id}`)}
+        className="relative w-full h-48 overflow-hidden rounded-t-xl mb-4"
+      >
         <motion.img
           src={product.images[0].url}
           alt={product.name}

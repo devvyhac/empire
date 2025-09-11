@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import ProfileDropDown from "./ProfileDropDown";
 import CartSummary from "./CartSummary";
@@ -8,7 +8,6 @@ import { AuthContext } from "../../context/AuthContext.jsx";
 import { CartContext } from "../../context/CartContext.jsx";
 import { WishlistContext } from "../../context/WishlistContext.jsx";
 import { toast } from "react-toastify";
-import { useNavigate, Link } from "react-router-dom";
 const { VITE_LOGOUT_URL } = import.meta.env;
 
 import {
@@ -22,6 +21,7 @@ import {
   Heart,
   User,
   Sparkles,
+  TruckElectric,
 } from "lucide-react";
 const Header = () => {
   const { cartQuantity } = useContext(CartContext);
@@ -79,8 +79,14 @@ const Header = () => {
           {/* Logo and Nav (Desktop) */}
           <div className="flex items-center space-x-8">
             <div className="flex items-center space-x-2">
-              <Sparkles className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
-              <span className="font-poppins text-2xl font-bold">Empire</span>
+              <TruckElectric className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
+              <Link
+                to="/"
+                id="logo"
+                className="font-poppins text-2xl font-bold"
+              >
+                Empire
+              </Link>
             </div>
 
             {/* Navigation Links (Desktop) */}

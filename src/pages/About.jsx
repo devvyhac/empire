@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { Link } from "react-router-dom";
 
 // This is a placeholder for a responsive image component.
 // In a real application, you might use a more sophisticated image library.
@@ -33,7 +34,7 @@ export default function AboutPage() {
         <motion.div style={{ y }} className="absolute inset-0 w-full h-full">
           {/* Placeholder for the hero image from a source like Strapi. */}
           <img
-            src="https://placehold.co/1920x1080/4A5568/CBD5E0?text=Hero+Image"
+            src="https://images.pexels.com/photos/8553867/pexels-photo-8553867.jpeg"
             alt="About Us Hero"
             className="w-full h-full object-cover opacity-70"
           />
@@ -67,7 +68,7 @@ export default function AboutPage() {
           </div>
           <div className="md:w-1/2">
             <ResponsiveImage
-              src="https://placehold.co/600x400/3182CE/EBF8FF?text=Our+Mission"
+              src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg"
               alt="Our Mission"
             />
           </div>
@@ -89,7 +90,7 @@ export default function AboutPage() {
           </div>
           <div className="md:w-1/2">
             <ResponsiveImage
-              src="https://placehold.co/600x400/9F7AEA/E9D8FD?text=Our+Values"
+              src="https://images.pexels.com/photos/3153198/pexels-photo-3153198.jpeg"
               alt="Our Values"
             />
           </div>
@@ -110,7 +111,7 @@ export default function AboutPage() {
           </div>
           <div className="md:w-1/2">
             <ResponsiveImage
-              src="https://placehold.co/600x400/F6AD55/FFF5E9?text=Our+Team"
+              src="https://images.pexels.com/photos/2467506/pexels-photo-2467506.jpeg"
               alt="Our Team"
             />
           </div>
@@ -118,12 +119,12 @@ export default function AboutPage() {
 
         {/* CTA Section */}
         <div className="mt-16 lg:mt-24 text-center">
-          <a
-            href="#"
+          <Link
+            to="/shop"
             className="inline-block py-3 px-8 rounded-full text-lg font-bold text-white bg-indigo-500 hover:bg-indigo-600 transition-colors duration-300 transform hover:scale-105 shadow-lg"
           >
             Shop Our Collection
-          </a>
+          </Link>
         </div>
       </div>
     </main>

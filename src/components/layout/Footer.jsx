@@ -13,6 +13,7 @@ import {
   Apple,
   Lock,
   Sparkles,
+  TruckElectric,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -35,8 +36,10 @@ const Footer = () => {
           <div className="lg:col-span-2">
             <Link to="/" className="inline-block mb-4">
               <div className="flex items-center space-x-2">
-                <Sparkles className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
-                <span className="font-poppins text-2xl font-bold">Empire</span>
+                <TruckElectric className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
+                <span id="logo" className="font-poppins text-2xl font-bold">
+                  Empire
+                </span>
               </div>
             </Link>
             <p className="text-sm leading-relaxed mb-4">

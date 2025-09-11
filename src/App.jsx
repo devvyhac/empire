@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
+import ScrollToTop from "./components/layout/ScrollToTop.jsx";
 import Header from "./components/layout/Header";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -36,15 +37,16 @@ import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <div className="App bg-white min-h-screen">
+      <ScrollToTop />
       <Header />
       <ToastContainer />
       <Routes>
         <Route path="/" exact element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/shop" element={<Catalog />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/product/:slug" element={<ProductDetails />} />
         <Route path="/blogs" element={<Blogs />} />
-        <Route path="/blog/:id" element={<BlogPost />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/contact" element={<ContactPage />} />
         {/* <Route path="/profile" element={<Profile />} /> */}
         <Route path="/login" element={<Login />} />

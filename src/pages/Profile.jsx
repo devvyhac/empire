@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { AuthContext } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 // Configure Tailwind CSS custom colors to match the design request
 // This is for demonstration purposes. In a real project, this would be in the tailwind.config.js file.
@@ -236,7 +237,8 @@ const TabContent = ({
   newOrder,
   onContinueShopping,
 }) => {
-  const { user } = useContext(AuthContext);
+  const { user, orders } = useContext(AuthContext);
+  console.log(orders);
   const Accronym = user.firstName[0] + user.lastName[0];
   const [profileData, setProfileData] = useState({
     name: user.fullName,
@@ -335,7 +337,7 @@ const TabContent = ({
               <div>
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="block text-lg font-medium text-gray-700 dark:text-gray-300"
                 >
                   Name
                 </label>
@@ -345,7 +347,7 @@ const TabContent = ({
                   id="name"
                   value={profileData.name}
                   onChange={handleProfileChange}
-                  className={`mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm sm:text-sm dark:bg-gray-900 dark:text-gray-100 transition-colors ${
+                  className={`mt-1 p-3 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm sm:text-sm dark:bg-gray-900 dark:text-gray-100 transition-colors ${
                     profileErrors.name ? "border-red-500" : ""
                   }`}
                 />
@@ -359,7 +361,7 @@ const TabContent = ({
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="block text-lg font-medium text-gray-700 dark:text-gray-300"
                 >
                   Email
                 </label>
@@ -369,7 +371,7 @@ const TabContent = ({
                   id="email"
                   value={profileData.email}
                   onChange={handleProfileChange}
-                  className={`mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm sm:text-sm dark:bg-gray-900 dark:text-gray-100 transition-colors ${
+                  className={`mt-1 p-3 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm sm:text-sm dark:bg-gray-900 dark:text-gray-100 transition-colors ${
                     profileErrors.email ? "border-red-500" : ""
                   }`}
                 />
@@ -383,7 +385,7 @@ const TabContent = ({
               <div>
                 <label
                   htmlFor="phone"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="block text-lg font-medium text-gray-700 dark:text-gray-300"
                 >
                   Phone
                 </label>
@@ -393,7 +395,7 @@ const TabContent = ({
                   id="phone"
                   value={profileData.phone}
                   onChange={handleProfileChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm sm:text-sm dark:bg-gray-900 dark:text-gray-100 transition-colors"
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm sm:text-sm dark:bg-gray-900 dark:text-gray-100 transition-colors"
                 />
               </div>
 
@@ -469,27 +471,30 @@ const TabContent = ({
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  {mockOrders.map((order) => (
+                  {orders.map((order) => (
                     <tr key={order.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                        {order.id}
+                        {order.orderId}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {order.date}
+                        {order.updatedAt.split("T")[0]}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {order.total}
+                        {new Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                        }).format(order.totalAmount)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {order.status}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a
-                          href="#"
+                        <Link
+                          to="#"
                           className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
                         >
                           View Details
-                        </a>
+                        </Link>
                       </td>
                     </tr>
                   ))}
@@ -506,7 +511,6 @@ const TabContent = ({
             </motion.button>
           </>
         );
-
       case "transactions":
         return (
           <>
@@ -550,19 +554,22 @@ const TabContent = ({
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  {mockOrders.map((order) => (
+                  {orders.map((order) => (
                     <tr key={order.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                        {order.id}
+                        {order.orderId}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {order.date}
+                        {order.updatedAt.split("T")[0]}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {order.total}
+                        {new Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                        }).format(order.totalAmount)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {order.status}
+                        {/* {order.status} */} success
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <a
@@ -594,17 +601,17 @@ const TabContent = ({
               Addresses
             </h2>
             <ul className="space-y-4">
-              {mockAddresses.map((address) => (
+              {orders.slice(0, 2).map((order) => (
                 <li
-                  key={address.id}
+                  key={order.orderId}
                   className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm flex justify-between items-start"
                 >
                   <div>
                     <h3 className="font-medium text-gray-900 dark:text-gray-100">
-                      {address.label}
+                      Home
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {address.address}
+                      {`${order.shippingDetails.address.substring(0, 20)}..., ${order.shippingDetails.city}, ${order.shippingDetails.country}, ${order.shippingDetails.zipCode}`}
                     </p>
                   </div>
                   <button className="text-sm text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium">
@@ -766,7 +773,7 @@ export default function App() {
             id="tab-select"
             value={activeTab}
             onChange={(e) => setActiveTab(e.target.value)}
-            className="block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm dark:bg-gray-900 dark:text-gray-100 transition-colors"
+            className="block w-full p-3 rounded-md border-gray-300 dark:border-gray-700 shadow-sm dark:bg-gray-900 dark:text-gray-100 transition-colors"
           >
             <option value="settings">Settings</option>
             <option value="orders">Orders</option>
