@@ -45,21 +45,21 @@ export const AuthContextProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const fetchOrders = async () => {
-    try {
-      if (user) {
-        const res = await axios.get(`${VITE_PLACE_ORDER_URL}/me`, {
-          withCredentials: true,
-        });
-
-        setOrders(res.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        if (user) {
+          const res = await axios.get(`${VITE_PLACE_ORDER_URL}/me`, {
+            withCredentials: true,
+          });
+
+          setOrders(res.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    
     fetchOrders();
   }, [user]);
 

@@ -483,7 +483,7 @@ const TabContent = ({
                         {new Intl.NumberFormat("en-US", {
                           style: "currency",
                           currency: "USD",
-                        }).format(order.totalAmount)}
+                        }).format(order.totalAmount / 100)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {order.status}
@@ -566,7 +566,7 @@ const TabContent = ({
                         {new Intl.NumberFormat("en-US", {
                           style: "currency",
                           currency: "USD",
-                        }).format(order.totalAmount)}
+                        }).format(order.totalAmount / 100)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {/* {order.status} */} success
@@ -611,7 +611,11 @@ const TabContent = ({
                       Home
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {`${order.shippingDetails.address.substring(0, 20)}..., ${order.shippingDetails.city}, ${order.shippingDetails.country}, ${order.shippingDetails.zipCode}`}
+                      {`${order.shippingDetails.address.substring(0, 20)}..., ${
+                        order.shippingDetails.city
+                      }, ${order.shippingDetails.country}, ${
+                        order.shippingDetails.zipCode
+                      }`}
                     </p>
                   </div>
                   <button className="text-sm text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium">

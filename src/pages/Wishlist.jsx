@@ -166,14 +166,16 @@ export default function WishlistPage() {
                 <p className="font-inter text-base text-gray-700 dark:text-gray-300 mt-2">
                   Start adding your favorites now!
                 </p>
-                <motion.button
-                  className="mt-6 py-3 px-6 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center mx-auto space-x-2"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <span>Browse Products</span>
-                  <ArrowRight className="w-5 h-5" />
-                </motion.button>
+                <Link to="/shop">
+                  <motion.button
+                    className="mt-6 py-3 px-6 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center mx-auto space-x-2"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <span>Browse Products</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </motion.button>
+                </Link>
               </motion.div>
             ) : (
               <motion.div
