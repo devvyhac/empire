@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useState, useContext } from "react";
 import { Heart, ShoppingBag } from "lucide-react";
 import { toast } from "react-toastify";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
@@ -49,22 +49,22 @@ export const ProductCard = ({ product }) => {
 
   return (
     <motion.div
-      className="relative bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg flex flex-col group overflow-hidden"
-      whileHover={{ y: -5, scale: 1.02 }}
+      className="relative bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700/80 rounded-2xl shadow-sm hover:shadow-md flex flex-col group overflow-hidden transition-all duration-300"
+      whileHover={{ y: -4, scale: 1.01 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
       {/* Discount/Special Tag */}
       {product?.tag && (
         <span
-          className={`absolute top-4 left-4 z-10 text-white text-xs font-bold px-2 py-1 rounded-full ${
-            product.tag === "-50%" ? "bg-red-500" : "bg-[#ff69b4]"
+          className={`absolute top-3.5 left-3.5 z-10 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm ${
+            product.tag === "-50%" ? "bg-red-500" : "bg-indigo-600"
           }`}
         >
           {product.tag}
         </span>
       )}
 
-      {/* Wishlist Button - now toggles fill on click */}
+      {/* Wishlist Button */}
       <motion.button
         onClick={() => {
           if (isWishlisted) {
@@ -73,22 +73,25 @@ export const ProductCard = ({ product }) => {
             addToWishlist(product);
           }
         }}
-        className={`absolute top-4 right-4 z-10 p-1 flex items-center justify-center transition-colors ${
-          isWishlisted ? "text-red-500" : "text-gray-500 dark:text-gray-400"
+        className={`absolute top-3.5 right-3.5 z-10 p-2 rounded-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-sm flex items-center justify-center transition-colors ${
+          isWishlisted
+            ? "text-red-500"
+            : "text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400"
         }`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
+        aria-label="Toggle wishlist"
       >
         <Heart
-          className="w-6 h-6"
+          className="w-4 h-4"
           fill={isWishlisted ? "currentColor" : "none"}
         />
       </motion.button>
 
-      {/* Image with zoom effect */}
+      {/* Product Image with Zoom Preview */}
       <div
         onClick={() => navigate(`/product/${product?._id || product?.id}`)}
-        className="relative w-full h-48 overflow-hidden rounded-t-xl mb-4 cursor-pointer"
+        className="relative w-full h-52 sm:h-48 overflow-hidden bg-gray-100 dark:bg-gray-900 cursor-pointer"
       >
         <motion.img
           src={imageUrl}
@@ -96,42 +99,62 @@ export const ProductCard = ({ product }) => {
           className="w-full h-full object-cover"
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.3 }}
+          loading="lazy"
         />
       </div>
 
-      {/* Product Info - always visible title and category */}
-      <div className="px-4 pt-0 pb-4">
-        <h3 className="font-poppins text-lg font-semibold text-gray-900 dark:text-gray-100">
-          {product?.name}
-        </h3>
-        <p className="font-inter text-sm text-gray-500 dark:text-gray-400 mt-1">
-          {categoryName}
-        </p>
+      {/* Product Info: Title, Category, Price & Mobile Add-to-Cart Icon */}
+      <div className="p-4 flex flex-col justify-between flex-grow">
+        <div>
+          <h3
+            onClick={() => navigate(`/product/${product?._id || product?.id}`)}
+            className="font-poppins text-base font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer transition-colors line-clamp-1"
+          >
+            {product?.name}
+          </h3>
+          <p className="font-inter text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            {categoryName}
+          </p>
+        </div>
 
-        {/* Price Display - fades out on hover */}
-        <div className="flex items-center space-x-2 my-2 transition-opacity duration-300 group-hover:opacity-0">
-          {product?.discountPrice ? (
-            <>
-              <p className="font-inter text-xl font-bold text-gray-900 dark:text-gray-100">
-                ${Number(product.discountPrice).toFixed(2)}
+        {/* Price Row + Mobile Cart Action */}
+        <div className="flex items-center justify-between mt-3">
+          {/* Price Display */}
+          <div className="flex items-baseline space-x-1.5 transition-opacity duration-300 md:group-hover:opacity-0">
+            {product?.discountPrice ? (
+              <>
+                <p className="font-inter text-lg font-bold text-gray-900 dark:text-gray-100">
+                  ${Number(product.discountPrice).toFixed(2)}
+                </p>
+                <p className="font-inter text-xs text-gray-400 dark:text-gray-500 line-through">
+                  ${Number(product.originalPrice).toFixed(2)}
+                </p>
+              </>
+            ) : (
+              <p className="font-inter text-lg font-bold text-gray-900 dark:text-gray-100">
+                ${Number(price).toFixed(2)}
               </p>
-              <p className="font-inter text-sm text-gray-400 dark:text-gray-500 line-through">
-                ${Number(product.originalPrice).toFixed(2)}
-              </p>
-            </>
-          ) : (
-            <p className="font-inter text-xl font-bold text-gray-900 dark:text-gray-100">
-              ${Number(price).toFixed(2)}
-            </p>
-          )}
+            )}
+          </div>
+
+          {/* Mobile-Only Always-Visible Add to Cart Icon Button */}
+          <motion.button
+            onClick={handleAddToCart}
+            className="md:hidden p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white transition-colors shadow-sm flex items-center justify-center border border-indigo-200/50 dark:border-indigo-800/50"
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
+            aria-label="Add to cart"
+          >
+            <ShoppingBag className="w-4 h-4" />
+          </motion.button>
         </div>
       </div>
 
-      {/* Buy and Add to Cart Buttons - hidden by default, slides up on hover */}
-      <div className="absolute inset-x-0 bottom-0 px-4 pb-4 pt-2 flex space-x-2 bg-gray-50/95 dark:bg-gray-800/95 backdrop-blur-sm transition-all duration-300 transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto">
+      {/* Desktop-Only Slide-Up Action Bar on Hover (Buy Button with Price + Cart Button) */}
+      <div className="hidden md:flex absolute inset-x-0 bottom-0 p-4 pt-2 space-x-2 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm transition-all duration-300 transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto">
         <motion.button
           onClick={handleBuy}
-          className="w-full py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center text-sm font-medium transition-colors shadow-sm"
+          className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center text-sm font-medium transition-colors shadow-sm"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -142,7 +165,7 @@ export const ProductCard = ({ product }) => {
         </motion.button>
         <motion.button
           onClick={handleAddToCart}
-          className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 transition-colors shadow-sm flex items-center justify-center"
+          className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 transition-colors shadow-sm flex items-center justify-center shrink-0"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           aria-label="Add to cart"
@@ -156,10 +179,12 @@ export const ProductCard = ({ product }) => {
 
 // Skeleton loader component
 export const SkeletonCard = () => (
-  <div className="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden p-4 animate-pulse">
-    <div className="w-full h-48 bg-gray-200 dark:bg-gray-700 rounded-t-xl mb-4"></div>
-    <div className="h-6 w-3/4 bg-gray-200 dark:bg-gray-700 rounded-md mb-2"></div>
+  <div className="bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700/80 rounded-2xl shadow-sm overflow-hidden p-4 animate-pulse">
+    <div className="w-full h-48 bg-gray-200 dark:bg-gray-700 rounded-xl mb-4"></div>
+    <div className="h-5 w-3/4 bg-gray-200 dark:bg-gray-700 rounded-md mb-2"></div>
     <div className="h-4 w-1/2 bg-gray-200 dark:bg-gray-700 rounded-md"></div>
     <div className="h-4 w-2/3 bg-gray-200 dark:bg-gray-700 rounded-md mt-4"></div>
   </div>
 );
+
+export default ProductCard;
