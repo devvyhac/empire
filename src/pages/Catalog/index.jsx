@@ -179,18 +179,18 @@ const Catalog = () => {
         </div>
 
         {/* Sort Dropdown */}
-        <div className="relative w-full md:w-auto">
+        <div className="relative w-full md:w-auto min-w-[200px]">
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className="w-full py-2 pl-4 pr-10 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none"
+            className="w-full py-2.5 pl-4 pr-10 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer shadow-sm transition-colors"
           >
-            <option value="newness">Sort by: Newest</option>
-            <option value="price_asc">Sort by: Price, Low to High</option>
-            <option value="price_desc">Sort by: Price, High to Low</option>
-            <option value="rating_desc">Sort by: Rating</option>
+            <option value="newness" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Sort by: Newest</option>
+            <option value="price_asc" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Price: Low to High</option>
+            <option value="price_desc" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Price: High to Low</option>
+            <option value="rating_desc" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Highest Rating</option>
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 dark:text-gray-400">
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-500 dark:text-gray-400">
             <ChevronDown className="w-4 h-4" />
           </div>
         </div>

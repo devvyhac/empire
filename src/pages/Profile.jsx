@@ -10,6 +10,7 @@ import {
   Package,
   ReceiptText,
   Banknote,
+  ChevronDown,
 } from "lucide-react";
 
 import { AuthContext } from "../context/AuthContext";
@@ -773,19 +774,24 @@ export default function App() {
           <label htmlFor="tab-select" className="sr-only">
             Select a tab
           </label>
-          <select
-            id="tab-select"
-            value={activeTab}
-            onChange={(e) => setActiveTab(e.target.value)}
-            className="block w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            <option value="settings">Settings</option>
-            <option value="orders">Orders</option>
-            <option value="transactions">Transactions</option>
-            <option value="addresses">Addresses</option>
-            <option value="payments">Payments</option>
-            {lastOrder && <option value="confirmation">Confirmation</option>}
-          </select>
+          <div className="relative">
+            <select
+              id="tab-select"
+              value={activeTab}
+              onChange={(e) => setActiveTab(e.target.value)}
+              className="block w-full py-3 pl-4 pr-10 rounded-xl border border-gray-300 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
+            >
+              <option value="settings" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Settings</option>
+              <option value="orders" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Orders</option>
+              <option value="transactions" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Transactions</option>
+              <option value="addresses" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Addresses</option>
+              <option value="payments" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Payments</option>
+              {lastOrder && <option value="confirmation" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Confirmation</option>}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-500 dark:text-gray-400">
+              <ChevronDown className="w-4 h-4" />
+            </div>
+          </div>
         </div>
 
         {/* Tab Content */}

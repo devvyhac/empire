@@ -47,3 +47,25 @@ body {
   background-color: #0b0f14;
   color: #f1f5f9;
 }
+
+/* ================= GLOBAL FORM SELECT & OPTION STYLES ================= */
+select {
+  cursor: pointer;
+}
+
+select option {
+  background-color: #ffffff;
+  color: #0f172a;
+  padding: 10px 14px;
+}
+
+.dark select option {
+  background-color: #111820;
+  color: #f1f5f9;
+}
+
+.dark select option:checked {
+  background-color: #17212b;
+  color: #3b82f6;
+  font-weight: 600;
+}
