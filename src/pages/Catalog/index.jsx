@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -7,6 +8,7 @@ import {
   ChevronLeft,
   ChevronDown,
   X,
+  Package,
 } from "lucide-react";
 
 import { ProductCard, SkeletonCard } from "../../components/common/Card.jsx";

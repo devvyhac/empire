@@ -100,7 +100,7 @@ export default function HomePage() {
   const touchEndX = useRef(0);
   const navigate = useNavigate();
 
-  const { products, loading } = useContext(ProductContext);
+  const { products = [], productLoading = false } = useContext(ProductContext) || {};
 
   // Carousel autoplay logic
   useEffect(() => {
@@ -322,7 +322,7 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {loading ? (
+            {productLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(6)].map((_, i) => (
                   <SkeletonCard key={i} />
