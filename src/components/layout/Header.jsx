@@ -8,6 +8,7 @@ import { AuthContext } from "../../context/AuthContext.jsx";
 import { CartContext } from "../../context/CartContext.jsx";
 import { WishlistContext } from "../../context/WishlistContext.jsx";
 import ThemeToggle from "../common/ThemeToggle.jsx";
+import Logo from "../common/Logo.jsx";
 import { toast } from "react-toastify";
 const { VITE_LOGOUT_URL } = import.meta.env;
 
@@ -25,7 +26,6 @@ import {
   Menu,
   X,
   Search,
-  TruckElectric,
   ChevronRight,
   Sparkles,
 } from "lucide-react";
@@ -91,17 +91,10 @@ const Header = () => {
         <div className="flex items-center space-x-8">
           <Link
             to="/"
-            className="flex items-center space-x-2.5 group transition-transform duration-200"
+            className="flex items-center group transition-transform duration-200 hover:opacity-95"
+            aria-label="Empire Home"
           >
-            <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/70 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-105 transition-transform">
-              <TruckElectric className="w-5 h-5" />
-            </div>
-            <span
-              id="logo"
-              className="font-poppins text-2xl font-bold text-gray-900 dark:text-white"
-            >
-              Empire
-            </span>
+            <Logo iconClassName="w-8 h-8" textClassName="text-2xl font-bold" />
           </Link>
 
           {/* Navigation Links (Desktop) */}
@@ -248,16 +241,8 @@ const Header = () => {
             >
               {/* Top Drawer Header (Fixed) */}
               <div className="shrink-0 p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50/50 dark:bg-gray-900/50">
-                <div className="flex items-center space-x-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/70 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-                    <TruckElectric className="w-4 h-4" />
-                  </div>
-                  <span
-                    id="logo"
-                    className="font-poppins text-2xl font-bold text-gray-900 dark:text-white"
-                  >
-                    Empire
-                  </span>
+                <div className="flex items-center">
+                  <Logo iconClassName="w-7 h-7" textClassName="text-xl font-bold" />
                 </div>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}

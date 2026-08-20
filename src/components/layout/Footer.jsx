@@ -13,9 +13,9 @@ import {
   Apple,
   Lock,
   Sparkles,
-  TruckElectric,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import Logo from "../common/Logo.jsx";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -35,12 +35,12 @@ const Footer = () => {
           {/* Branding Section */}
           <div className="lg:col-span-2">
             <Link to="/" className="inline-block mb-4">
-              <div className="flex items-center space-x-2">
-                <TruckElectric className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
-                <span id="logo" className="font-poppins text-2xl font-bold">
-                  Empire
-                </span>
-              </div>
+              <Logo
+                showTagline={true}
+                iconClassName="w-10 h-10"
+                textClassName="text-2xl font-bold text-white"
+                taglineClassName="text-[8.5px] tracking-[0.25em] font-semibold mt-1"
+              />
             </Link>
             <p className="text-sm leading-relaxed mb-4">
               Your one-stop shop for quality products.

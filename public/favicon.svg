@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 150" fill="none">
+  <defs>
+    <linearGradient id="favCartFrame" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00A3FF" />
+      <stop offset="40%" stop-color="#0066FF" />
+      <stop offset="80%" stop-color="#7C3AED" />
+      <stop offset="100%" stop-color="#A855F7" />
+    </linearGradient>
+    <linearGradient id="favBasket" x1="0%" y1="0%" x2="100%" y2="60%">
+      <stop offset="0%" stop-color="#0084FF" />
+      <stop offset="45%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#A855F7" />
+    </linearGradient>
+    <linearGradient id="favSpeed1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#00A3FF" />
+    </linearGradient>
+    <linearGradient id="favSpeed2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#00A3FF" />
+    </linearGradient>
+    <linearGradient id="favSpeed3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#00A3FF" />
+    </linearGradient>
+    <linearGradient id="favLeftWheel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00C6FF" />
+      <stop offset="100%" stop-color="#0066FF" />
+    </linearGradient>
+    <linearGradient id="favRightWheel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#C084FC" />
+    </linearGradient>
+  </defs>
+
+  <line x1="6" y1="52" x2="38" y2="52" stroke="url(#favSpeed1)" stroke-width="6" stroke-linecap="round" />
+  <line x1="16" y1="70" x2="48" y2="70" stroke="url(#favSpeed2)" stroke-width="6" stroke-linecap="round" />
+  <line x1="26" y1="88" x2="52" y2="88" stroke="url(#favSpeed3)" stroke-width="6" stroke-linecap="round" />
+
+  <path d="M 18 36 L 44 36 C 50 36 54 40 56 46 L 70 88 C 72 94 77 98 83 98 L 132 98" fill="none" stroke="url(#favCartFrame)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+
+  <path d="M 66 48 L 138 48 C 143 48 146 51 146 55.5 C 146 60 143 63 138 63 L 112 63 L 97 90 C 95 94 91 96 87 96 L 81 96 C 77 96 74 92 76 88 L 87 63 L 66 63 C 62 63 59 60 59 55.5 C 59 51 62 48 66 48 Z" fill="url(#favBasket)" />
+
+  <circle cx="68" cy="120" r="11" fill="url(#favLeftWheel)" />
+  <circle cx="122" cy="120" r="11" fill="url(#favRightWheel)" />
+</svg>
