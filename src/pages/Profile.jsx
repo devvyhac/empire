@@ -181,12 +181,22 @@ export default function ProfileDashboard() {
     return "EM";
   }, [user, displayName]);
 
-  // Combined orders list
+  // Combined orders list sorted by date (most recent to oldest)
   const ordersList = useMemo(() => {
-    if (Array.isArray(apiOrders) && apiOrders.length > 0) {
-      return apiOrders;
-    }
-    return defaultMockOrders;
+    const list =
+      Array.isArray(apiOrders) && apiOrders.length > 0
+        ? [...apiOrders]
+        : [...defaultMockOrders];
+
+    return list.sort((a, b) => {
+      const dateA = new Date(
+        a.updatedAt || a.createdAt || a.date || 0
+      ).getTime();
+      const dateB = new Date(
+        b.updatedAt || b.createdAt || b.date || 0
+      ).getTime();
+      return dateB - dateA;
+    });
   }, [apiOrders]);
 
   // Profile Form State
