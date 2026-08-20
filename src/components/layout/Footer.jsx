@@ -35,12 +35,7 @@ const Footer = () => {
           {/* Branding Section */}
           <div className="lg:col-span-2">
             <Link to="/" className="inline-block mb-4">
-              <Logo
-                showTagline={true}
-                iconClassName="w-10 h-10"
-                textClassName="text-2xl font-bold text-white"
-                taglineClassName="text-[8.5px] tracking-[0.25em] font-semibold mt-1"
-              />
+              <Logo size="lg" showTagline={true} />
             </Link>
             <p className="text-sm leading-relaxed mb-4">
               Your one-stop shop for quality products.

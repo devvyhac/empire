@@ -94,7 +94,7 @@ const Header = () => {
             className="flex items-center group transition-transform duration-200 hover:opacity-95"
             aria-label="Empire Home"
           >
-            <Logo iconClassName="w-8 h-8" textClassName="text-2xl font-bold" />
+            <Logo size="md" showTagline={true} />
           </Link>
 
           {/* Navigation Links (Desktop) */}
@@ -242,7 +242,7 @@ const Header = () => {
               {/* Top Drawer Header (Fixed) */}
               <div className="shrink-0 p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50/50 dark:bg-gray-900/50">
                 <div className="flex items-center">
-                  <Logo iconClassName="w-7 h-7" textClassName="text-xl font-bold" />
+                  <Logo size="sm" showTagline={true} />
                 </div>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}

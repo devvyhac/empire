@@ -1,66 +1,83 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 160" width="100%" height="100%" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 160" width="100%" height="100%" fill="none">
   <defs>
+    <!-- Electric Blue Gradient for Cart Frame -->
     <linearGradient id="logoCartFrame" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#00A3FF" />
-      <stop offset="40%" stop-color="#0066FF" />
-      <stop offset="80%" stop-color="#7C3AED" />
-      <stop offset="100%" stop-color="#A855F7" />
+      <stop offset="35%" stop-color="#0080FF" />
+      <stop offset="70%" stop-color="#0055FF" />
+      <stop offset="100%" stop-color="#0040E0" />
     </linearGradient>
-    <linearGradient id="logoBasket" x1="0%" y1="0%" x2="100%" y2="60%">
-      <stop offset="0%" stop-color="#0084FF" />
-      <stop offset="45%" stop-color="#4F46E5" />
-      <stop offset="100%" stop-color="#A855F7" />
+
+    <!-- Electric Blue Gradient for Infill Basket -->
+    <linearGradient id="logoBasket" x1="0%" y1="0%" x2="100%" y2="70%">
+      <stop offset="0%" stop-color="#00A8FF" />
+      <stop offset="45%" stop-color="#0066FF" />
+      <stop offset="100%" stop-color="#0044DD" />
     </linearGradient>
+
+    <!-- Speed Streaks Gradients -->
     <linearGradient id="logoSpeed1" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.2" />
+      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.1" />
       <stop offset="100%" stop-color="#00A3FF" />
     </linearGradient>
     <linearGradient id="logoSpeed2" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.2" />
+      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.1" />
       <stop offset="100%" stop-color="#00A3FF" />
     </linearGradient>
     <linearGradient id="logoSpeed3" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.2" />
+      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.1" />
       <stop offset="100%" stop-color="#00A3FF" />
     </linearGradient>
-    <linearGradient id="logoLeftWheel" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00C6FF" />
-      <stop offset="100%" stop-color="#0066FF" />
+
+    <!-- Wheel Gradients -->
+    <linearGradient id="logoWheel1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0099FF" />
+      <stop offset="100%" stop-color="#0044DD" />
     </linearGradient>
-    <linearGradient id="logoRightWheel" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#8B5CF6" />
-      <stop offset="100%" stop-color="#C084FC" />
+    <linearGradient id="logoWheel2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0099FF" />
+      <stop offset="100%" stop-color="#0044DD" />
+    </linearGradient>
+
+    <!-- Blue Dot Gradient on the 'i' -->
+    <linearGradient id="logoDotGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00A3FF" />
+      <stop offset="100%" stop-color="#0066FF" />
     </linearGradient>
   </defs>
 
   <!-- Speed Lines -->
-  <line x1="8" y1="52" x2="40" y2="52" stroke="url(#logoSpeed1)" stroke-width="7" stroke-linecap="round" />
-  <line x1="18" y1="72" x2="52" y2="72" stroke="url(#logoSpeed2)" stroke-width="7" stroke-linecap="round" />
-  <line x1="28" y1="92" x2="58" y2="92" stroke="url(#logoSpeed3)" stroke-width="7" stroke-linecap="round" />
+  <line x1="10" y1="56" x2="48" y2="56" stroke="url(#logoSpeed1)" stroke-width="7" stroke-linecap="round" />
+  <line x1="22" y1="78" x2="60" y2="78" stroke="url(#logoSpeed2)" stroke-width="7" stroke-linecap="round" />
+  <line x1="36" y1="100" x2="66" y2="100" stroke="url(#logoSpeed3)" stroke-width="7" stroke-linecap="round" />
 
-  <!-- Cart Frame -->
-  <path d="M 22 36 L 48 36 C 54 36 58 40 60 46 L 74 90 C 76 96 82 100 88 100 L 142 100" fill="none" stroke="url(#logoCartFrame)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- Outer Handle & Base Strut Frame -->
+  <path d="M 28 42 L 56 42 C 62 42 67 46 69 52 L 84 96 C 86 102 92 106 99 106 L 158 106" fill="none" stroke="url(#logoCartFrame)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" />
 
-  <!-- Stylized Basket (E/T Monogram) -->
-  <path d="M 72 48 L 148 48 C 153 48 156 51 156 56 C 156 61 153 64 148 64 L 120 64 L 104 92 C 102 96 98 98 94 98 L 88 98 C 84 98 81 94 83 90 L 95 64 L 72 64 C 67 64 64 61 64 56 C 64 51 67 48 72 48 Z" fill="url(#logoBasket)" />
+  <!-- Stylized Infill Basket / T-Shape -->
+  <path d="M 84 56 L 160 56 C 165 56 169 60 169 65 C 169 70 165 74 160 74 L 132 74 L 118 102 C 116 106 112 108 108 108 L 102 108 C 97 108 94 104 96 99 L 108 74 L 84 74 C 79 74 76 70 76 65 C 76 60 79 56 84 56 Z" fill="url(#logoBasket)" />
 
-  <!-- Wheels -->
-  <circle cx="74" cy="124" r="12" fill="url(#logoLeftWheel)" />
-  <circle cx="132" cy="124" r="12" fill="url(#logoRightWheel)" />
+  <!-- Left and Right Wheels -->
+  <circle cx="84" cy="132" r="13" fill="url(#logoWheel1)" />
+  <circle cx="146" cy="132" r="13" fill="url(#logoWheel2)" />
 
   <!-- Wordmark "Empire" -->
-  <g fill="#F1F5F9" font-family="'Poppins', 'Inter', -apple-system, sans-serif" font-size="78" font-weight="800" letter-spacing="-1">
-    <text x="174" y="98">Emp<tspan fill="#F1F5F9">ı</tspan>re</text>
+  <g fill="#FFFFFF" font-family="'Poppins', 'Inter', -apple-system, sans-serif" font-size="78" font-weight="800" letter-spacing="-0.8">
+    <text x="188" y="104">Emp</text>
+    <!-- Dotless 'ı' stem only -->
+    <text x="354" y="104">ı</text>
+    <text x="375" y="104">re</text>
   </g>
-  <!-- Electric Blue Dot on the 'i' -->
-  <rect x="361" y="38" width="13" height="13" rx="3" fill="#0091FF" />
 
-  <!-- Tagline -->
-  <g font-family="'Inter', 'Poppins', sans-serif" font-size="13" font-weight="700" letter-spacing="4.5">
-    <text x="178" y="132" fill="#38BDF8">SHOP</text>
-    <circle cx="236" cy="128" r="2.5" fill="#38BDF8" />
-    <text x="254" y="132" fill="#A855F7">SELL</text>
-    <circle cx="308" cy="128" r="2.5" fill="#A855F7" />
-    <text x="326" y="132" fill="#38BDF8">GET IT FAST</text>
+  <!-- The ONLY Dot on the 'i' -> Electric Blue Rounded Rectangle -->
+  <rect x="354.5" y="44" width="16" height="15" rx="3.5" fill="url(#logoDotGrad)" />
+
+  <!-- Tagline "SHOP • SELL • GET IT FAST" -->
+  <g font-family="'Inter', 'Poppins', sans-serif" font-size="13" font-weight="700" letter-spacing="4.2" fill="#FFFFFF">
+    <text x="190" y="142">SHOP</text>
+    <circle cx="261" cy="138" r="3.2" fill="#0080FF" />
+    <text x="281" y="142">SELL</text>
+    <circle cx="347" cy="138" r="3.2" fill="#0080FF" />
+    <text x="367" y="142">GET IT FAST</text>
   </g>
 </svg>

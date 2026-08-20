@@ -1,46 +1,49 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 150" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 155" fill="none">
   <defs>
     <linearGradient id="favCartFrame" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#00A3FF" />
-      <stop offset="40%" stop-color="#0066FF" />
-      <stop offset="80%" stop-color="#7C3AED" />
-      <stop offset="100%" stop-color="#A855F7" />
+      <stop offset="35%" stop-color="#0080FF" />
+      <stop offset="70%" stop-color="#0055FF" />
+      <stop offset="100%" stop-color="#0040E0" />
     </linearGradient>
-    <linearGradient id="favBasket" x1="0%" y1="0%" x2="100%" y2="60%">
-      <stop offset="0%" stop-color="#0084FF" />
-      <stop offset="45%" stop-color="#4F46E5" />
-      <stop offset="100%" stop-color="#A855F7" />
+
+    <linearGradient id="favBasket" x1="0%" y1="0%" x2="100%" y2="70%">
+      <stop offset="0%" stop-color="#00A8FF" />
+      <stop offset="45%" stop-color="#0066FF" />
+      <stop offset="100%" stop-color="#0044DD" />
     </linearGradient>
+
     <linearGradient id="favSpeed1" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.2" />
+      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.1" />
       <stop offset="100%" stop-color="#00A3FF" />
     </linearGradient>
     <linearGradient id="favSpeed2" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.2" />
+      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.1" />
       <stop offset="100%" stop-color="#00A3FF" />
     </linearGradient>
     <linearGradient id="favSpeed3" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.2" />
+      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.1" />
       <stop offset="100%" stop-color="#00A3FF" />
     </linearGradient>
-    <linearGradient id="favLeftWheel" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00C6FF" />
-      <stop offset="100%" stop-color="#0066FF" />
+
+    <linearGradient id="favWheel1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0099FF" />
+      <stop offset="100%" stop-color="#0044DD" />
     </linearGradient>
-    <linearGradient id="favRightWheel" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#8B5CF6" />
-      <stop offset="100%" stop-color="#C084FC" />
+    <linearGradient id="favWheel2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0099FF" />
+      <stop offset="100%" stop-color="#0044DD" />
     </linearGradient>
   </defs>
 
-  <line x1="6" y1="52" x2="38" y2="52" stroke="url(#favSpeed1)" stroke-width="6" stroke-linecap="round" />
-  <line x1="16" y1="70" x2="48" y2="70" stroke="url(#favSpeed2)" stroke-width="6" stroke-linecap="round" />
-  <line x1="26" y1="88" x2="52" y2="88" stroke="url(#favSpeed3)" stroke-width="6" stroke-linecap="round" />
+  <line x1="10" y1="56" x2="48" y2="56" stroke="url(#favSpeed1)" stroke-width="7" stroke-linecap="round" />
+  <line x1="22" y1="78" x2="60" y2="78" stroke="url(#favSpeed2)" stroke-width="7" stroke-linecap="round" />
+  <line x1="36" y1="100" x2="66" y2="100" stroke="url(#favSpeed3)" stroke-width="7" stroke-linecap="round" />
 
-  <path d="M 18 36 L 44 36 C 50 36 54 40 56 46 L 70 88 C 72 94 77 98 83 98 L 132 98" fill="none" stroke="url(#favCartFrame)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M 28 42 L 56 42 C 62 42 67 46 69 52 L 84 96 C 86 102 92 106 99 106 L 158 106" fill="none" stroke="url(#favCartFrame)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" />
 
-  <path d="M 66 48 L 138 48 C 143 48 146 51 146 55.5 C 146 60 143 63 138 63 L 112 63 L 97 90 C 95 94 91 96 87 96 L 81 96 C 77 96 74 92 76 88 L 87 63 L 66 63 C 62 63 59 60 59 55.5 C 59 51 62 48 66 48 Z" fill="url(#favBasket)" />
+  <path d="M 84 56 L 160 56 C 165 56 169 60 169 65 C 169 70 165 74 160 74 L 132 74 L 118 102 C 116 106 112 108 108 108 L 102 108 C 97 108 94 104 96 99 L 108 74 L 84 74 C 79 74 76 70 76 65 C 76 60 79 56 84 56 Z" fill="url(#favBasket)" />
 
-  <circle cx="68" cy="120" r="11" fill="url(#favLeftWheel)" />
-  <circle cx="122" cy="120" r="11" fill="url(#favRightWheel)" />
+  <circle cx="84" cy="132" r="13" fill="url(#favWheel1)" />
+  <circle cx="146" cy="132" r="13" fill="url(#favWheel2)" />
 </svg>
