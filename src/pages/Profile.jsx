@@ -260,8 +260,8 @@ export default function ProfileDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50/50 dark:bg-gray-900 font-inter text-gray-900 dark:text-gray-100 py-6 sm:py-10">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl space-y-6 sm:space-y-8">
+    <main className="min-h-screen bg-gray-50/50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200 font-inter py-4 sm:py-8 lg:py-10 px-3.5 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto space-y-5 sm:space-y-8">
         {/* Breadcrumb & Welcome Banner */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-gray-800/90 border border-gray-200/80 dark:border-gray-700/80 rounded-2xl p-5 sm:p-6 shadow-sm">
           <div className="flex items-center space-x-4">
@@ -303,7 +303,7 @@ export default function ProfileDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           {/* Sidebar (3.5 cols) */}
           <aside className="lg:col-span-4 xl:col-span-3">
-            <div className="bg-white dark:bg-gray-800/90 border border-gray-200/80 dark:border-gray-700/80 rounded-2xl shadow-sm p-4 sm:p-5 sticky top-24 space-y-4">
+            <div className="bg-white dark:bg-gray-800/90 border border-gray-200/80 dark:border-gray-700/80 rounded-2xl shadow-sm p-4 sm:p-5 sticky top-[76px] lg:top-[84px] space-y-4">
               {/* Navigation Menu */}
               <div className="space-y-1">
                 <span className="px-3 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
@@ -389,7 +389,7 @@ export default function ProfileDashboard() {
           </aside>
 
           {/* Main Dashboard Content Area (8.5 cols) */}
-          <main className="lg:col-span-8 xl:col-span-9 space-y-6">
+          <section className="lg:col-span-8 xl:col-span-9 space-y-6">
             <AnimatePresence mode="wait">
               {/* TAB 1: OVERVIEW */}
               {activeTab === "overview" && (
@@ -959,9 +959,9 @@ export default function ProfileDashboard() {
                 </motion.div>
               )}
             </AnimatePresence>
-          </main>
+          </section>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
