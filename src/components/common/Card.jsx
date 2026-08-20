@@ -8,7 +8,7 @@ import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
 import { WishlistContext } from "../../context/WishlistContext";
 
-// Reusable ProductCard component with Apple iOS-grade fluid animations
+// Reusable ProductCard component with smooth slide-up hover action
 export const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
@@ -109,10 +109,10 @@ export const ProductCard = ({ product }) => {
           </p>
         </div>
 
-        {/* Price & Action Container - Desktop hover only swaps/covers this row */}
-        <div className="relative mt-3 min-h-[38px] flex items-center">
-          {/* Default Price Row (Mobile: always visible with cart icon. Desktop: smoothly fades on hover) */}
-          <div className="w-full flex items-center justify-between transition-all duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] md:group-hover:opacity-0 md:group-hover:scale-95 md:group-hover:pointer-events-none">
+        {/* Price & Action Container with Slide-Up Animation */}
+        <div className="relative mt-3 min-h-[38px] overflow-hidden flex items-center">
+          {/* Default Price Row: Slides up out of view on desktop hover */}
+          <div className="w-full flex items-center justify-between transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] md:group-hover:-translate-y-full md:group-hover:opacity-0">
             {/* Price Display */}
             <div className="flex items-baseline space-x-1.5">
               {product?.discountPrice ? (
@@ -141,8 +141,8 @@ export const ProductCard = ({ product }) => {
             </button>
           </div>
 
-          {/* Desktop Hover Action: Apple-fluid slide & fade covering ONLY the price line */}
-          <div className="hidden md:flex absolute inset-0 items-center space-x-2 transition-all duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] opacity-0 scale-95 md:group-hover:opacity-100 md:group-hover:scale-100 pointer-events-none md:group-hover:pointer-events-auto">
+          {/* Desktop Hover Action: Slides UP smoothly into view on hover from bottom */}
+          <div className="hidden md:flex absolute inset-0 items-center space-x-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] translate-y-full opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 pointer-events-none md:group-hover:pointer-events-auto">
             <button
               onClick={handleBuy}
               className="flex-1 py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white flex items-center justify-center text-xs font-semibold shadow-sm transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]"
