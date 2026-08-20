@@ -103,7 +103,7 @@ export const ProductCard = ({ product }) => {
         />
       </div>
 
-      {/* Product Info: Title, Category, Price & Mobile Add-to-Cart Icon */}
+      {/* Product Info: Title, Category, and Bottom Action Row */}
       <div className="p-4 flex flex-col justify-between flex-grow">
         <div>
           <h3
@@ -117,61 +117,61 @@ export const ProductCard = ({ product }) => {
           </p>
         </div>
 
-        {/* Price Row + Mobile Cart Action */}
-        <div className="flex items-center justify-between mt-3">
-          {/* Price Display */}
-          <div className="flex items-baseline space-x-1.5 transition-opacity duration-300 md:group-hover:opacity-0">
-            {product?.discountPrice ? (
-              <>
+        {/* Price & Action Container - Desktop hover only swaps/covers this row */}
+        <div className="relative mt-3 min-h-[38px] flex items-center">
+          {/* Default Price Row (Mobile: always visible with cart icon. Desktop: fades on hover) */}
+          <div className="w-full flex items-center justify-between transition-opacity duration-200 md:group-hover:opacity-0 md:group-hover:pointer-events-none">
+            {/* Price Display */}
+            <div className="flex items-baseline space-x-1.5">
+              {product?.discountPrice ? (
+                <>
+                  <p className="font-inter text-lg font-bold text-gray-900 dark:text-gray-100">
+                    ${Number(product.discountPrice).toFixed(2)}
+                  </p>
+                  <p className="font-inter text-xs text-gray-400 dark:text-gray-500 line-through">
+                    ${Number(product.originalPrice).toFixed(2)}
+                  </p>
+                </>
+              ) : (
                 <p className="font-inter text-lg font-bold text-gray-900 dark:text-gray-100">
-                  ${Number(product.discountPrice).toFixed(2)}
+                  ${Number(price).toFixed(2)}
                 </p>
-                <p className="font-inter text-xs text-gray-400 dark:text-gray-500 line-through">
-                  ${Number(product.originalPrice).toFixed(2)}
-                </p>
-              </>
-            ) : (
-              <p className="font-inter text-lg font-bold text-gray-900 dark:text-gray-100">
-                ${Number(price).toFixed(2)}
-              </p>
-            )}
+              )}
+            </div>
+
+            {/* Mobile-Only Always-Visible Add to Cart Rounded Icon Button */}
+            <motion.button
+              onClick={handleAddToCart}
+              className="md:hidden w-9 h-9 rounded-full bg-indigo-600 hover:bg-indigo-700 active:scale-90 text-white shadow-md flex items-center justify-center transition-all duration-200"
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.92 }}
+              aria-label="Add to cart"
+            >
+              <ShoppingCart className="w-4 h-4" />
+            </motion.button>
           </div>
 
-          {/* Mobile-Only Always-Visible Add to Cart Rounded Icon Button */}
-          <motion.button
-            onClick={handleAddToCart}
-            className="md:hidden w-9 h-9 rounded-full bg-indigo-600 hover:bg-indigo-700 active:scale-90 text-white shadow-md flex items-center justify-center transition-all duration-200"
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.92 }}
-            aria-label="Add to cart"
-          >
-            <ShoppingCart className="w-4 h-4" />
-          </motion.button>
+          {/* Desktop Hover Action: Covers ONLY this price line without obscuring title or category */}
+          <div className="hidden md:flex absolute inset-0 items-center space-x-2 transition-all duration-200 opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 pointer-events-none group-hover:pointer-events-auto">
+            <motion.button
+              onClick={handleBuy}
+              className="flex-1 py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center text-xs font-semibold transition-colors shadow-sm"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Buy <span className="ml-1 font-bold">${Number(price).toFixed(2)}</span>
+            </motion.button>
+            <motion.button
+              onClick={handleAddToCart}
+              className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white text-gray-700 dark:text-gray-200 transition-colors shadow-sm flex items-center justify-center shrink-0"
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.92 }}
+              aria-label="Add to cart"
+            >
+              <ShoppingCart className="w-3.5 h-3.5" />
+            </motion.button>
+          </div>
         </div>
-      </div>
-
-      {/* Desktop-Only Slide-Up Action Bar on Hover (Buy Button with Price + Rounded Cart Button) */}
-      <div className="hidden md:flex absolute inset-x-0 bottom-0 p-4 pt-2 space-x-2 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm transition-all duration-300 transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto">
-        <motion.button
-          onClick={handleBuy}
-          className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center text-sm font-medium transition-colors shadow-sm"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          Buy{" "}
-          <span className="ml-1.5 font-bold">
-            ${Number(price).toFixed(2)}
-          </span>
-        </motion.button>
-        <motion.button
-          onClick={handleAddToCart}
-          className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white text-gray-700 dark:text-gray-200 transition-colors shadow-sm flex items-center justify-center shrink-0"
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.92 }}
-          aria-label="Add to cart"
-        >
-          <ShoppingCart className="w-4 h-4" />
-        </motion.button>
       </div>
     </motion.div>
   );
