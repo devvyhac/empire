@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useContext } from "react";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingCart } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -137,20 +137,20 @@ export const ProductCard = ({ product }) => {
             )}
           </div>
 
-          {/* Mobile-Only Always-Visible Add to Cart Icon Button */}
+          {/* Mobile-Only Always-Visible Add to Cart Rounded Icon Button */}
           <motion.button
             onClick={handleAddToCart}
-            className="md:hidden p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white transition-colors shadow-sm flex items-center justify-center border border-indigo-200/50 dark:border-indigo-800/50"
+            className="md:hidden w-9 h-9 rounded-full bg-indigo-600 hover:bg-indigo-700 active:scale-90 text-white shadow-md flex items-center justify-center transition-all duration-200"
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.92 }}
             aria-label="Add to cart"
           >
-            <ShoppingBag className="w-4 h-4" />
+            <ShoppingCart className="w-4 h-4" />
           </motion.button>
         </div>
       </div>
 
-      {/* Desktop-Only Slide-Up Action Bar on Hover (Buy Button with Price + Cart Button) */}
+      {/* Desktop-Only Slide-Up Action Bar on Hover (Buy Button with Price + Rounded Cart Button) */}
       <div className="hidden md:flex absolute inset-x-0 bottom-0 p-4 pt-2 space-x-2 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm transition-all duration-300 transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto">
         <motion.button
           onClick={handleBuy}
@@ -165,12 +165,12 @@ export const ProductCard = ({ product }) => {
         </motion.button>
         <motion.button
           onClick={handleAddToCart}
-          className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 transition-colors shadow-sm flex items-center justify-center shrink-0"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white text-gray-700 dark:text-gray-200 transition-colors shadow-sm flex items-center justify-center shrink-0"
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
           aria-label="Add to cart"
         >
-          <ShoppingBag className="w-5 h-5" />
+          <ShoppingCart className="w-4 h-4" />
         </motion.button>
       </div>
     </motion.div>
