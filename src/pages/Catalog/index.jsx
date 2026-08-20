@@ -149,60 +149,96 @@ const Catalog = () => {
   const totalFilteredItems = products.length;
 
   return (
-    <div className="container mx-auto min-h-screen bg-white dark:bg-gray-900 font-inter sm:px-4 text-gray-900 dark:text-gray-100">
-      {/* Sticky Search Bar */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
-        <div className="flex items-center w-full md:w-auto">
-          <h1 className="font-poppins text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 flex-shrink-0">
-            <span className="text-base text-gray-400">Home/ </span>Catalog
-          </h1>
-          {/* Mobile Filter Button */}
-          <motion.button
-            onClick={() => setIsFiltersModalOpen(true)}
-            className="md:hidden ml-4 p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <SlidersHorizontal className="w-5 h-5" />
-          </motion.button>
-        </div>
+    <div className="min-h-screen bg-white dark:bg-gray-900 font-inter text-gray-900 dark:text-gray-100 py-6 sm:py-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Top Header / Search / Sort Bar */}
+        <div className="bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700/80 rounded-2xl shadow-sm p-4 sm:p-5 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center justify-between w-full md:w-auto">
+            <div>
+              <nav
+                aria-label="Breadcrumb"
+                className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-0.5 flex items-center space-x-1.5"
+              >
+                <Link
+                  to="/"
+                  className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                >
+                  Home
+                </Link>
+                <span>/</span>
+                <span className="text-gray-700 dark:text-gray-300">Catalog</span>
+              </nav>
+              <h1 className="font-poppins text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                All Products
+              </h1>
+            </div>
+            {/* Mobile Filter Button */}
+            <motion.button
+              onClick={() => setIsFiltersModalOpen(true)}
+              className="md:hidden flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-gray-100 dark:bg-gray-700/80 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-medium transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              <span>Filters</span>
+            </motion.button>
+          </div>
 
-        <div className="relative w-full md:w-1/2 lg:w-1/3">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+            {/* Search Input */}
+            <div className="relative w-full sm:w-64 md:w-72">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" />
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-colors"
+              />
+            </div>
 
-        {/* Sort Dropdown */}
-        <div className="relative w-full md:w-auto min-w-[200px]">
-          <select
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
-            className="w-full py-2.5 pl-4 pr-10 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer shadow-sm transition-colors"
-          >
-            <option value="newness" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Sort by: Newest</option>
-            <option value="price_asc" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Price: Low to High</option>
-            <option value="price_desc" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Price: High to Low</option>
-            <option value="rating_desc" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Highest Rating</option>
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-500 dark:text-gray-400">
-            <ChevronDown className="w-4 h-4" />
+            {/* Sort Dropdown */}
+            <div className="relative w-full sm:w-auto min-w-[190px]">
+              <select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+                className="w-full py-2.5 pl-4 pr-10 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer shadow-sm transition-colors"
+              >
+                <option value="newness" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Sort by: Newest</option>
+                <option value="price_asc" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Price: Low to High</option>
+                <option value="price_desc" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Price: High to Low</option>
+                <option value="rating_desc" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-1">Highest Rating</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-500 dark:text-gray-400">
+                <ChevronDown className="w-4 h-4" />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex flex-col md:flex-row p-4  mx-auto">
-        {/* Filter Sidebar - Desktop */}
-        <aside className="hidden md:block w-[200px] md:w-1/4 lg:w-1/4 md:pr-8">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg sticky top-24">
-            <h2 className="font-poppins text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-              Filters
-            </h2>
+        <div className="flex flex-col md:flex-row gap-8 items-start w-full">
+          {/* Filter Sidebar - Desktop */}
+          <aside className="hidden md:block w-64 lg:w-72 shrink-0">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700/80 p-6 rounded-2xl shadow-sm sticky top-24 space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="font-poppins text-xl font-bold text-gray-900 dark:text-gray-100">
+                  Filters
+                </h2>
+                <button
+                  onClick={() =>
+                    setFilters({
+                      category: "All",
+                      priceRange: [0, 1000],
+                      brand: "All",
+                      rating: 0,
+                      inStock: false,
+                    })
+                  }
+                  className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
+                >
+                  Reset
+                </button>
+              </div>
 
             <FilterSection
               title="Category"
@@ -516,6 +552,7 @@ const Catalog = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 };

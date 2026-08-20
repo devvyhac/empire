@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Copy, Facebook, Instagram, Twitter } from "lucide-react";
+import { ArrowRight, Copy, Sparkles, ChevronRight } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
 
 import { AuthContext } from "../context/AuthContext";
 import { ProductContext } from "../context/ProductContext";
 import { CartContext } from "../context/CartContext";
-import { toast } from "react-toastify";
+import { ProductCard, SkeletonCard } from "../components/common/Card";
 
 const mockData = {
   featuredProducts: [
@@ -64,104 +65,42 @@ const mockData = {
   },
 };
 
-const ProductCard = ({ product, addToCart }) => {
-  const imageUrl =
-    product?.images?.[0]?.url ||
-    product?.image ||
-    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&fit=crop";
-
-  const price =
-    product?.discountedPrice ?? product?.discountPrice ?? product?.originalPrice ?? 0;
-
+const CategoryCard = ({ category }) => {
+  const navigate = useNavigate();
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden text-left"
+      transition={{ duration: 0.4 }}
+      onClick={() => navigate("/shop")}
+      className="relative w-full h-52 rounded-2xl overflow-hidden group cursor-pointer shadow-sm border border-gray-200/80 dark:border-gray-700/80 bg-gray-100 dark:bg-gray-800"
+      whileHover={{ y: -4, scale: 1.02 }}
     >
       <img
-        src={imageUrl}
-        alt={product?.altText || product?.name || "Product"}
-        className="w-full h-48 object-cover object-center"
+        src={category.image}
+        alt={category.name}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         loading="lazy"
       />
-      <div className="p-4">
-        <h3 className="text-lg font-poppins font-bold text-gray-900 dark:text-gray-100">
-          {product?.name}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-5 transition-opacity duration-300">
+        <h3 className="text-xl font-poppins font-bold text-white drop-shadow-sm flex items-center justify-between">
+          <span>{category.name}</span>
+          <ChevronRight className="w-5 h-5 text-white/80 group-hover:translate-x-1 transition-transform" />
         </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          {product?.sku || "SKU-001"}
-        </p>
-        <div className="flex items-center justify-between mt-2">
-          <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
-            ${Number(price).toFixed(2)}
-          </span>
-          <div className="flex items-center">
-            <span className="text-yellow-400">★★★★</span>
-            <span className="text-gray-400">★</span>
-            <span className="ml-1 text-sm text-gray-500 dark:text-gray-400">
-              4.5
-            </span>
-          </div>
-        </div>
-        <button
-          onClick={() => {
-            addToCart(product);
-            toast.success("Product added to cart!");
-          }}
-          className="mt-4 w-full py-2 px-4 rounded-full text-white font-bold bg-indigo-600 hover:bg-indigo-700 transition-colors"
-        >
-          Add to Cart
-        </button>
       </div>
     </motion.div>
   );
 };
 
-const CategoryCard = ({ category }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.9 }}
-    whileInView={{ opacity: 1, scale: 1 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.5 }}
-    className="relative w-full h-48 rounded-xl overflow-hidden group cursor-pointer shadow-md"
-    whileHover={{ scale: 1.05 }}
-  >
-    <img
-      src={category.image}
-      alt={category.name}
-      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-      loading="lazy"
-    />
-    <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 group-hover:bg-opacity-60">
-      <h3 className="text-2xl font-poppins font-bold text-white drop-shadow-md">
-        {category.name}
-      </h3>
-    </div>
-  </motion.div>
-);
-
-const SocialIcon = ({ icon: Icon, href }) => (
-  <a
-    href={href}
-    className="text-secondary-light dark:text-secondary-dark hover:text-white transition-colors"
-  >
-    <Icon className="w-6 h-6" />
-  </a>
-);
-
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isNewsletterCollapsed, setIsNewsletterCollapsed] = useState(false);
   const [copied, setCopied] = useState(false);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
+  const navigate = useNavigate();
 
-  const { user } = useContext(AuthContext);
-  const { products } = useContext(ProductContext);
-  const { addToCart } = useContext(CartContext);
+  const { products, loading } = useContext(ProductContext);
 
   // Carousel autoplay logic
   useEffect(() => {
@@ -182,13 +121,11 @@ export default function HomePage() {
   };
   const handleTouchEnd = () => {
     if (touchStartX.current - touchEndX.current > 50) {
-      // Swipe left
       setCurrentSlide(
         (prevSlide) => (prevSlide + 1) % mockData.featuredProducts.length
       );
     }
     if (touchEndX.current - touchStartX.current > 50) {
-      // Swipe right
       setCurrentSlide(
         (prevSlide) =>
           (prevSlide - 1 + mockData.featuredProducts.length) %
@@ -196,12 +133,6 @@ export default function HomePage() {
       );
     }
   };
-
-  // Simulate API calls and analytics
-  useEffect(() => {
-    const link = document.createElement("link");
-    document.head.appendChild(link);
-  }, []);
 
   const handleCopyCode = () => {
     const codeToCopy = mockData.promotions.code;
@@ -213,7 +144,6 @@ export default function HomePage() {
       document.execCommand("copy");
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      console.log("Text copied to clipboard!");
     } catch (err) {
       console.error("Failed to copy text: ", err);
     }
@@ -224,7 +154,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-white dark:bg-gray-900 font-inter text-gray-900 dark:text-gray-100 flex flex-col">
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative w-full h-[80vh] overflow-hidden">
+        <section className="relative w-full h-[75vh] md:h-[82vh] overflow-hidden">
           <div
             className="absolute inset-0 w-full h-full"
             onTouchStart={handleTouchStart}
@@ -235,50 +165,66 @@ export default function HomePage() {
               {mockData.featuredProducts.map(
                 (slide, index) =>
                   currentSlide === index && (
-                    <motion.img
+                    <motion.div
                       key={slide.id}
-                      src={slide.image}
-                      alt={`Slide ${slide.id}`}
-                      className="absolute inset-0 w-full h-full object-cover brightness-75"
+                      className="absolute inset-0 w-full h-full"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ duration: 0.5 }}
-                    />
+                      transition={{ duration: 0.6 }}
+                    >
+                      <img
+                        src={slide.image}
+                        alt={`Slide ${slide.id}`}
+                        className="w-full h-full object-cover brightness-[0.65] dark:brightness-[0.55]"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-transparent to-black/30" />
+                    </motion.div>
                   )
               )}
             </AnimatePresence>
           </div>
-          <div className="relative z-10 container mx-auto flex flex-col items-center justify-center h-full text-center text-white p-4">
+
+          <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center h-full text-center text-white">
             <motion.div
               key={currentSlide}
-              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              initial={{ opacity: 0, y: 30, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 0.7 }}
+              className="max-w-3xl"
             >
-              <h1 className="font-poppins text-4xl md:text-6xl lg:text-7xl font-extrabold leading-tight text-white dark:text-gray-100">
+              <span className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-white/20 dark:bg-gray-800/60 backdrop-blur-md text-white mb-4 border border-white/20">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Featured Collection</span>
+              </span>
+              <h1 className="font-poppins text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight text-white drop-shadow-md">
                 {mockData.featuredProducts[currentSlide].headline}
               </h1>
-              <p className="font-inter text-lg md:text-xl text-white dark:text-gray-300 mt-4 max-w-3xl mx-auto">
+              <p className="font-inter text-base sm:text-lg md:text-xl text-gray-200 dark:text-gray-300 mt-4 max-w-2xl mx-auto">
                 {mockData.featuredProducts[currentSlide].subtext}
               </p>
-              <motion.a
-                href="#"
-                className="inline-flex items-center space-x-2 mt-8 py-4 px-8 rounded-full text-lg font-bold text-black bg-white dark:bg-primary-dark hover:bg-black hover:text-white dark:hover:bg-primary-light transition-colors duration-300 transform hover:scale-105 shadow-lg"
-                whileHover={{ scale: 1.1 }}
+              <motion.button
+                onClick={() => navigate("/shop")}
+                className="inline-flex items-center space-x-2.5 mt-8 py-3.5 px-8 rounded-xl text-base font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-xl"
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <span>{mockData.featuredProducts[currentSlide].ctaText}</span>
                 <ArrowRight className="w-5 h-5" />
-              </motion.a>
+              </motion.button>
             </motion.div>
           </div>
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
+
+          {/* Carousel Dot Indicators */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2.5 z-10">
             {mockData.featuredProducts.map((_, index) => (
               <button
                 key={index}
-                className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                  currentSlide === index ? "bg-indigo-600" : "bg-gray-300"
+                aria-label={`Slide ${index + 1}`}
+                className={`h-2.5 rounded-full transition-all duration-300 ${
+                  currentSlide === index
+                    ? "w-8 bg-indigo-500 shadow-md"
+                    : "w-2.5 bg-white/60 hover:bg-white/90"
                 }`}
                 onClick={() => setCurrentSlide(index)}
               />
@@ -287,15 +233,20 @@ export default function HomePage() {
         </section>
 
         {/* Featured Categories */}
-        <section className="py-16 bg-gray-50 dark:bg-gray-900">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="font-poppins text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-gray-100">
-              Explore Our Collections
-            </h2>
-            <p className="font-inter text-base text-gray-700 dark:text-gray-300 mt-2">
-              Discover products across Electronics, Clothing, and more.
-            </p>
-            <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <section className="py-16 md:py-20 bg-gray-50/50 dark:bg-gray-900/50">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                Categories
+              </span>
+              <h2 className="font-poppins text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
+                Explore Our Collections
+              </h2>
+              <p className="font-inter text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-2">
+                Discover quality products across electronics, apparel, and modern essentials.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
               {mockData.categories.map((category) => (
                 <CategoryCard key={category.id} category={category} />
               ))}
@@ -303,64 +254,90 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Promotions Banner - FIX APPLIED HERE */}
-        <section className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white dark:from-indigo-800 dark:to-purple-800 dark:text-white py-16 lg:py-20 text-center">
+        {/* Promotions Banner */}
+        <section className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 dark:from-blue-900/80 dark:via-indigo-900/80 dark:to-blue-950/90 text-white py-14 sm:py-16 border-y border-indigo-500/20">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="container mx-auto px-4"
+            transition={{ duration: 0.7 }}
+            className="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-2xl"
           >
-            <h2 className="font-poppins text-2xl md:text-4xl font-extrabold">
-              Limited Time Offer!
+            <span className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white/20 backdrop-blur-md mb-3">
+              Limited Offer
+            </span>
+            <h2 className="font-poppins text-2xl sm:text-4xl font-extrabold text-white">
+              Special Discount For You!
             </h2>
-            <p className="font-inter text-base md:text-lg mt-2">
+            <p className="font-inter text-sm sm:text-base text-blue-100 mt-2">
               Use code{" "}
-              <motion.span
-                className="font-bold tracking-widest bg-gray-100 dark:bg-gray-700 text-indigo-600 dark:text-indigo-300 px-3 py-1 rounded-md inline-flex items-center space-x-2 cursor-pointer"
+              <motion.button
+                className="font-mono font-bold tracking-widest bg-white text-indigo-600 dark:bg-gray-800 dark:text-indigo-300 px-3 py-1 rounded-lg inline-flex items-center space-x-1.5 cursor-pointer shadow-sm mx-1.5"
                 onClick={handleCopyCode}
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                title="Click to copy promo code"
               >
                 <span>{mockData.promotions.code}</span>
-                <Copy className="w-4 h-4" />
-              </motion.span>{" "}
+                <Copy className="w-3.5 h-3.5" />
+              </motion.button>{" "}
               {mockData.promotions.message}
             </p>
             <AnimatePresence>
               {copied && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="text-sm mt-4 text-green-300"
+                  exit={{ opacity: 0, y: -8 }}
+                  className="text-xs font-semibold mt-3 text-green-300 bg-green-950/60 inline-block px-3 py-1 rounded-full border border-green-700/50"
                 >
-                  Code copied to clipboard!
+                  Promo code copied to clipboard!
                 </motion.div>
               )}
             </AnimatePresence>
           </motion.div>
         </section>
 
-        {/* New Arrivals */}
-        <section className="py-16 bg-white dark:bg-gray-900">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="font-poppins text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-gray-100">
-              Fresh Arrivals Await
-            </h2>
-            <p className="font-inter text-base text-gray-700 dark:text-gray-300 mt-2">
-              Check out our latest additions.
-            </p>
-            <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-              {(products || []).slice(0, 6).map((product) => (
-                <ProductCard
-                  key={product._id || product.id}
-                  product={product}
-                  addToCart={addToCart}
-                />
-              ))}
+        {/* Fresh Arrivals Section */}
+        <section className="py-16 md:py-20 bg-white dark:bg-gray-900">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                  New In Store
+                </span>
+                <h2 className="font-poppins text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white mt-1">
+                  Fresh Arrivals Await
+                </h2>
+                <p className="font-inter text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
+                  Check out our handpicked latest additions.
+                </p>
+              </div>
+              <Link
+                to="/shop"
+                className="inline-flex items-center space-x-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
+              >
+                <span>View all products</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
+
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <SkeletonCard key={i} />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {(products || []).slice(0, 6).map((product) => (
+                  <ProductCard
+                    key={product._id || product.id}
+                    product={product}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </main>
