@@ -303,85 +303,121 @@ const Header = () => {
                   </span>
                   <div className="mt-2 space-y-1">
                     {/* Wishlist Link */}
-                    <Link
-                      to="/wishlist"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                        page === "/wishlist"
-                          ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-semibold shadow-sm"
-                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70 hover:text-gray-900 dark:hover:text-white"
-                      }`}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <Heart
-                          className={`w-4 h-4 transition-colors ${
-                            page === "/wishlist"
-                              ? "text-indigo-600 dark:text-indigo-400"
-                              : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+                    {(() => {
+                      const isWishlistActive = page === "/wishlist";
+                      return (
+                        <Link
+                          to="/wishlist"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={`group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                            isWishlistActive
+                              ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-semibold shadow-sm"
+                              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70 hover:text-gray-900 dark:hover:text-white"
                           }`}
-                        />
-                        <span>Wishlist</span>
-                      </div>
-                      {wishListQuantity > 0 ? (
-                        <span className="flex items-center justify-center px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full shadow-sm">
-                          {wishListQuantity}
-                        </span>
-                      ) : (
-                        <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      )}
-                    </Link>
+                        >
+                          <div className="flex items-center space-x-3">
+                            <Heart
+                              className={`w-4 h-4 transition-colors ${
+                                isWishlistActive
+                                  ? "text-indigo-600 dark:text-indigo-400"
+                                  : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+                              }`}
+                            />
+                            <span>Wishlist</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            {wishListQuantity > 0 && (
+                              <span className="flex items-center justify-center px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full shadow-sm">
+                                {wishListQuantity}
+                              </span>
+                            )}
+                            {isWishlistActive ? (
+                              <span className="w-1.5 h-4 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+                            ) : (
+                              !wishListQuantity && (
+                                <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                              )
+                            )}
+                          </div>
+                        </Link>
+                      );
+                    })()}
 
                     {/* Cart Link */}
-                    <Link
-                      to="/cart"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                        page === "/cart"
-                          ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-semibold shadow-sm"
-                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70 hover:text-gray-900 dark:hover:text-white"
-                      }`}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <ShoppingCart
-                          className={`w-4 h-4 transition-colors ${
-                            page === "/cart"
-                              ? "text-indigo-600 dark:text-indigo-400"
-                              : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+                    {(() => {
+                      const isCartActive = page === "/cart";
+                      return (
+                        <Link
+                          to="/cart"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={`group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                            isCartActive
+                              ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-semibold shadow-sm"
+                              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70 hover:text-gray-900 dark:hover:text-white"
                           }`}
-                        />
-                        <span>Cart</span>
-                      </div>
-                      {cartQuantity > 0 ? (
-                        <span className="flex items-center justify-center px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full shadow-sm">
-                          {cartQuantity}
-                        </span>
-                      ) : (
-                        <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      )}
-                    </Link>
+                        >
+                          <div className="flex items-center space-x-3">
+                            <ShoppingCart
+                              className={`w-4 h-4 transition-colors ${
+                                isCartActive
+                                  ? "text-indigo-600 dark:text-indigo-400"
+                                  : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+                              }`}
+                            />
+                            <span>Cart</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            {cartQuantity > 0 && (
+                              <span className="flex items-center justify-center px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full shadow-sm">
+                                {cartQuantity}
+                              </span>
+                            )}
+                            {isCartActive ? (
+                              <span className="w-1.5 h-4 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+                            ) : (
+                              !cartQuantity && (
+                                <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                              )
+                            )}
+                          </div>
+                        </Link>
+                      );
+                    })()}
 
                     {/* Profile / Authentication */}
-                    <Link
-                      to={isLoggedIn ? "/profile" : "/login"}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                        page === "/profile" || page === "/login" || page === "/register"
-                          ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-semibold shadow-sm"
-                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70 hover:text-gray-900 dark:hover:text-white"
-                      }`}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <User
-                          className={`w-4 h-4 transition-colors ${
-                            page === "/profile" || page === "/login"
-                              ? "text-indigo-600 dark:text-indigo-400"
-                              : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+                    {(() => {
+                      const isProfileActive =
+                        page === "/profile" ||
+                        page === "/login" ||
+                        page === "/register";
+                      return (
+                        <Link
+                          to={isLoggedIn ? "/profile" : "/login"}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={`group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                            isProfileActive
+                              ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-semibold shadow-sm"
+                              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/70 hover:text-gray-900 dark:hover:text-white"
                           }`}
-                        />
-                        <span>{isLoggedIn ? "My Profile" : "Sign In / Register"}</span>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </Link>
+                        >
+                          <div className="flex items-center space-x-3">
+                            <User
+                              className={`w-4 h-4 transition-colors ${
+                                isProfileActive
+                                  ? "text-indigo-600 dark:text-indigo-400"
+                                  : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+                              }`}
+                            />
+                            <span>{isLoggedIn ? "My Profile" : "Sign In / Register"}</span>
+                          </div>
+                          {isProfileActive ? (
+                            <span className="w-1.5 h-4 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+                          ) : (
+                            <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          )}
+                        </Link>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
