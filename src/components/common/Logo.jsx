@@ -108,7 +108,7 @@ export const Logo = ({
   showText = true,
   showTagline = false,
   className = "",
-  iconClassName = "w-9 h-9",
+  iconClassName = "w-8 h-8",
   textClassName = "text-2xl font-bold",
   taglineClassName = "text-[9px] tracking-[0.25em] font-semibold mt-0.5",
   ...props
@@ -117,21 +117,21 @@ export const Logo = ({
     <div className={`flex items-center space-x-2.5 ${className}`} {...props}>
       <LogoIcon className={iconClassName} />
       {showText && (
-        <div className="flex flex-col leading-none">
-          <div className="flex items-center">
-            <span
-              className={`font-poppins font-bold tracking-tight text-gray-900 dark:text-white ${textClassName}`}
-            >
-              Emp
-              <span className="inline-block relative">
-                i
-                <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-sm bg-[#0091FF] dark:bg-[#38BDF8]" />
-              </span>
-              re
+        <div className="flex flex-col justify-center leading-none">
+          <div
+            className={`font-poppins font-bold tracking-tight text-gray-900 dark:text-white flex items-baseline select-none ${textClassName}`}
+          >
+            <span>Emp</span>
+            <span className="relative inline-flex items-center mx-[0.5px]">
+              {/* Only ONE single dot: the electric blue rounded square */}
+              <span className="absolute -top-[0.28em] left-1/2 -translate-x-1/2 w-[0.24em] h-[0.24em] rounded-[0.06em] bg-[#0091FF] dark:bg-[#38BDF8]" />
+              {/* Dotless 'ı' without any font tittle/dot */}
+              <span className="leading-none">ı</span>
             </span>
+            <span>re</span>
           </div>
           {showTagline && (
-            <div className={`flex items-center space-x-1.5 uppercase ${taglineClassName}`}>
+            <div className={`flex items-center space-x-1.5 uppercase select-none ${taglineClassName}`}>
               <span className="text-[#38BDF8] font-bold">SHOP</span>
               <span className="text-[#38BDF8] font-black">•</span>
               <span className="text-[#A855F7] font-bold">SELL</span>
