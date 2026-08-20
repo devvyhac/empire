@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -26,6 +26,9 @@ const getCategoryName = (item) =>
     : "";
 
 const Catalog = () => {
+  const [searchParams] = useSearchParams();
+  const urlSearch = searchParams.get("search") || "";
+
   const { products: rawProducts = [], productLoading = false } =
     useContext(ProductContext) || {};
 
@@ -41,7 +44,13 @@ const Catalog = () => {
   ];
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(urlSearch);
+
+  useEffect(() => {
+    if (urlSearch) {
+      setSearchQuery(urlSearch);
+    }
+  }, [urlSearch]);
   const [filters, setFilters] = useState({
     category: "All",
     priceRange: [0, 1000],

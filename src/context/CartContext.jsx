@@ -13,23 +13,33 @@ export const CartContextProvider = ({ children }) => {
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
-    // const quantity = cartItems.reduce((total, item) => total + item.quantity, 0);
-    setCartQuantity(cartItems.length);
+    const totalQty = cartItems.reduce(
+      (total, item) => total + (Number(item.quantity) || 1),
+      0
+    );
+    setCartQuantity(totalQty);
   }, [cartItems]);
 
   const addToCart = async (item) => {
-    if (!item || !item._id) {
+    if (!item) {
       console.log("Invalid item! Must provide an item.");
       return;
     }
+    const itemId = item._id || item.id;
+    if (!itemId) {
+      console.log("Invalid item! Item must have an ID.");
+      return;
+    }
 
-    let itemExists = cartItems.find((cartItem) => cartItem._id === item._id);
+    const itemExists = cartItems.find(
+      (cartItem) => (cartItem._id || cartItem.id) === itemId
+    );
 
     if (itemExists) {
       setCartItems((prevItems) =>
         prevItems.map((cartItem) =>
-          cartItem._id === item._id
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+          (cartItem._id || cartItem.id) === itemId
+            ? { ...cartItem, quantity: (Number(cartItem.quantity) || 1) + 1 }
             : cartItem
         )
       );
@@ -40,26 +50,35 @@ export const CartContextProvider = ({ children }) => {
   };
 
   const updateItemQuantity = async (item, newQuantity) => {
-    if (!item || !item._id) {
-      console.log("Invalid item! Must provide an item.");
+    if (!item) return;
+    const itemId = item._id || item.id;
+    if (!itemId) return;
+
+    const parsedQty = parseInt(newQuantity, 10);
+    if (isNaN(parsedQty) || parsedQty < 1) {
+      deleteFromCart(item);
       return;
     }
 
-    let itemExists = cartItems.find((cartItem) => cartItem._id === item._id);
-
-    if (itemExists) {
-      setCartItems((prevItems) =>
-        prevItems.map((cartItem) =>
-          cartItem._id === item._id
-            ? { ...cartItem, quantity: newQuantity }
-            : cartItem
-        )
-      );
-    }
+    setCartItems((prevItems) =>
+      prevItems.map((cartItem) =>
+        (cartItem._id || cartItem.id) === itemId
+          ? { ...cartItem, quantity: Math.min(parsedQty, 99) }
+          : cartItem
+      )
+    );
   };
 
   const deleteFromCart = async (item) => {
-    setCartItems(cartItems.filter((cartItem) => cartItem !== item));
+    if (!item) return;
+    const itemId = item._id || item.id;
+    setCartItems((prevItems) =>
+      prevItems.filter(
+        (cartItem) =>
+          (itemId ? (cartItem._id || cartItem.id) !== itemId : true) &&
+          cartItem !== item
+      )
+    );
   };
 
   const clearCart = async () => {
@@ -68,13 +87,24 @@ export const CartContextProvider = ({ children }) => {
   };
 
   const removeFromCart = async (item) => {
-    if (item.quantity === 1) {
-      setCartItems(cartItems.filter((cartItem) => cartItem !== item));
+    if (!item) return;
+    const itemId = item._id || item.id;
+    const existing = cartItems.find(
+      (cartItem) =>
+        (itemId ? (cartItem._id || cartItem.id) === itemId : false) ||
+        cartItem === item
+    );
+
+    if (!existing) return;
+
+    if ((Number(existing.quantity) || 1) <= 1) {
+      deleteFromCart(item);
     } else {
       setCartItems((prevItems) =>
         prevItems.map((cartItem) =>
-          cartItem._id === item._id
-            ? { ...cartItem, quantity: cartItem.quantity - 1 }
+          (itemId ? (cartItem._id || cartItem.id) === itemId : false) ||
+          cartItem === item
+            ? { ...cartItem, quantity: (Number(cartItem.quantity) || 1) - 1 }
             : cartItem
         )
       );

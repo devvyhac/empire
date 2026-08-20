@@ -42,7 +42,19 @@ function App() {
     <div className="App bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-200">
       <ScrollToTop />
       <Header />
-      <ToastContainer theme={isDarkMode ? "dark" : "light"} />
+      <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable
+        pauseOnHover
+        limit={3}
+        theme={isDarkMode ? "dark" : "light"}
+      />
       <Routes>
         <Route path="/" exact element={<Home />} />
         <Route path="/about" element={<About />} />

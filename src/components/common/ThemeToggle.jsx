@@ -42,9 +42,9 @@ export const ThemeToggle = ({ variant = "icon", className = "" }) => {
       onClick={toggleTheme}
       type="button"
       aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-      className={`relative p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200 overflow-hidden flex items-center justify-center ${className}`}
-      whileHover={{ scale: 1.08 }}
-      whileTap={{ scale: 0.92 }}
+      className={`relative w-10 h-10 rounded-full bg-transparent hover:bg-gray-100/80 dark:hover:bg-gray-800/70 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 overflow-hidden flex items-center justify-center ${className}`}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
     >
       <AnimatePresence mode="wait" initial={false}>
         {isDarkMode ? (

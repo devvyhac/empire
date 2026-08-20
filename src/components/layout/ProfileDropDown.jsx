@@ -28,7 +28,7 @@ const ProfileDropDown = ({ children, isLoggedIn, logout }) => {
 
   return (
     <div
-      className="relative"
+      className="relative flex items-center"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

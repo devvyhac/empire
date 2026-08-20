@@ -38,6 +38,15 @@ const Header = () => {
   const { pathname: page } = location;
   const { user, isLoggedIn, setUserData, setIsLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      setIsMobileMenuOpen(false);
+      navigate(`/shop?search=${encodeURIComponent(searchTerm.trim())}`);
+    }
+  };
 
   const handleLogout = async (e) => {
     try {
@@ -126,28 +135,45 @@ const Header = () => {
         </div>
 
         {/* Search Bar and Icons (Desktop) */}
-        <div className="hidden md:flex items-center space-x-5">
-          <div className="relative w-56 lg:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" />
+        <div className="hidden md:flex items-center space-x-3 lg:space-x-3.5">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="relative w-48 lg:w-60 group/search"
+          >
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center pointer-events-none text-gray-400 dark:text-gray-500 group-focus-within/search:text-indigo-600 dark:group-focus-within/search:text-indigo-400 transition-colors">
+              <Search className="w-4 h-4" />
+            </div>
             <input
               type="text"
               placeholder="Search products..."
-              className="w-full py-1.5 pl-9 pr-4 text-sm rounded-full border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full py-2 pl-10 pr-8 text-xs lg:text-sm rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all shadow-inner"
             />
-          </div>
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => setSearchTerm("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-0.5"
+                aria-label="Clear search"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </form>
 
           <Link
             to="/wishlist"
-            className={`relative p-2 rounded-lg transition-colors ${
+            className={`relative w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 ${
               page === "/wishlist"
                 ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60"
-                : "text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-800/70"
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/80 dark:hover:bg-gray-800/70"
             }`}
             aria-label="Wishlist"
           >
             <Heart className="w-5 h-5" />
             {wishListQuantity > 0 && (
-              <span className="absolute top-0 right-0 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-500 rounded-full shadow-sm">
+              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm ring-2 ring-white dark:ring-gray-900 pointer-events-none">
                 {wishListQuantity}
               </span>
             )}
@@ -155,11 +181,12 @@ const Header = () => {
 
           <ProfileDropDown isLoggedIn={isLoggedIn} logout={handleLogout}>
             <div
-              className={`cursor-pointer p-2 rounded-lg transition-colors ${
+              className={`cursor-pointer w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 ${
                 page === "/profile" || page === "/login"
                   ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60"
-                  : "text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-800/70"
+                  : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/80 dark:hover:bg-gray-800/70"
               }`}
+              aria-label="User Profile"
             >
               <User className="w-5 h-5" />
             </div>
@@ -168,16 +195,16 @@ const Header = () => {
           <CartSummary>
             <Link
               to="/cart"
-              className={`relative p-2 rounded-lg transition-colors ${
+              className={`relative w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 ${
                 page === "/cart"
                   ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60"
-                  : "text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-800/70"
+                  : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/80 dark:hover:bg-gray-800/70"
               }`}
               aria-label="Shopping Cart"
             >
               <ShoppingCart className="w-5 h-5" />
               {cartQuantity > 0 && (
-                <span className="absolute top-0 right-0 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-500 rounded-full shadow-sm">
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm ring-2 ring-white dark:ring-gray-900 pointer-events-none">
                   {cartQuantity}
                 </span>
               )}
@@ -188,20 +215,20 @@ const Header = () => {
         </div>
 
         {/* Mobile Right Action Bar */}
-        <div className="flex md:hidden items-center space-x-2">
+        <div className="flex md:hidden items-center space-x-1.5">
           <ThemeToggle />
           <Link
             to="/cart"
-            className={`relative p-2 rounded-lg transition-colors ${
+            className={`relative w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 ${
               page === "/cart"
                 ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60"
-                : "text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/80 dark:hover:bg-gray-800/70"
             }`}
             aria-label="View Cart"
           >
             <ShoppingCart className="w-5 h-5" />
             {cartQuantity > 0 && (
-              <span className="absolute top-0 right-0 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-500 rounded-full shadow-sm">
+              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm ring-2 ring-white dark:ring-gray-900 pointer-events-none">
                 {cartQuantity}
               </span>
             )}
@@ -209,9 +236,9 @@ const Header = () => {
           <button
             onClick={() => setIsMobileMenuOpen(true)}
             aria-label="Open mobile menu"
-            className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="w-10 h-10 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/80 dark:hover:bg-gray-800/70 transition-colors"
           >
-            <Menu className="w-6 h-6" />
+            <Menu className="w-5 h-5" />
           </button>
         </div>
       </div>
@@ -254,7 +281,31 @@ const Header = () => {
               </div>
 
               {/* Scrollable Nav Content */}
-              <div className="flex-1 overflow-y-auto min-h-0 px-4 py-4 space-y-6">
+              <div className="flex-1 overflow-y-auto min-h-0 px-4 py-4 space-y-5">
+                {/* Search Bar in Mobile Menu */}
+                <form onSubmit={handleSearchSubmit} className="relative group/msearch">
+                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center pointer-events-none text-gray-400 dark:text-gray-500 group-focus-within/msearch:text-indigo-600 dark:group-focus-within/msearch:text-indigo-400 transition-colors">
+                    <Search className="w-4 h-4" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full py-2.5 pl-10 pr-8 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                  />
+                  {searchTerm && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchTerm("")}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1"
+                      aria-label="Clear search"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </form>
+
                 {/* Main Navigation Section */}
                 <div>
                   <span className="px-3 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">

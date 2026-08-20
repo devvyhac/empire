@@ -76,7 +76,7 @@ const CartSummary = ({ children }) => {
 
   return (
     <div
-      className="relative"
+      className="relative flex items-center"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
