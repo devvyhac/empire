@@ -15,6 +15,7 @@ import { ProductCard, SkeletonCard } from "../../components/common/Card.jsx";
 import { CustomCheckbox } from "../../components/common/CustomCheckbox.jsx";
 import { mockColors } from "../../context/mockData.jsx";
 import { ProductContext } from "../../context/ProductContext.jsx";
+import { getProductPrices } from "../../utils/productUtils.js";
 
 import { FilterSection } from "./components/FilterSection.jsx";
 
@@ -90,13 +91,9 @@ const Catalog = () => {
         filters.category === "All" || catName === filters.category;
       const matchesBrand =
         filters.brand === "All" || product?.brand === filters.brand;
-      const price =
-        product?.discountPrice ??
-        product?.discountedPrice ??
-        product?.originalPrice ??
-        0;
+      const { unitPrice } = getProductPrices(product);
       const matchesPrice =
-        price >= filters.priceRange[0] && price <= filters.priceRange[1];
+        unitPrice >= filters.priceRange[0] && unitPrice <= filters.priceRange[1];
       const matchesColor =
         filters.color === "All" ||
         product?.color === filters.color ||
@@ -117,15 +114,13 @@ const Catalog = () => {
       case "price_asc":
         filteredProducts.sort(
           (a, b) =>
-            (a.discountPrice ?? a.originalPrice ?? 0) -
-            (b.discountPrice ?? b.originalPrice ?? 0)
+            getProductPrices(a).unitPrice - getProductPrices(b).unitPrice
         );
         break;
       case "price_desc":
         filteredProducts.sort(
           (a, b) =>
-            (b.discountPrice ?? b.originalPrice ?? 0) -
-            (a.discountPrice ?? a.originalPrice ?? 0)
+            getProductPrices(b).unitPrice - getProductPrices(a).unitPrice
         );
         break;
       case "rating_desc":

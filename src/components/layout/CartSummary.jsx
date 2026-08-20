@@ -4,6 +4,7 @@ import { CartContext } from "../../context/CartContext.jsx";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getProductPrices, getProductImage } from "../../utils/productUtils.js";
 
 // Cart Summary Component"
 
@@ -67,10 +68,10 @@ const CartSummary = ({ children }) => {
     };
   }, []);
 
-  // Calculate the total discountPrice of all items in the cart
+  // Calculate the total price of all items in the cart
   const cartTotal = cartItems.reduce(
     (acc, item) =>
-      acc + (item.discountPrice || item.originalPrice) * item.quantity,
+      acc + getProductPrices(item).unitPrice * (Number(item.quantity) || 1),
     0
   );
 
@@ -103,15 +104,11 @@ const CartSummary = ({ children }) => {
               {cartItems.length > 0 ? (
                 cartItems.map((item, index) => (
                   <li
-                    key={item._id}
+                    key={item._id || item.id || index}
                     className="py-3 flex items-center justify-between"
                   >
                     <img
-                      src={
-                        item?.images?.[0]?.url ||
-                        item?.image ||
-                        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&fit=crop"
-                      }
+                      src={getProductImage(item)}
                       alt={item?.name || "Product"}
                       className="w-12 h-12 object-cover rounded-md mr-3 flex-shrink-0"
                     />
@@ -127,10 +124,7 @@ const CartSummary = ({ children }) => {
 
                     <div className="flex items-center">
                       <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mr-2">
-                        $
-                        {item.discountPrice
-                          ? item.discountPrice.toFixed(2)
-                          : item.originalPrice.toFixed(2)}
+                        ${getProductPrices(item).unitPrice.toFixed(2)}
                       </p>
                       <button
                         onClick={() => removeItem(item)}

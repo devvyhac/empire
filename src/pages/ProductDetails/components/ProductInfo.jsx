@@ -35,6 +35,7 @@ const OutlineButton = ({ children, ...props }) => (
 
 import StarRating from "./StarRating.jsx";
 import { Link } from "react-router-dom";
+import { getProductPrices } from "../../../utils/productUtils.js";
 
 const ProductInfo = ({
   product,
@@ -140,18 +141,33 @@ const ProductInfo = ({
           </span>
           <Link
             to="#reviews"
-            className="text-sm text-primary-light dark:text-primary-dark hover:underline focus:outline-none focus:ring-2 focus:ring-primary-light"
+            className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
-            Read all {7} reviews
+            Read all 7 reviews
           </Link>
         </div>
 
-        <p className="font-inter text-2xl font-bold text-primary-light dark:text-primary-dark">
-          $
-          {product.discountPrice
-            ? product.discountPrice.toFixed(2)
-            : product.originalPrice.toFixed(2)}
-        </p>
+        {(() => {
+          const { unitPrice, originalPrice, hasDiscount } = getProductPrices(product);
+          return (
+            <div className="flex items-baseline space-x-2.5">
+              {hasDiscount ? (
+                <>
+                  <span className="font-poppins text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                    ${unitPrice.toFixed(2)}
+                  </span>
+                  <span className="font-inter text-base text-gray-400 dark:text-gray-500 line-through">
+                    ${originalPrice.toFixed(2)}
+                  </span>
+                </>
+              ) : (
+                <span className="font-poppins text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                  ${unitPrice.toFixed(2)}
+                </span>
+              )}
+            </div>
+          );
+        })()}
 
         {product.variants.map((variant) => (
           <div key={variant.type}>

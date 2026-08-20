@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { CartContext } from "../../../context/CartContext.jsx";
 import { WishlistContext } from "../../../context/WishlistContext.jsx";
+import { getProductPrices, getProductImage } from "../../../utils/productUtils.js";
 
 const CartItem = ({ item }) => {
   const { removeFromCart, addToCart, deleteFromCart, updateItemQuantity } =
@@ -17,19 +18,12 @@ const CartItem = ({ item }) => {
     itemId && wishlistItems?.some((w) => (w._id || w.id) === itemId)
   );
 
-  const unitPrice = Number(
-    item?.discountPrice ?? item?.discountedPrice ?? item?.originalPrice ?? item?.price ?? 0
-  );
-  const originalPrice = Number(item?.originalPrice ?? 0);
-  const hasDiscount = originalPrice > 0 && originalPrice > unitPrice;
-  const savingsPerItem = hasDiscount ? originalPrice - unitPrice : 0;
+  const { unitPrice, originalPrice, hasDiscount, savings: savingsPerItem } =
+    getProductPrices(item);
   const quantity = Math.max(1, Number(item?.quantity) || 1);
   const lineTotal = unitPrice * quantity;
 
-  const imageUrl =
-    item?.images?.[0]?.url ||
-    item?.image ||
-    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&fit=crop";
+  const imageUrl = getProductImage(item);
 
   const categoryName =
     typeof item?.category === "object"

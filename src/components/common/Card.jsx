@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
 import { WishlistContext } from "../../context/WishlistContext";
+import { getProductPrices, getProductImage } from "../../utils/productUtils";
 
 // Reusable ProductCard component with smooth slide-up hover action
 export const ProductCard = ({ product }) => {
@@ -30,7 +31,7 @@ export const ProductCard = ({ product }) => {
   };
 
   const handleAddToCart = () => {
-    toast.success(`${product.name || "Item"} Added to Cart`);
+    toast.success(`${product?.name || "Item"} Added to Cart`);
     addToCart(product);
   };
 
@@ -39,13 +40,8 @@ export const ProductCard = ({ product }) => {
       ? product?.category?.name
       : product?.category || "General";
 
-  const imageUrl =
-    product?.images?.[0]?.url ||
-    product?.image ||
-    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&fit=crop";
-
-  const price =
-    product?.discountPrice ?? product?.discountedPrice ?? product?.originalPrice ?? 0;
+  const imageUrl = getProductImage(product);
+  const { unitPrice, originalPrice, hasDiscount } = getProductPrices(product);
 
   return (
     <div className="relative bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700/80 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-black/40 hover:border-gray-300 dark:hover:border-gray-600 hover:-translate-y-1.5 flex flex-col group overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform">
@@ -115,18 +111,18 @@ export const ProductCard = ({ product }) => {
           <div className="w-full flex items-center justify-between transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] md:group-hover:-translate-y-full md:group-hover:opacity-0">
             {/* Price Display */}
             <div className="flex items-baseline space-x-1.5">
-              {product?.discountPrice ? (
+              {hasDiscount ? (
                 <>
                   <p className="font-inter text-lg font-bold text-gray-900 dark:text-gray-100">
-                    ${Number(product.discountPrice).toFixed(2)}
+                    ${unitPrice.toFixed(2)}
                   </p>
                   <p className="font-inter text-xs text-gray-400 dark:text-gray-500 line-through">
-                    ${Number(product.originalPrice).toFixed(2)}
+                    ${originalPrice.toFixed(2)}
                   </p>
                 </>
               ) : (
                 <p className="font-inter text-lg font-bold text-gray-900 dark:text-gray-100">
-                  ${Number(price).toFixed(2)}
+                  ${unitPrice.toFixed(2)}
                 </p>
               )}
             </div>
@@ -147,7 +143,7 @@ export const ProductCard = ({ product }) => {
               onClick={handleBuy}
               className="flex-1 py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white flex items-center justify-center text-xs font-semibold shadow-sm transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]"
             >
-              Buy <span className="ml-1 font-bold">${Number(price).toFixed(2)}</span>
+              Buy <span className="ml-1 font-bold">${unitPrice.toFixed(2)}</span>
             </button>
             <button
               onClick={handleAddToCart}

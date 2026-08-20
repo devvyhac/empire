@@ -8,6 +8,8 @@ import { ProductContext } from "../../context/ProductContext.jsx";
 import { CartContext } from "../../context/CartContext.jsx";
 import { WishlistContext } from "../../context/WishlistContext.jsx";
 import { allProducts } from "../../context/mockData.jsx";
+import { getProductPrices, getProductImage } from "../../utils/productUtils.js";
+import { ProductCard } from "../../components/common/Card.jsx";
 import ProductInfo from "./components/ProductInfo.jsx";
 
 const { VITE_BACKEND_URL } = import.meta.env;
@@ -30,33 +32,31 @@ const fetchReviews = async () => {
         "A very solid product for the price. Fast shipping and great packaging.",
       date: "2025-07-28",
     },
+    {
+      id: 3,
+      author: "Emily Davis",
+      rating: 5,
+      comment: "Exceeded my expectations. Will definitely order from here again!",
+      date: "2025-07-15",
+    },
   ];
 };
 
-const ProductCard = ({ product }) => (
+const SkeletonLoader = () => (
   <motion.div
-    className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden p-2 text-center"
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.98 }}
+    className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mb-12 animate-pulse"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5 }}
   >
-    <img
-      src={
-        product?.images?.[0]?.url ||
-        product?.image ||
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&fit=crop"
-      }
-      alt={product?.name || "Product"}
-      className="w-full h-40 object-cover rounded-md mb-2"
-    />
-    <h3 className="font-poppins text-lg font-semibold text-gray-900 dark:text-gray-100">
-      {product?.name}
-    </h3>
-    <p className="font-inter text-md text-indigo-600 dark:text-indigo-400 font-bold">
-      $
-      {Number(
-        product?.discountPrice ?? product?.discountedPrice ?? product?.originalPrice ?? 0
-      ).toFixed(2)}
-    </p>
+    <div className="w-full h-96 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+    <div className="flex flex-col space-y-4">
+      <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-md w-3/4" />
+      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-md w-1/4" />
+      <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-md w-1/2" />
+      <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-md w-full" />
+      <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-md w-full" />
+    </div>
   </motion.div>
 );
 
@@ -75,19 +75,20 @@ export default function ProductDetails() {
 
   const mergeData = (data) => {
     const item = data || matchedProduct;
+    const { unitPrice, originalPrice, hasDiscount } = getProductPrices(item);
+    const imageUrl = getProductImage(item);
     return {
       _id: item?._id || item?.id || "1",
       name: item?.name || "Product Name",
       sku: item?.sku || "SKU-101",
-      originalPrice: item?.originalPrice || 99.99,
-      discountPrice: item?.discountPrice || item?.discountedPrice || 79.99,
-      images: item?.images || [
-        {
-          url:
-            item?.image ||
-            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&fit=crop",
-        },
-      ],
+      unitPrice,
+      originalPrice,
+      hasDiscount,
+      discountPrice: hasDiscount ? unitPrice : null,
+      price: unitPrice,
+      images: Array.isArray(item?.images) && item.images.length > 0
+        ? item.images.map((img) => (typeof img === "string" ? { url: img } : img))
+        : [{ url: imageUrl }],
       rating: 4.5,
       description:
         item?.description ||
@@ -98,13 +99,15 @@ export default function ProductDetails() {
         connectivity: "USB-C / Wireless",
         material: "Premium composite",
       },
-      variants: [
-        {
-          type: "color",
-          options: ["Black", "White", "Blue"],
-        },
-      ],
-      stock: item?.stock || 25,
+      variants: Array.isArray(item?.variants) && item.variants.length > 0
+        ? item.variants
+        : [
+            {
+              type: "color",
+              options: ["Black", "White", "Blue"],
+            },
+          ],
+      stock: item?.stock || (item?.inStock ? 25 : 10),
     };
   };
 

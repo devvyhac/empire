@@ -19,6 +19,7 @@ import _Paystack from "./components/_Paystack.jsx";
 import { CartContext } from "../../context/CartContext.jsx";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { validateForm } from "./helper/validateForm.js";
+import { getProductPrices } from "../../utils/productUtils.js";
 
 const shippingDetails = localStorage.getItem("shippingDetails");
 // let paymentDetails = localStorage.getItem("paymentDetails");
@@ -41,9 +42,7 @@ export default function Checkout() {
 
   const subtotal = cartItems.reduce(
     (acc, item) =>
-      acc +
-      (item.discountPrice ? item.discountPrice : item.originalPrice) *
-        item.quantity,
+      acc + getProductPrices(item).unitPrice * (Number(item.quantity) || 1),
     0
   );
   const shipping = subtotal > 0 ? 5.0 : 0;
@@ -145,9 +144,9 @@ export default function Checkout() {
     order: {
       buyer: user?.id,
       items: cartItems.map((item) => ({
-        product: item._id,
+        product: item._id || item.id,
         quantity: item.quantity,
-        price: item.discountPrice ? item.discountPrice : item.originalPrice,
+        price: getProductPrices(item).unitPrice,
       })),
       totalAmount: total,
       shippingDetails: (({ email, ...shipping }) => shipping)(formData),

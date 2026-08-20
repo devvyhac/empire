@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { getProductPrices, getProductImage } from "../../../utils/productUtils.js";
 
 const OrderSummary = ({ cartItems, subtotal, shipping, tax, total }) => {
   return (
@@ -12,30 +13,30 @@ const OrderSummary = ({ cartItems, subtotal, shipping, tax, total }) => {
           <div className="divide-y divide-gray-300 dark:divide-gray-700">
             {/* Cart Items */}
             {cartItems &&
-              cartItems.map((item) => (
-                <div key={item._id} className="py-4 flex items-center">
-                  <img
-                    src={item.images[0].url}
-                    alt={item.name}
-                    className="w-16 h-16 rounded-md"
-                  />
-                  <div className="ml-4 flex-grow">
-                    <p className="font-medium text-gray-900 dark:text-gray-100">
-                      {item.name}
-                    </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Qty: {item.quantity}
+              cartItems.map((item, idx) => {
+                const { unitPrice } = getProductPrices(item);
+                const qty = Number(item.quantity) || 1;
+                return (
+                  <div key={item._id || item.id || idx} className="py-4 flex items-center">
+                    <img
+                      src={getProductImage(item)}
+                      alt={item.name || "Product"}
+                      className="w-16 h-16 rounded-md object-cover"
+                    />
+                    <div className="ml-4 flex-grow">
+                      <p className="font-medium text-gray-900 dark:text-gray-100">
+                        {item.name}
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Qty: {qty}
+                      </p>
+                    </div>
+                    <p className="font-semibold text-gray-900 dark:text-gray-100">
+                      ${(unitPrice * qty).toFixed(2)}
                     </p>
                   </div>
-                  <p className="font-semibold text-gray-900 dark:text-gray-100">
-                    $
-                    {(item.discountPrice
-                      ? item.discountPrice
-                      : item.originalPrice * item.quantity
-                    ).toFixed(2)}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
           </div>
 
           {/* Promo Code Input */}

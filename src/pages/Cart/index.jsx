@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import { CartContext } from "../../context/CartContext.jsx";
 import { ProductContext } from "../../context/ProductContext.jsx";
 import { ProductCard } from "../../components/common/Card.jsx";
+import { getProductPrices } from "../../utils/productUtils.js";
 
 import CartItem from "./components/CartItem.jsx";
 import FreeShippingBar, { FREE_SHIPPING_THRESHOLD } from "./components/FreeShippingBar.jsx";
@@ -38,11 +39,9 @@ const Cart = () => {
   // Calculate financial figures
   const subtotal = useMemo(() => {
     return cartItems.reduce((acc, item) => {
-      const price = Number(
-        item.discountPrice ?? item.discountedPrice ?? item.originalPrice ?? item.price ?? 0
-      );
+      const { unitPrice } = getProductPrices(item);
       const qty = Number(item.quantity) || 1;
-      return acc + price * qty;
+      return acc + unitPrice * qty;
     }, 0);
   }, [cartItems]);
 

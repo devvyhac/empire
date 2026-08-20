@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 
 import { WishlistContext } from "../context/WishlistContext.jsx";
 import { CartContext } from "../context/CartContext.jsx";
+import { getProductPrices, getProductImage } from "../utils/productUtils.js";
 
 // Reusable StarRating component for product cards
 const StarRating = ({ rating }) => {
@@ -72,11 +73,7 @@ const WishlistItemCard = ({ item, onRemove, onAddToCart }) => {
 
       {/* Product Image */}
       <img
-        src={
-          item?.images?.[0]?.url ||
-          item?.image ||
-          "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&fit=crop"
-        }
+        src={getProductImage(item)}
         alt={item?.name || "Product"}
         className="w-full h-48 object-cover rounded-lg mb-4"
       />
@@ -88,22 +85,27 @@ const WishlistItemCard = ({ item, onRemove, onAddToCart }) => {
           SKU: {item?.sku || "SKU-001"}
         </p>
 
-        <div className="flex items-center space-x-2 my-2">
-          {item?.discountPrice ? (
-            <>
-              <p className="font-bold text-xl text-gray-900 dark:text-gray-100">
-                ${Number(item.discountPrice).toFixed(2)}
-              </p>
-              <p className="text-sm text-gray-400 dark:text-gray-500 line-through">
-                ${Number(item.originalPrice || 0).toFixed(2)}
-              </p>
-            </>
-          ) : (
-            <p className="font-bold text-xl text-gray-900 dark:text-gray-100">
-              ${Number(item?.originalPrice || item?.price || 0).toFixed(2)}
-            </p>
-          )}
-        </div>
+        {(() => {
+          const { unitPrice, originalPrice, hasDiscount } = getProductPrices(item);
+          return (
+            <div className="flex items-center space-x-2 my-2">
+              {hasDiscount ? (
+                <>
+                  <p className="font-bold text-xl text-gray-900 dark:text-gray-100">
+                    ${unitPrice.toFixed(2)}
+                  </p>
+                  <p className="text-sm text-gray-400 dark:text-gray-500 line-through">
+                    ${originalPrice.toFixed(2)}
+                  </p>
+                </>
+              ) : (
+                <p className="font-bold text-xl text-gray-900 dark:text-gray-100">
+                  ${unitPrice.toFixed(2)}
+                </p>
+              )}
+            </div>
+          );
+        })()}
       </div>
 
       {/* Add to Cart Button */}
