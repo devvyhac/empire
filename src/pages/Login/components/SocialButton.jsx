@@ -1,20 +1,24 @@
+import React from "react";
 import { motion } from "framer-motion";
 
-// A reusable component for social sign-up/login buttons
 export const SocialButton = ({
   icon: Icon,
   label,
-  bgColor,
-  textColor,
-  hoverColor,
+  bgColor = "bg-gray-50/70 dark:bg-gray-800/70",
+  textColor = "text-gray-700 dark:text-gray-200",
+  hoverColor = "hover:bg-gray-100 dark:hover:bg-gray-700/80 hover:border-gray-300 dark:hover:border-gray-600",
+  onClick,
 }) => (
   <motion.button
     type="button"
-    className={`w-full flex items-center justify-center py-3 px-4 rounded-lg border border-gray-300 dark:border-gray-700 shadow-sm text-sm font-medium ${bgColor} ${textColor} transition-colors ${hoverColor}`}
-    whileHover={{ scale: 1.02 }}
-    whileTap={{ scale: 0.98 }}
+    onClick={onClick}
+    className={`w-full flex items-center justify-center py-2.5 px-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm text-xs sm:text-sm font-medium ${bgColor} ${textColor} transition-all duration-150 ${hoverColor}`}
+    whileHover={{ scale: 1.01 }}
+    whileTap={{ scale: 0.99 }}
   >
-    <Icon className="w-5 h-5 mr-3" />
-    {label}
+    <Icon className="w-4 h-4 mr-2.5 shrink-0" />
+    <span>{label}</span>
   </motion.button>
 );
+
+export default SocialButton;

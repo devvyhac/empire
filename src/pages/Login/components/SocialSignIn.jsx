@@ -1,32 +1,33 @@
+import React from "react";
 import { SocialButton } from "./SocialButton.jsx";
 import { GoogleIcon } from "./GoogleIcon.jsx";
 import { Facebook } from "lucide-react";
 
-// Reusable Social Sign-in component, now with only Google and Facebook
-export const SocialSignIn = () => (
-  <div className="flex flex-col justify-center items-center">
-    <div className="flex items-center w-full my-6">
-      <div className="flex-grow border-t border-gray-300 dark:border-gray-700"></div>
-      <span className="flex-shrink mx-4 text-gray-500 dark:text-gray-400">
-        OR
-      </span>
-      <div className="flex-grow border-t border-gray-300 dark:border-gray-700"></div>
+export const SocialSignIn = ({ mode = "signin" }) => {
+  const isSignUp = mode === "signup";
+
+  return (
+    <div className="flex flex-col justify-center items-center w-full">
+      <div className="flex items-center w-full my-5">
+        <div className="flex-grow border-t border-gray-200 dark:border-gray-700/80" />
+        <span className="flex-shrink mx-3 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+          Or continue with
+        </span>
+        <div className="flex-grow border-t border-gray-200 dark:border-gray-700/80" />
+      </div>
+
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <SocialButton
+          icon={GoogleIcon}
+          label="Google"
+        />
+        <SocialButton
+          icon={Facebook}
+          label="Facebook"
+        />
+      </div>
     </div>
-    <div className="w-full space-y-4">
-      <SocialButton
-        icon={GoogleIcon}
-        label="Sign in with Google"
-        bgColor="bg-gray-100 dark:bg-gray-800"
-        textColor="text-gray-700 dark:text-gray-300"
-        hoverColor="hover:bg-gray-200 dark:hover:bg-gray-700"
-      />
-      <SocialButton
-        icon={Facebook}
-        label="Sign in with Facebook"
-        bgColor="bg-gray-100 dark:bg-gray-800"
-        textColor="text-gray-700 dark:text-gray-300"
-        hoverColor="hover:bg-gray-200 dark:hover:bg-gray-700"
-      />
-    </div>
-  </div>
-);
+  );
+};
+
+export default SocialSignIn;

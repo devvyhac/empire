@@ -1,8 +1,10 @@
-import { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
+import { ClipLoader } from "react-spinners";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { SocialSignIn } from "./components/SocialSignIn.jsx";
 
@@ -20,34 +22,24 @@ export default function LoginPage() {
     rememberMe: false,
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const from = location.state?.from?.pathname || "/shop";
 
   useEffect(() => {
     if (user) {
-      navigate(from, { replace: true }); // Redirect to the page the user was trying to access before login
+      navigate(from, { replace: true });
     }
   }, [user, navigate, from]);
 
-  // const validate = () => {
-  //   if (!formData.email) {
-  //     setError("Enter an email address");
-  //     return false;
-  //   } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-  //     setError("Email address is invalid.");
-  //     return false;
-  //   }
-  //   if (!formData.password) {
-  //     setError("Password is required.");
-  //     return false;
-  //   }
-
-  //   if (formData.password.length < 8) {
-  //     setError("Password must be at least 8 characters long!");
-  //     return false;
-  //   }
-
-  //   return true;
-  // };
+  // Pre-fill remembered email if saved
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberMeEmail");
+    if (savedEmail) {
+      setFormData((prev) => ({ ...prev, email: savedEmail, rememberMe: true }));
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -58,10 +50,17 @@ export default function LoginPage() {
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.email.trim() || !formData.password) {
+      toast.error("Please enter both email and password.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
-      e.preventDefault();
       const { rememberMe, ...loginData } = formData;
-      // Handle "remember me" state
       if (formData.rememberMe) {
         localStorage.setItem("rememberMeEmail", formData.email);
       } else {
@@ -73,148 +72,167 @@ export default function LoginPage() {
       });
 
       if (data.success) {
-        toast.success(data.message);
+        toast.success(data.message || "Signed in successfully!");
         setUserData(data.user);
         setFormData({
           email: "",
           password: "",
           rememberMe: false,
         });
-        navigate(-1);
-        return;
+        navigate(from, { replace: true });
       } else {
-        toast.error(data.message);
-        return;
+        toast.error(data.message || "Failed to sign in.");
       }
     } catch (error) {
       const errorMessage =
-        error.response?.data?.message || "An unexpected error occurred.";
+        error.response?.data?.message || "An unexpected error occurred during login.";
       toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <main className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4 py-8">
-      <div className="w-full max-w-md bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8 md:p-10 transition-colors duration-300">
-        <div className="text-center mb-8">
-          <h1 className="font-poppins text-4xl font-extrabold text-gray-900 dark:text-gray-100">
+    <main className="flex items-center justify-center min-h-[85vh] bg-gray-50/50 dark:bg-gray-900 px-4 py-8 sm:py-12">
+      <div className="w-full max-w-md bg-white dark:bg-gray-800/90 border border-gray-200/80 dark:border-gray-700/80 rounded-2xl p-6 sm:p-8 shadow-sm transition-colors duration-200">
+        {/* Header */}
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto mb-3 border border-indigo-100 dark:border-indigo-900/40">
+            <LogIn className="w-6 h-6" />
+          </div>
+          <h1 className="font-poppins text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">
             Welcome Back
           </h1>
-          <p className="font-inter text-lg text-gray-700 dark:text-gray-300 mt-2">
-            Sign in to your account.
+          <p className="font-inter text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Sign in to access your account and orders.
           </p>
         </div>
 
-        <div className="flex flex-col gap-8">
-          {/* Main Login Form */}
+        {/* Login Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Email */}
           <div>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="mt-1 block w-full p-3 text-base rounded-lg border border-gray-300 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="name@example.com"
-                />
+            <label
+              htmlFor="email"
+              className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5"
+            >
+              Email Address
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
+                <Mail className="w-4 h-4" />
               </div>
-
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="mt-1 block w-full p-3 text-base rounded-lg border border-gray-300 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="••••••••"
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <input
-                    id="rememberMe"
-                    name="rememberMe"
-                    type="checkbox"
-                    checked={formData.rememberMe}
-                    onChange={handleChange}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-700 rounded transition-colors"
-                  />
-                  <label
-                    htmlFor="rememberMe"
-                    className="ml-2 block text-sm text-gray-700 dark:text-gray-300"
-                  >
-                    Remember me
-                  </label>
-                </div>
-                <div className="text-sm">
-                  <Link
-                    to="#"
-                    className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-              </div>
-
-              {status === "success" && (
-                <div className="text-center text-green-500 font-semibold">
-                  {message}
-                </div>
-              )}
-              {status === "error" && (
-                <div className="text-center text-red-500 font-semibold">
-                  {message}
-                </div>
-              )}
-
-              <div>
-                <motion.button
-                  type="submit"
-                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-colors"
-                  disabled={status === "submitting"}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  {status === "submitting" ? (
-                    <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
-                  ) : (
-                    "Login"
-                  )}
-                </motion.button>
-              </div>
-            </form>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                required
+                autoComplete="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/70 dark:bg-gray-900/70 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:bg-white dark:focus:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all"
+                placeholder="name@example.com"
+              />
+            </div>
           </div>
 
-          {/* Social Sign-In Component */}
-          <SocialSignIn />
-
-          <div className="mt-6 text-center">
-            <p className="text-sm font-inter text-gray-700 dark:text-gray-300">
-              New here?{" "}
-              <a
-                href="/register"
-                className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+          {/* Password */}
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
+                <Lock className="w-4 h-4" />
+              </div>
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                id="password"
+                required
+                autoComplete="current-password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/70 dark:bg-gray-900/70 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:bg-white dark:focus:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all"
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                Create an account.
-              </a>
-            </p>
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
+            </div>
           </div>
+
+          {/* Remember Me & Forgot Password */}
+          <div className="flex items-center justify-between pt-1">
+            <label className="flex items-center space-x-2 cursor-pointer select-none">
+              <input
+                id="rememberMe"
+                name="rememberMe"
+                type="checkbox"
+                checked={formData.rememberMe}
+                onChange={handleChange}
+                className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600 cursor-pointer"
+              />
+              <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                Remember me
+              </span>
+            </label>
+
+            <Link
+              to="/contact"
+              className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
+
+          {/* Submit CTA Button */}
+          <div className="pt-2">
+            <motion.button
+              type="submit"
+              disabled={isSubmitting}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              className="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 disabled:opacity-60 text-white font-poppins font-semibold text-sm shadow-md shadow-indigo-500/25 flex items-center justify-center space-x-2 transition-all duration-150"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center space-x-2">
+                  <ClipLoader color="white" loading={isSubmitting} size={18} />
+                  <span>Signing In...</span>
+                </div>
+              ) : (
+                <span>Sign In</span>
+              )}
+            </motion.button>
+          </div>
+        </form>
+
+        {/* Social Sign-In Component */}
+        <SocialSignIn mode="signin" />
+
+        {/* Switch to Register */}
+        <div className="mt-6 text-center pt-4 border-t border-gray-100 dark:border-gray-700/60">
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+            Don&apos;t have an account?{" "}
+            <Link
+              to="/register"
+              className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline ml-1"
+            >
+              Create an account
+            </Link>
+          </p>
         </div>
       </div>
     </main>
