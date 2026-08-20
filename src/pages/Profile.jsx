@@ -24,11 +24,13 @@ import {
   AlertCircle,
   Search,
   Sparkles,
+  Heart,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { CartContext } from "../context/CartContext.jsx";
+import { WishlistContext } from "../context/WishlistContext.jsx";
 
 // Initial Mock data for fallbacks when API orders are empty
 const defaultMockOrders = [
@@ -129,7 +131,23 @@ export default function ProfileDashboard() {
   const [activeTab, setActiveTab] = useState(initialTab);
   const { user, orders: apiOrders, setUserData, VITE_LOGOUT_URL } =
     useContext(AuthContext) || {};
-  const { cart = [], wishList = [] } = useContext(CartContext) || {};
+  const { cartItems = [], cartQuantity = 0 } = useContext(CartContext) || {};
+  const { wishlistItems = [], wishListQuantity = 0 } =
+    useContext(WishlistContext) || {};
+
+  const totalCartCount = useMemo(() => {
+    if (typeof cartQuantity === "number" && cartQuantity > 0) return cartQuantity;
+    return cartItems.reduce(
+      (acc, item) => acc + (Number(item.quantity) || 1),
+      0
+    );
+  }, [cartQuantity, cartItems]);
+
+  const totalWishlistCount = useMemo(() => {
+    if (typeof wishListQuantity === "number" && wishListQuantity > 0)
+      return wishListQuantity;
+    return wishlistItems.length;
+  }, [wishListQuantity, wishlistItems]);
 
   // Sync tab with URL
   const handleTabChange = (tabId) => {
@@ -359,17 +377,27 @@ export default function ProfileDashboard() {
                 <div className="mt-2 space-y-1 text-xs sm:text-sm font-medium">
                   <Link
                     to="/wishlist"
-                    className="flex items-center justify-between px-3.5 py-2 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60"
+                    className="flex items-center justify-between px-3.5 py-2 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors"
                   >
-                    <span>My Wishlist</span>
-                    <span className="text-gray-400 text-xs">{wishList.length}</span>
+                    <div className="flex items-center space-x-2.5">
+                      <Heart className="w-4 h-4 text-red-500" />
+                      <span>My Wishlist</span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 font-bold text-xs">
+                      {totalWishlistCount}
+                    </span>
                   </Link>
                   <Link
                     to="/cart"
-                    className="flex items-center justify-between px-3.5 py-2 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60"
+                    className="flex items-center justify-between px-3.5 py-2 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors"
                   >
-                    <span>Active Cart</span>
-                    <span className="text-gray-400 text-xs">{cart.length}</span>
+                    <div className="flex items-center space-x-2.5">
+                      <ShoppingCart className="w-4 h-4 text-indigo-500" />
+                      <span>Active Cart</span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold text-xs">
+                      {totalCartCount}
+                    </span>
                   </Link>
                 </div>
               </div>
@@ -423,25 +451,37 @@ export default function ProfileDashboard() {
                       </h3>
                     </div>
 
-                    <div className="bg-white dark:bg-gray-800/90 border border-gray-200/80 dark:border-gray-700/80 rounded-2xl p-4 sm:p-5 shadow-sm space-y-1">
-                      <div className="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-2">
-                        <MapPin className="w-4 h-4" />
+                    <Link
+                      to="/wishlist"
+                      className="group bg-white dark:bg-gray-800/90 border border-gray-200/80 dark:border-gray-700/80 hover:border-red-300 dark:hover:border-red-800 rounded-2xl p-4 sm:p-5 shadow-sm space-y-1 transition-all"
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-red-50 dark:bg-red-950/60 text-red-500 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                        <Heart className="w-4 h-4" />
                       </div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Addresses</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium flex items-center justify-between">
+                        <span>Wishlist</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-red-500" />
+                      </p>
                       <h3 className="text-xl sm:text-2xl font-poppins font-bold text-gray-900 dark:text-white">
-                        {addresses.length}
+                        {totalWishlistCount}
                       </h3>
-                    </div>
+                    </Link>
 
-                    <div className="bg-white dark:bg-gray-800/90 border border-gray-200/80 dark:border-gray-700/80 rounded-2xl p-4 sm:p-5 shadow-sm space-y-1">
-                      <div className="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-2">
-                        <CreditCard className="w-4 h-4" />
+                    <Link
+                      to="/cart"
+                      className="group bg-white dark:bg-gray-800/90 border border-gray-200/80 dark:border-gray-700/80 hover:border-indigo-300 dark:hover:border-indigo-800 rounded-2xl p-4 sm:p-5 shadow-sm space-y-1 transition-all"
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+                        <ShoppingCart className="w-4 h-4" />
                       </div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Cards Saved</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium flex items-center justify-between">
+                        <span>Active Cart</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-indigo-500" />
+                      </p>
                       <h3 className="text-xl sm:text-2xl font-poppins font-bold text-gray-900 dark:text-white">
-                        {payments.length}
+                        {totalCartCount}
                       </h3>
-                    </div>
+                    </Link>
                   </div>
 
                   {/* Recent Orders Overview Card */}
