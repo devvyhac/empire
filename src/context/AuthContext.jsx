@@ -13,10 +13,13 @@ export const AuthContextProvider = ({ children }) => {
   const server = import.meta.env.VITE_BACKEND_URL;
   const [user, setUserData] = useState(null);
   const [orders, setOrders] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   const checkAuth = async () => {
+    setAuthLoading(true);
     if (!VITE_GET_USER_URL) {
       setUserData(null);
+      setAuthLoading(false);
       return;
     }
 
@@ -27,6 +30,8 @@ export const AuthContextProvider = ({ children }) => {
 
       if (res.data && res.data.user) {
         setUserData(res.data.user);
+      } else {
+        setUserData(null);
       }
     } catch (error) {
       if (error?.response?.status === 401 && VITE_REFRESH_TOKEN_URL) {
@@ -45,6 +50,8 @@ export const AuthContextProvider = ({ children }) => {
       } else {
         setUserData(null);
       }
+    } finally {
+      setAuthLoading(false);
     }
   };
 
@@ -73,6 +80,7 @@ export const AuthContextProvider = ({ children }) => {
   const payload = {
     server,
     isLoggedIn,
+    authLoading,
     user,
     orders,
     setUserData,

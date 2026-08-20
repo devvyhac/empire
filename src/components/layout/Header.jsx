@@ -180,7 +180,8 @@ const Header = () => {
           </Link>
 
           <ProfileDropDown isLoggedIn={isLoggedIn} logout={handleLogout}>
-            <div
+            <Link
+              to={isLoggedIn ? "/profile" : "/login"}
               className={`cursor-pointer w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 ${
                 page === "/profile" || page === "/login"
                   ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60"
@@ -189,7 +190,7 @@ const Header = () => {
               aria-label="User Profile"
             >
               <User className="w-5 h-5" />
-            </div>
+            </Link>
           </ProfileDropDown>
 
           <CartSummary>
