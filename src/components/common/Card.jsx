@@ -8,7 +8,7 @@ import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
 import { WishlistContext } from "../../context/WishlistContext";
 
-// Reusable ProductCard component for the grid
+// Reusable ProductCard component with Apple iOS-grade fluid animations
 export const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
@@ -48,15 +48,11 @@ export const ProductCard = ({ product }) => {
     product?.discountPrice ?? product?.discountedPrice ?? product?.originalPrice ?? 0;
 
   return (
-    <motion.div
-      className="relative bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700/80 rounded-2xl shadow-sm hover:shadow-md flex flex-col group overflow-hidden transition-all duration-300"
-      whileHover={{ y: -4, scale: 1.01 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-    >
+    <div className="relative bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700/80 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-black/40 hover:border-gray-300 dark:hover:border-gray-600 hover:-translate-y-1.5 flex flex-col group overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform">
       {/* Discount/Special Tag */}
       {product?.tag && (
         <span
-          className={`absolute top-3.5 left-3.5 z-10 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm ${
+          className={`absolute top-3.5 left-3.5 z-10 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             product.tag === "-50%" ? "bg-red-500" : "bg-indigo-600"
           }`}
         >
@@ -65,7 +61,7 @@ export const ProductCard = ({ product }) => {
       )}
 
       {/* Wishlist Button */}
-      <motion.button
+      <button
         onClick={() => {
           if (isWishlisted) {
             removeFromWishlist(product);
@@ -73,32 +69,28 @@ export const ProductCard = ({ product }) => {
             addToWishlist(product);
           }
         }}
-        className={`absolute top-3.5 right-3.5 z-10 p-2 rounded-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-sm flex items-center justify-center transition-colors ${
+        className={`absolute top-3.5 right-3.5 z-10 p-2 rounded-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm flex items-center justify-center transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-110 active:scale-90 ${
           isWishlisted
             ? "text-red-500"
             : "text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400"
         }`}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
         aria-label="Toggle wishlist"
       >
         <Heart
-          className="w-4 h-4"
+          className="w-4 h-4 transition-transform duration-200"
           fill={isWishlisted ? "currentColor" : "none"}
         />
-      </motion.button>
+      </button>
 
       {/* Product Image with Zoom Preview */}
       <div
         onClick={() => navigate(`/product/${product?._id || product?.id}`)}
         className="relative w-full h-52 sm:h-48 overflow-hidden bg-gray-100 dark:bg-gray-900 cursor-pointer"
       >
-        <motion.img
+        <img
           src={imageUrl}
           alt={product?.name || "Product"}
-          className="w-full h-full object-cover"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.3 }}
+          className="w-full h-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105 will-change-transform"
           loading="lazy"
         />
       </div>
@@ -108,7 +100,7 @@ export const ProductCard = ({ product }) => {
         <div>
           <h3
             onClick={() => navigate(`/product/${product?._id || product?.id}`)}
-            className="font-poppins text-base font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer transition-colors line-clamp-1"
+            className="font-poppins text-base font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer transition-colors duration-200 line-clamp-1"
           >
             {product?.name}
           </h3>
@@ -119,8 +111,8 @@ export const ProductCard = ({ product }) => {
 
         {/* Price & Action Container - Desktop hover only swaps/covers this row */}
         <div className="relative mt-3 min-h-[38px] flex items-center">
-          {/* Default Price Row (Mobile: always visible with cart icon. Desktop: fades on hover) */}
-          <div className="w-full flex items-center justify-between transition-opacity duration-200 md:group-hover:opacity-0 md:group-hover:pointer-events-none">
+          {/* Default Price Row (Mobile: always visible with cart icon. Desktop: smoothly fades on hover) */}
+          <div className="w-full flex items-center justify-between transition-all duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] md:group-hover:opacity-0 md:group-hover:scale-95 md:group-hover:pointer-events-none">
             {/* Price Display */}
             <div className="flex items-baseline space-x-1.5">
               {product?.discountPrice ? (
@@ -140,40 +132,34 @@ export const ProductCard = ({ product }) => {
             </div>
 
             {/* Mobile-Only Always-Visible Add to Cart Rounded Icon Button */}
-            <motion.button
+            <button
               onClick={handleAddToCart}
-              className="md:hidden w-9 h-9 rounded-full bg-indigo-600 hover:bg-indigo-700 active:scale-90 text-white shadow-md flex items-center justify-center transition-all duration-200"
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.92 }}
+              className="md:hidden w-9 h-9 rounded-full bg-indigo-600 hover:bg-indigo-700 active:scale-90 text-white shadow-md flex items-center justify-center transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]"
               aria-label="Add to cart"
             >
               <ShoppingCart className="w-4 h-4" />
-            </motion.button>
+            </button>
           </div>
 
-          {/* Desktop Hover Action: Covers ONLY this price line without obscuring title or category */}
-          <div className="hidden md:flex absolute inset-0 items-center space-x-2 transition-all duration-200 opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 pointer-events-none group-hover:pointer-events-auto">
-            <motion.button
+          {/* Desktop Hover Action: Apple-fluid slide & fade covering ONLY the price line */}
+          <div className="hidden md:flex absolute inset-0 items-center space-x-2 transition-all duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] opacity-0 scale-95 md:group-hover:opacity-100 md:group-hover:scale-100 pointer-events-none md:group-hover:pointer-events-auto">
+            <button
               onClick={handleBuy}
-              className="flex-1 py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center text-xs font-semibold transition-colors shadow-sm"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              className="flex-1 py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white flex items-center justify-center text-xs font-semibold shadow-sm transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]"
             >
               Buy <span className="ml-1 font-bold">${Number(price).toFixed(2)}</span>
-            </motion.button>
-            <motion.button
+            </button>
+            <button
               onClick={handleAddToCart}
-              className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white text-gray-700 dark:text-gray-200 transition-colors shadow-sm flex items-center justify-center shrink-0"
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.92 }}
+              className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white active:scale-90 text-gray-700 dark:text-gray-200 shadow-sm flex items-center justify-center shrink-0 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]"
               aria-label="Add to cart"
             >
               <ShoppingCart className="w-3.5 h-3.5" />
-            </motion.button>
+            </button>
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
