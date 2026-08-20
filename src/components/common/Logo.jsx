@@ -10,20 +10,20 @@ export const Logo = ({
   size = "md", // "sm", "md", "lg", "xl"
   ...props
 }) => {
-  // Height presets
+  // Height presets for clear readability and presence
   const heightClasses = {
-    sm: "h-8",
-    md: "h-10",
-    lg: "h-12",
-    xl: "h-16",
+    sm: "h-9",
+    md: "h-12 md:h-13",
+    lg: "h-16 md:h-20",
+    xl: "h-20 md:h-24",
   };
 
-  const currentHeight = heightClasses[size] || "h-10";
+  const currentHeight = heightClasses[size] || "h-12 md:h-13";
 
   return (
     <div className={`inline-flex items-center select-none ${className}`} {...props}>
       <svg
-        viewBox={showText ? (showTagline ? "0 0 520 160" : "0 0 520 125") : "0 0 180 155"}
+        viewBox={showText ? (showTagline ? "0 0 450 120" : "0 0 450 92") : "0 0 150 120"}
         className={`${currentHeight} w-auto transition-transform duration-200`}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -79,52 +79,52 @@ export const Logo = ({
         <g id="cart-icon">
           {/* Speed Lines */}
           <line
-            x1="10"
-            y1="56"
-            x2="48"
-            y2="56"
+            x1="6"
+            y1="40"
+            x2="38"
+            y2="40"
             stroke="url(#empSpeed1)"
-            strokeWidth="7"
+            strokeWidth="5.5"
             strokeLinecap="round"
           />
           <line
-            x1="22"
-            y1="78"
-            x2="60"
-            y2="78"
+            x1="16"
+            y1="58"
+            x2="48"
+            y2="58"
             stroke="url(#empSpeed2)"
-            strokeWidth="7"
+            strokeWidth="5.5"
             strokeLinecap="round"
           />
           <line
-            x1="36"
-            y1="100"
-            x2="66"
-            y2="100"
+            x1="28"
+            y1="76"
+            x2="52"
+            y2="76"
             stroke="url(#empSpeed3)"
-            strokeWidth="7"
+            strokeWidth="5.5"
             strokeLinecap="round"
           />
 
           {/* Outer Handle & Base Strut Frame */}
           <path
-            d="M 28 42 L 56 42 C 62 42 67 46 69 52 L 84 96 C 86 102 92 106 99 106 L 158 106"
+            d="M 22 28 L 44 28 C 49 28 53 31 55 36 L 68 72 C 70 77 75 80 81 80 L 128 80"
             fill="none"
             stroke="url(#empCartFrame)"
-            strokeWidth="13"
+            strokeWidth="10.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
 
           {/* Stylized Infill Basket / T-Shape */}
           <path
-            d="M 84 56 L 160 56 C 165 56 169 60 169 65 C 169 70 165 74 160 74 L 132 74 L 118 102 C 116 106 112 108 108 108 L 102 108 C 97 108 94 104 96 99 L 108 74 L 84 74 C 79 74 76 70 76 65 C 76 60 79 56 84 56 Z"
+            d="M 68 39 L 130 39 C 134 39 137 42 137 46 C 137 50 134 53 130 53 L 107 53 L 96 76 C 94 79 91 81 88 81 L 83 81 C 79 81 76 78 78 74 L 88 53 L 68 53 C 64 53 61 50 61 46 C 61 42 64 39 68 39 Z"
             fill="url(#empBasket)"
           />
 
           {/* Left and Right Wheels */}
-          <circle cx="84" cy="132" r="13" fill="url(#empWheel1)" />
-          <circle cx="146" cy="132" r="13" fill="url(#empWheel2)" />
+          <circle cx="68" cy="100" r="10.5" fill="url(#empWheel1)" />
+          <circle cx="118" cy="100" r="10.5" fill="url(#empWheel2)" />
         </g>
 
         {/* ================= WORDMARK & TAGLINE ================= */}
@@ -134,43 +134,43 @@ export const Logo = ({
             <g
               className="fill-gray-900 dark:fill-white"
               fontFamily="'Poppins', 'Inter', -apple-system, sans-serif"
-              fontSize="78"
+              fontSize="68"
               fontWeight="800"
               letterSpacing="-0.8"
             >
               {/* Emp */}
-              <text x="188" y="104">
+              <text x="150" y="78">
                 Emp
               </text>
 
               {/* Dotless 'ı' stem only */}
-              <text x="354" y="104">
+              <text x="295" y="78">
                 ı
               </text>
 
               {/* re */}
-              <text x="375" y="104">
+              <text x="313" y="78">
                 re
               </text>
             </g>
 
             {/* The ONLY Dot on the 'i' -> Electric Blue Rounded Rectangle */}
-            <rect x="354.5" y="44" width="16" height="15" rx="3.5" fill="url(#empDotGrad)" />
+            <rect x="295.5" y="27" width="14" height="13" rx="3" fill="url(#empDotGrad)" />
 
             {/* Tagline "SHOP • SELL • GET IT FAST" */}
             {showTagline && (
               <g
                 fontFamily="'Inter', 'Poppins', sans-serif"
-                fontSize="13"
-                fontWeight="700"
-                letterSpacing="4.2"
-                className="fill-gray-700 dark:fill-gray-200"
+                fontSize="12.5"
+                fontWeight="800"
+                letterSpacing="3.5"
+                className="fill-gray-800 dark:fill-gray-100"
               >
-                <text x="190" y="142">SHOP</text>
-                <circle cx="261" cy="138" r="3.2" fill="#0080FF" />
-                <text x="281" y="142">SELL</text>
-                <circle cx="347" cy="138" r="3.2" fill="#0080FF" />
-                <text x="367" y="142">GET IT FAST</text>
+                <text x="152" y="108">SHOP</text>
+                <circle cx="210" cy="104" r="2.8" fill="#0080FF" />
+                <text x="226" y="108">SELL</text>
+                <circle cx="280" cy="104" r="2.8" fill="#0080FF" />
+                <text x="296" y="108">GET IT FAST</text>
               </g>
             )}
           </g>
@@ -180,10 +180,10 @@ export const Logo = ({
   );
 };
 
-export const LogoIcon = ({ className = "w-8 h-8", ...props }) => {
+export const LogoIcon = ({ className = "w-9 h-9", ...props }) => {
   return (
     <svg
-      viewBox="0 0 180 155"
+      viewBox="0 0 150 120"
       className={className}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -227,49 +227,49 @@ export const LogoIcon = ({ className = "w-8 h-8", ...props }) => {
       </defs>
 
       <line
-        x1="10"
-        y1="56"
-        x2="48"
-        y2="56"
+        x1="6"
+        y1="40"
+        x2="38"
+        y2="40"
         stroke="url(#iconSpeed1)"
-        strokeWidth="7"
+        strokeWidth="5.5"
         strokeLinecap="round"
       />
       <line
-        x1="22"
-        y1="78"
-        x2="60"
-        y2="78"
+        x1="16"
+        y1="58"
+        x2="48"
+        y2="58"
         stroke="url(#iconSpeed2)"
-        strokeWidth="7"
+        strokeWidth="5.5"
         strokeLinecap="round"
       />
       <line
-        x1="36"
-        y1="100"
-        x2="66"
-        y2="100"
+        x1="28"
+        y1="76"
+        x2="52"
+        y2="76"
         stroke="url(#iconSpeed3)"
-        strokeWidth="7"
+        strokeWidth="5.5"
         strokeLinecap="round"
       />
 
       <path
-        d="M 28 42 L 56 42 C 62 42 67 46 69 52 L 84 96 C 86 102 92 106 99 106 L 158 106"
+        d="M 22 28 L 44 28 C 49 28 53 31 55 36 L 68 72 C 70 77 75 80 81 80 L 128 80"
         fill="none"
         stroke="url(#iconCartFrame)"
-        strokeWidth="13"
+        strokeWidth="10.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
 
       <path
-        d="M 84 56 L 160 56 C 165 56 169 60 169 65 C 169 70 165 74 160 74 L 132 74 L 118 102 C 116 106 112 108 108 108 L 102 108 C 97 108 94 104 96 99 L 108 74 L 84 74 C 79 74 76 70 76 65 C 76 60 79 56 84 56 Z"
+        d="M 68 39 L 130 39 C 134 39 137 42 137 46 C 137 50 134 53 130 53 L 107 53 L 96 76 C 94 79 91 81 88 81 L 83 81 C 79 81 76 78 78 74 L 88 53 L 68 53 C 64 53 61 50 61 46 C 61 42 64 39 68 39 Z"
         fill="url(#iconBasket)"
       />
 
-      <circle cx="84" cy="132" r="13" fill="url(#iconWheel1)" />
-      <circle cx="146" cy="132" r="13" fill="url(#iconWheel2)" />
+      <circle cx="68" cy="100" r="10.5" fill="url(#iconWheel1)" />
+      <circle cx="118" cy="100" r="10.5" fill="url(#iconWheel2)" />
     </svg>
   );
 };
