@@ -13,7 +13,7 @@ import {
 // Reusable Button components for consistent styling
 const PrimaryButton = ({ children, ...props }) => (
   <motion.button
-    className="flex-1 py-3 px-6 rounded-lg shadow-sm text-base font-inter flex items-center justify-center bg-green-500 dark:bg-primary-dark text-white hover:bg-green-600 dark:hover:bg-primary-light transition-colors focus:outline-none focus:ring-offset-2 focus:ring-green-300"
+    className="flex-1 py-3 px-6 rounded-lg shadow-sm text-base font-inter flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
     whileHover={{ scale: 1.02 }}
     whileTap={{ scale: 0.98 }}
     {...props}
@@ -24,7 +24,7 @@ const PrimaryButton = ({ children, ...props }) => (
 
 const OutlineButton = ({ children, ...props }) => (
   <motion.button
-    className="md:flex-grow-0 py-3 px-6 rounded-lg shadow-sm text-base font-inter bg-transparent border-2 border-primary-light dark:border-primary-dark text-primary-light dark:text-primary-dark hover:bg-primary-light bg-white hover:text-red-500 dark:hover:bg-primary-dark dark:hover:text-white transition-colors flex items-center justify-center focus:outline-none  focus:ring-offset-2 focus:ring-primary-light"
+    className="md:flex-grow-0 py-3 px-6 rounded-lg shadow-sm text-base font-inter bg-white dark:bg-gray-800 border-2 border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
     whileHover={{ scale: 1.02 }}
     whileTap={{ scale: 0.98 }}
     {...props}
@@ -80,7 +80,7 @@ const ProductInfo = ({
           />
           <motion.button
             onClick={() => handleImageNav(-1)}
-            className="absolute left-4 p-2 rounded-full shadow-lg backdrop-blur-sm text-gray-900 dark:text-gray-100 bg-white/50 dark:bg-gray-800/50 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute left-3 p-2 rounded-full shadow-md backdrop-blur-sm text-gray-900 dark:text-gray-100 bg-white/70 dark:bg-gray-800/70 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
             initial={{ y: "-50%" }}
             animate={{ y: "-50%" }}
             whileHover={{ scale: 1.1 }}
@@ -88,11 +88,11 @@ const ProductInfo = ({
             style={{ top: "50%" }}
             aria-label="Previous image"
           >
-            <ChevronLeft />
+            <ChevronLeft className="w-5 h-5" />
           </motion.button>
           <motion.button
             onClick={() => handleImageNav(1)}
-            className="absolute right-4 p-2 rounded-full shadow-lg backdrop-blur-sm text-gray-900 dark:text-gray-100 bg-white/50 dark:bg-gray-800/50 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute right-3 p-2 rounded-full shadow-md backdrop-blur-sm text-gray-900 dark:text-gray-100 bg-white/70 dark:bg-gray-800/70 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
             initial={{ y: "-50%" }}
             animate={{ y: "-50%" }}
             whileHover={{ scale: 1.1 }}
@@ -100,7 +100,7 @@ const ProductInfo = ({
             style={{ top: "50%" }}
             aria-label="Next image"
           >
-            <ChevronRight />
+            <ChevronRight className="w-5 h-5" />
           </motion.button>
         </div>
 
@@ -215,8 +215,8 @@ const ProductInfo = ({
             <input
               type="number"
               value={quantity}
-              // onChange={(e) => handleQuantityChange(e)}
-              className="w-12 text-center bg-transparent p-0 m-0"
+              readOnly
+              className="w-12 text-center bg-transparent p-0 m-0 text-gray-900 dark:text-gray-100 font-medium focus:outline-none"
               min="1"
             />
             <motion.button

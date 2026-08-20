@@ -64,58 +64,61 @@ const mockData = {
   },
 };
 
-const ProductCard = ({ product, addToCart }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 50 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.5, delay: 0.2 }}
-    className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden"
-  >
-    <img
-      src={product.images[0].url}
-      alt={product.altText || product.name}
-      className="w-full h-48 object-cover object-center"
-      loading="lazy"
-    />
-    <div className="p-4">
-      <h3 className="text-lg font-poppins font-bold text-gray-900 dark:text-gray-100">
-        {product.name}
-      </h3>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-        {product.sku}
-      </p>
-      <div className="flex items-center justify-between mt-2">
-        <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
-          $
-          {product.discountedPrice
-            ? product.discountedPrice.toFixed(2)
-            : product.originalPrice.toFixed(2)}
-        </span>
-        <div className="flex items-center">
-          <span className="text-yellow-400">
-            {"★".repeat(Math.floor(Math.random() * (5 - 4) + 4))}
+const ProductCard = ({ product, addToCart }) => {
+  const imageUrl =
+    product?.images?.[0]?.url ||
+    product?.image ||
+    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&fit=crop";
+
+  const price =
+    product?.discountedPrice ?? product?.discountPrice ?? product?.originalPrice ?? 0;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden text-left"
+    >
+      <img
+        src={imageUrl}
+        alt={product?.altText || product?.name || "Product"}
+        className="w-full h-48 object-cover object-center"
+        loading="lazy"
+      />
+      <div className="p-4">
+        <h3 className="text-lg font-poppins font-bold text-gray-900 dark:text-gray-100">
+          {product?.name}
+        </h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          {product?.sku || "SKU-001"}
+        </p>
+        <div className="flex items-center justify-between mt-2">
+          <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
+            ${Number(price).toFixed(2)}
           </span>
-          <span className="text-gray-400">
-            {"★".repeat(5 - Math.floor(Math.random() * (5 - 4) + 4))}
-          </span>
-          <span className="ml-1 text-sm text-gray-500 dark:text-gray-400">
-            {(Math.random() * (5 - 4) + 4).toFixed(1)}
-          </span>
+          <div className="flex items-center">
+            <span className="text-yellow-400">★★★★</span>
+            <span className="text-gray-400">★</span>
+            <span className="ml-1 text-sm text-gray-500 dark:text-gray-400">
+              4.5
+            </span>
+          </div>
         </div>
+        <button
+          onClick={() => {
+            addToCart(product);
+            toast.success("Product added to cart!");
+          }}
+          className="mt-4 w-full py-2 px-4 rounded-full text-white font-bold bg-indigo-600 hover:bg-indigo-700 transition-colors"
+        >
+          Add to Cart
+        </button>
       </div>
-      <button
-        onClick={() => {
-          addToCart(product);
-          toast.success("Product added to cart!");
-        }}
-        className="mt-4 w-full py-2 px-4 rounded-full text-white font-bold bg-indigo-600 hover:bg-indigo-700 transition-colors"
-      >
-        Add to Cart
-      </button>
-    </div>
-  </motion.div>
-);
+    </motion.div>
+  );
+};
 
 const CategoryCard = ({ category }) => (
   <motion.div
@@ -350,9 +353,9 @@ export default function HomePage() {
               Check out our latest additions.
             </p>
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-              {products.slice(0, 6).map((product) => (
+              {(products || []).slice(0, 6).map((product) => (
                 <ProductCard
-                  key={product._id}
+                  key={product._id || product.id}
                   product={product}
                   addToCart={addToCart}
                 />

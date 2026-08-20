@@ -7,67 +7,30 @@ import axios from "axios";
 import { ProductContext } from "../../context/ProductContext.jsx";
 import { CartContext } from "../../context/CartContext.jsx";
 import { WishlistContext } from "../../context/WishlistContext.jsx";
+import { allProducts } from "../../context/mockData.jsx";
 import ProductInfo from "./components/ProductInfo.jsx";
 
 const { VITE_BACKEND_URL } = import.meta.env;
 
 const fetchReviews = async () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([
-        {
-          id: 1,
-          author: "Jane Doe",
-          rating: 5,
-          comment:
-            "Absolutely love this keyboard! The RGB is amazing and the Cherry MX Red switches feel fantastic for gaming.",
-          date: "2024-08-01",
-        },
-        {
-          id: 2,
-          author: "John Smith",
-          rating: 4,
-          comment:
-            "A very solid keyboard for the price. The build quality is excellent. The only minor complaint is the software can be a bit clunky.",
-          date: "2024-07-28",
-        },
-      ]);
-    }, 300);
-  });
-};
-
-const fetchRelatedProducts = async () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([
-        {
-          id: "RELATED-1",
-          name: "Gaming Mouse",
-          price: 59.99,
-          image: "https://placehold.co/400x300/E5E7EB/1F2937?text=Gaming+Mouse",
-        },
-        {
-          id: "RELATED-2",
-          name: "Large Mouse Pad",
-          price: 24.99,
-          image: "https://placehold.co/400x300/E5E7EB/1F2937?text=Mouse+Pad",
-        },
-        {
-          id: "RELATED-3",
-          name: "Headphones",
-          price: 99.99,
-          image: "https://placehold.co/400x300/E5E7EB/1F2937?text=Headphones",
-        },
-        {
-          id: "RELATED-4",
-          name: "Monitor Stand",
-          price: 39.99,
-          image:
-            "https://placehold.co/400x300/E5E7EB/1F2937?text=Monitor+Stand",
-        },
-      ]);
-    }, 400);
-  });
+  return [
+    {
+      id: 1,
+      author: "Jane Doe",
+      rating: 5,
+      comment:
+        "Absolutely love this item! The build quality and design feel fantastic.",
+      date: "2025-08-01",
+    },
+    {
+      id: 2,
+      author: "John Smith",
+      rating: 4,
+      comment:
+        "A very solid product for the price. Fast shipping and great packaging.",
+      date: "2025-07-28",
+    },
+  ];
 };
 
 const ProductCard = ({ product }) => (
@@ -77,18 +40,22 @@ const ProductCard = ({ product }) => (
     whileTap={{ scale: 0.98 }}
   >
     <img
-      src={product.images[0].url}
-      alt={product.name}
+      src={
+        product?.images?.[0]?.url ||
+        product?.image ||
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&fit=crop"
+      }
+      alt={product?.name || "Product"}
       className="w-full h-40 object-cover rounded-md mb-2"
     />
     <h3 className="font-poppins text-lg font-semibold text-gray-900 dark:text-gray-100">
-      {product.name}
+      {product?.name}
     </h3>
-    <p className="font-inter text-md text-primary-light dark:text-primary-dark">
+    <p className="font-inter text-md text-indigo-600 dark:text-indigo-400 font-bold">
       $
-      {product.discountPrice
-        ? product.discountPrice.toFixed(2)
-        : product.originalPrice.toFixed(2)}
+      {Number(
+        product?.discountPrice ?? product?.discountedPrice ?? product?.originalPrice ?? 0
+      ).toFixed(2)}
     </p>
   </motion.div>
 );
@@ -96,107 +63,106 @@ const ProductCard = ({ product }) => (
 export default function ProductDetails() {
   const { slug } = useParams();
 
-  //   ##### Getting Product from Context API ######
-  const { products } = useContext(ProductContext);
-  const itemFromState = products.find((p) => p._id === slug) || {};
-  //   ###################################################
-
-  const { addToCart, removeFromCart, updateItemQuantity, cartItems } =
+  const { products = [] } = useContext(ProductContext) || {};
+  const { addToCart, removeFromCart, updateItemQuantity, cartItems = [] } =
     useContext(CartContext);
   const { addToWishlist } = useContext(WishlistContext);
-  const [product, setProduct] = useState(null);
+
+  const matchedProduct =
+    products.find((p) => p._id === slug || p.id === slug || p.sku === slug) ||
+    allProducts.find((p) => p._id === slug || p.id === slug || p.sku === slug) ||
+    allProducts[0];
 
   const mergeData = (data) => {
+    const item = data || matchedProduct;
     return {
-      _id: data._id,
-      name: data.name,
-      sku: data.sku,
-      originalPrice: data.originalPrice,
-      discountPrice: data.discountPrice,
-      images: data.images,
+      _id: item?._id || item?.id || "1",
+      name: item?.name || "Product Name",
+      sku: item?.sku || "SKU-101",
+      originalPrice: item?.originalPrice || 99.99,
+      discountPrice: item?.discountPrice || item?.discountedPrice || 79.99,
+      images: item?.images || [
+        {
+          url:
+            item?.image ||
+            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&fit=crop",
+        },
+      ],
       rating: 4.5,
-      description: `This high-performance mechanical keyboard is designed for gamers and professionals. It features a durable aluminum chassis, customizable RGB backlighting, and your choice of Cherry MX switches. The ergonomic design ensures comfortable use during long sessions, and its anti-ghosting technology guarantees every keystroke is registered accurately.
-        
-        **Key Features:**
-        * Durable aluminum construction
-        * Full RGB customizable backlighting
-        * Choice of Cherry MX mechanical switches
-        * Full N-key rollover and anti-ghosting
-        * Ergonomic key layout`,
+      description:
+        item?.description ||
+        `This premium product is designed for daily performance and style. It features durable construction and ergonomic engineering.`,
       specifications: {
-        dimensions: '17.5" x 5.5" x 1.5"',
-        weight: "2.5 lbs",
-        connectivity: "USB-C",
-        material: "Aluminum, ABS plastic",
-        switches: "Cherry MX Red, Blue, Brown",
+        dimensions: '10" x 5" x 2"',
+        weight: "1.2 lbs",
+        connectivity: "USB-C / Wireless",
+        material: "Premium composite",
       },
       variants: [
         {
           type: "color",
-          options: ["Black", "White"],
-        },
-        {
-          type: "switches",
-          options: ["Cherry MX Red", "Cherry MX Blue", "Cherry MX Brown"],
+          options: ["Black", "White", "Blue"],
         },
       ],
-      stock: 25,
+      stock: item?.stock || 25,
     };
   };
 
+  const [product, setProduct] = useState(() => mergeData(matchedProduct));
   const [reviews, setReviews] = useState([]);
   const [relatedProducts, setRelatedProducts] = useState([]);
-
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState("description");
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    const fetchProduct = async (slug) => {
+    const fetchProduct = async () => {
+      setReviews(await fetchReviews());
+      setRelatedProducts(products.slice(0, 4));
+
+      if (!VITE_BACKEND_URL) {
+        setProduct(mergeData(matchedProduct));
+        setLoading(false);
+        return;
+      }
+
       try {
         const response = await axios.get(
           `${VITE_BACKEND_URL}/products/${slug}`
         );
-        const { data } = response;
-        const fetchedItem = mergeData(data.product);
-        setLoading(false);
-        setProduct(fetchedItem);
-        setReviews(await fetchReviews());
-        setRelatedProducts(await fetchRelatedProducts());
-        const cartItem = cartItems.find((item) => item._id === fetchedItem._id);
-        if (cartItem) {
-          setQuantity(cartItem.quantity);
+        if (response.data && response.data.product) {
+          const fetchedItem = mergeData(response.data.product);
+          setProduct(fetchedItem);
+          const cartItem = cartItems.find(
+            (item) => item._id === fetchedItem._id
+          );
+          if (cartItem) {
+            setQuantity(cartItem.quantity);
+          }
         }
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        console.warn("Could not fetch product from backend, using fallback data");
+        setProduct(mergeData(matchedProduct));
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (Object.entries(itemFromState) > 0) {
-      setProduct(mergeData(itemFromState));
-      setLoading(false);
-      return;
-    }
+    fetchProduct();
+  }, [slug, products]);
 
-    fetchProduct(slug);
-  }, []);
-
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (item) => {
     setQuantity((prev) => prev + 1);
-    addToCart(product);
-    // toast.success(`${product.name} added to cart.`);
+    addToCart(item || product);
   };
 
   const handleAddToWishlist = () => {
     addToWishlist(product);
-    // toast.success(`${product.name} added to wishlist.`);
   };
 
-  const handleRemoveFromCart = (product) => {
-    setQuantity((prev) => prev - 1);
-    removeFromCart(product);
-    // toast.success(`${product.name} removed from cart.`);
+  const handleRemoveFromCart = (item) => {
+    setQuantity((prev) => Math.max(1, prev - 1));
+    removeFromCart(item || product);
   };
 
   if (loading) {
@@ -209,7 +175,7 @@ export default function ProductDetails() {
 
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-screen text-error-light dark:text-error-dark">
+      <div className="flex justify-center items-center min-h-screen text-red-500">
         Error: {error}
       </div>
     );
@@ -231,8 +197,8 @@ export default function ProductDetails() {
           Explore Similar Items
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {products.slice(0, 5).map((product) => (
-            <ProductCard key={product._id} product={product} />
+          {(products || allProducts).slice(0, 4).map((item) => (
+            <ProductCard key={item._id || item.id} product={item} />
           ))}
         </div>
       </div>

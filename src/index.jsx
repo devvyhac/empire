@@ -7,17 +7,20 @@ import { AuthContextProvider } from "./context/AuthContext.jsx";
 import { CartContextProvider } from "./context/CartContext.jsx";
 import { ProductContextProvider } from "./context/ProductContext.jsx";
 import { WishlistContextProvider } from "./context/WishlistContext.jsx";
+import { ThemeContextProvider } from "./context/ThemeContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <AuthContextProvider>
-      <CartContextProvider>
-        <ProductContextProvider>
-          <WishlistContextProvider>
-            <App />
-          </WishlistContextProvider>
-        </ProductContextProvider>
-      </CartContextProvider>
-    </AuthContextProvider>
+    <ThemeContextProvider>
+      <AuthContextProvider>
+        <CartContextProvider>
+          <ProductContextProvider>
+            <WishlistContextProvider>
+              <App />
+            </WishlistContextProvider>
+          </ProductContextProvider>
+        </CartContextProvider>
+      </AuthContextProvider>
+    </ThemeContextProvider>
   </BrowserRouter>
 );

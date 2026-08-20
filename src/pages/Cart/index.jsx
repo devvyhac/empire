@@ -178,7 +178,7 @@ const Cart = () => {
                       placeholder="Enter code"
                       value={promoCode}
                       onChange={(e) => setPromoCode(e.target.value)}
-                      className="pl-2 flex-grow rounded-l-md border-gray-300 dark:border-gray-700 shadow-sm sm:text-sm dark:bg-gray-white dark:text-gray-900"
+                      className="pl-2 flex-grow rounded-l-md border border-gray-300 dark:border-gray-700 shadow-sm sm:text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                     />
                     <motion.button
                       type="button"

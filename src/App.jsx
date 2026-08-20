@@ -29,17 +29,20 @@ import ProfileProtected from "./pages/Protected/ProtectedProfile.jsx";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useTheme } from "./hooks/useTheme.js";
 
 // import Shipping from "./pages/Shipping";
 // import CookiePolicy from "./pages/CookiePolicy";
 // import Accessibility from "./pages/Accessibility";
 
 function App() {
+  const { isDarkMode } = useTheme();
+
   return (
-    <div className="App bg-white min-h-screen">
+    <div className="App bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-200">
       <ScrollToTop />
       <Header />
-      <ToastContainer />
+      <ToastContainer theme={isDarkMode ? "dark" : "light"} />
       <Routes>
         <Route path="/" exact element={<Home />} />
         <Route path="/about" element={<About />} />

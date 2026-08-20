@@ -202,9 +202,11 @@ export default function SignUpPage() {
                     id="firstName"
                     value={formData.firstName}
                     onChange={handleChange}
-                    className={`mt-1  block w-full p-3 text-xl rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors ${
-                      errors.firstName ? "border-red-500" : ""
-                    }`}
+                    className={`mt-1 block w-full p-3 text-base rounded-lg border ${
+                      errors.firstName
+                        ? "border-red-500"
+                        : "border-gray-300 dark:border-gray-700"
+                    } shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500`}
                   />
                   {errors.firstName && (
                     <p className="mt-1 text-sm text-red-500">
@@ -225,9 +227,11 @@ export default function SignUpPage() {
                     id="lastName"
                     value={formData.lastName}
                     onChange={handleChange}
-                    className={`mt-1  block w-full p-3 text-xl rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors ${
-                      errors.lastName ? "border-red-500" : ""
-                    }`}
+                    className={`mt-1 block w-full p-3 text-base rounded-lg border ${
+                      errors.lastName
+                        ? "border-red-500"
+                        : "border-gray-300 dark:border-gray-700"
+                    } shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500`}
                   />
                   {errors.lastName && (
                     <p className="mt-1 text-sm text-red-500">
@@ -250,9 +254,11 @@ export default function SignUpPage() {
                   id="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`mt-1  block w-full p-3 text-xl rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors ${
-                    errors.email ? "border-red-500" : ""
-                  }`}
+                  className={`mt-1 block w-full p-3 text-base rounded-lg border ${
+                    errors.email
+                      ? "border-red-500"
+                      : "border-gray-300 dark:border-gray-700"
+                  } shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500`}
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-500">{errors.email}</p>
@@ -272,9 +278,11 @@ export default function SignUpPage() {
                   id="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`mt-1  block w-full p-3 text-xl rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors ${
-                    errors.password ? "border-red-500" : ""
-                  }`}
+                  className={`mt-1 block w-full p-3 text-base rounded-lg border ${
+                    errors.password
+                      ? "border-red-500"
+                      : "border-gray-300 dark:border-gray-700"
+                  } shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500`}
                 />
                 {errors.password && (
                   <p className="mt-1 text-sm text-red-500">{errors.password}</p>
@@ -294,9 +302,11 @@ export default function SignUpPage() {
                   id="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className={`mt-1  block w-full p-3 text-xl rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors ${
-                    errors.confirmPassword ? "border-red-500" : ""
-                  }`}
+                  className={`mt-1 block w-full p-3 text-base rounded-lg border ${
+                    errors.confirmPassword
+                      ? "border-red-500"
+                      : "border-gray-300 dark:border-gray-700"
+                  } shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500`}
                 />
                 {errors.confirmPassword && (
                   <p className="mt-1 text-sm text-red-500">

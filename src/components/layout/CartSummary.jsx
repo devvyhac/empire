@@ -85,7 +85,7 @@ const CartSummary = ({ children }) => {
       {/* Conditional rendering for the dropdown cart with animations */}
       {isVisible && (
         <div
-          className={`absolute top-full right-0 mt-3 w-80 bg-white rounded-xl shadow-2xl overflow-hidden z-20 
+          className={`absolute top-full right-0 mt-3 w-80 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-2xl overflow-hidden z-20 
               transform transition-all duration-300 ease-in-out
               ${
                 isAnimating
@@ -94,12 +94,12 @@ const CartSummary = ({ children }) => {
               }`}
         >
           <div className="p-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">
               Shopping Cart
             </h3>
 
             {/* List of cart items */}
-            <ul className="divide-y divide-gray-200">
+            <ul className="divide-y divide-gray-200 dark:divide-gray-700">
               {cartItems.length > 0 ? (
                 cartItems.map((item, index) => (
                   <li
@@ -107,22 +107,26 @@ const CartSummary = ({ children }) => {
                     className="py-3 flex items-center justify-between"
                   >
                     <img
-                      src={item.images[0].url}
-                      alt={item.name}
+                      src={
+                        item?.images?.[0]?.url ||
+                        item?.image ||
+                        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&fit=crop"
+                      }
+                      alt={item?.name || "Product"}
                       className="w-12 h-12 object-cover rounded-md mr-3 flex-shrink-0"
                     />
 
                     <div className="flex-grow">
-                      <p className="text-sm font-medium text-gray-700">
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
                         {item.name}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         Qty: {item.quantity}
                       </p>
                     </div>
 
                     <div className="flex items-center">
-                      <p className="text-sm font-semibold text-gray-900 mr-2">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mr-2">
                         $
                         {item.discountPrice
                           ? item.discountPrice.toFixed(2)
@@ -139,19 +143,19 @@ const CartSummary = ({ children }) => {
                   </li>
                 ))
               ) : (
-                <li className="py-4 text-center text-gray-500">
+                <li className="py-4 text-center text-gray-500 dark:text-gray-400">
                   Your cart is empty.
                 </li>
               )}
             </ul>
 
             {/* Cart total and checkout button */}
-            <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <div className="flex justify-between items-center mb-4">
-                <span className="text-base font-semibold text-gray-800">
+                <span className="text-base font-semibold text-gray-800 dark:text-gray-200">
                   Total:
                 </span>
-                <span className="text-base font-bold text-gray-900">
+                <span className="text-base font-bold text-gray-900 dark:text-gray-100">
                   ${cartTotal.toFixed(2)}
                 </span>
               </div>
@@ -164,12 +168,13 @@ const CartSummary = ({ children }) => {
                     Checkout
                   </Link>
                 ) : (
-                  <Link
+                  <button
+                    type="button"
                     onClick={() => toast.error("Your cart is empty!")}
-                    className="disabled flex items-center justify-center w-full py-2 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600 transition-colors"
+                    className="flex items-center justify-center w-full py-2 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600 transition-colors"
                   >
                     Checkout
-                  </Link>
+                  </button>
                 )}
               </span>
             </div>

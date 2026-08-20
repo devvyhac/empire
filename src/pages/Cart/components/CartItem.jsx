@@ -14,8 +14,12 @@ const CartItem = ({ item }) => {
       <div className="flex-shrink-0">
         <img
           className="h-20 w-20 object-cover rounded-md"
-          src={item.images[0].url}
-          alt={item.name}
+          src={
+            item?.images?.[0]?.url ||
+            item?.image ||
+            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&fit=crop"
+          }
+          alt={item?.name || "Product"}
         />
       </div>
 

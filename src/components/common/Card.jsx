@@ -1,6 +1,6 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useContext, use, useEffect } from "react";
-import { Heart, ShoppingCart, ShoppingBag } from "lucide-react";
+import { motion } from "framer-motion";
+import { useState, useContext } from "react";
+import { Heart, ShoppingBag } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -10,23 +10,17 @@ import { WishlistContext } from "../../context/WishlistContext";
 
 // Reusable ProductCard component for the grid
 export const ProductCard = ({ product }) => {
-  const { slug } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
   const { isLoggedIn } = useContext(AuthContext);
-  const { addToWishlist, removeFromWishlist } = useContext(WishlistContext);
+  const { addToWishlist, removeFromWishlist, wishlistItems = [] } =
+    useContext(WishlistContext) || {};
 
-  // State to manage the heart icon's fill status
-  const [isWishlisted, setIsWishlisted] = useState(
-    product._id
-      ? use(WishlistContext).wishlistItems.some(
-          (item) => item._id === product._id
-        )
-      : false
+  const isWishlisted = Boolean(
+    product?._id && wishlistItems.some((item) => item._id === product._id)
   );
 
   const handleBuy = () => {
-    product.quantity += 1;
     addToCart(product);
     if (isLoggedIn) {
       navigate("/checkout");
@@ -34,11 +28,24 @@ export const ProductCard = ({ product }) => {
     }
     toast.info("Please log in to proceed to checkout");
   };
+
   const handleAddToCart = () => {
-    toast.success(`${product.name} Added to Cart`);
-    product.quantity += 1;
+    toast.success(`${product.name || "Item"} Added to Cart`);
     addToCart(product);
   };
+
+  const categoryName =
+    typeof product?.category === "object"
+      ? product?.category?.name
+      : product?.category || "General";
+
+  const imageUrl =
+    product?.images?.[0]?.url ||
+    product?.image ||
+    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&fit=crop";
+
+  const price =
+    product?.discountPrice ?? product?.discountedPrice ?? product?.originalPrice ?? 0;
 
   return (
     <motion.div
@@ -47,7 +54,7 @@ export const ProductCard = ({ product }) => {
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
       {/* Discount/Special Tag */}
-      {product.tag && (
+      {product?.tag && (
         <span
           className={`absolute top-4 left-4 z-10 text-white text-xs font-bold px-2 py-1 rounded-full ${
             product.tag === "-50%" ? "bg-red-500" : "bg-[#ff69b4]"
@@ -65,7 +72,6 @@ export const ProductCard = ({ product }) => {
           } else {
             addToWishlist(product);
           }
-          setIsWishlisted(!isWishlisted);
         }}
         className={`absolute top-4 right-4 z-10 p-1 flex items-center justify-center transition-colors ${
           isWishlisted ? "text-red-500" : "text-gray-500 dark:text-gray-400"
@@ -81,12 +87,12 @@ export const ProductCard = ({ product }) => {
 
       {/* Image with zoom effect */}
       <div
-        onClick={() => navigate(`/product/${product._id}`)}
-        className="relative w-full h-48 overflow-hidden rounded-t-xl mb-4"
+        onClick={() => navigate(`/product/${product?._id || product?.id}`)}
+        className="relative w-full h-48 overflow-hidden rounded-t-xl mb-4 cursor-pointer"
       >
         <motion.img
-          src={product.images[0].url}
-          alt={product.name}
+          src={imageUrl}
+          alt={product?.name || "Product"}
           className="w-full h-full object-cover"
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.3 }}
@@ -96,49 +102,50 @@ export const ProductCard = ({ product }) => {
       {/* Product Info - always visible title and category */}
       <div className="px-4 pt-0 pb-4">
         <h3 className="font-poppins text-lg font-semibold text-gray-900 dark:text-gray-100">
-          {product.name}
+          {product?.name}
         </h3>
         <p className="font-inter text-sm text-gray-500 dark:text-gray-400 mt-1">
-          {product.category.name}
+          {categoryName}
         </p>
 
         {/* Price Display - fades out on hover */}
         <div className="flex items-center space-x-2 my-2 transition-opacity duration-300 group-hover:opacity-0">
-          {product.discountPrice ? (
+          {product?.discountPrice ? (
             <>
               <p className="font-inter text-xl font-bold text-gray-900 dark:text-gray-100">
-                ${product.discountPrice.toFixed(2)}
+                ${Number(product.discountPrice).toFixed(2)}
               </p>
               <p className="font-inter text-sm text-gray-400 dark:text-gray-500 line-through">
-                ${product.originalPrice.toFixed(2)}
+                ${Number(product.originalPrice).toFixed(2)}
               </p>
             </>
           ) : (
             <p className="font-inter text-xl font-bold text-gray-900 dark:text-gray-100">
-              ${product.originalPrice.toFixed(2)}
+              ${Number(price).toFixed(2)}
             </p>
           )}
         </div>
       </div>
 
       {/* Buy and Add to Cart Buttons - hidden by default, slides up on hover */}
-      <div className="absolute inset-x-0 bottom-0 px-4 pb-4 flex space-x-2 bg-gray-50 dark:bg-gray-800 transition-transform duration-300 transform md:translate-y-full md:group-hover:translate-y-0">
+      <div className="absolute inset-x-0 bottom-0 px-4 pb-4 pt-2 flex space-x-2 bg-gray-50/95 dark:bg-gray-800/95 backdrop-blur-sm transition-all duration-300 transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto">
         <motion.button
           onClick={handleBuy}
-          className="w-full py-2 rounded-lg bg-[#3a41a3] text-white flex items-center justify-center transition-colors"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="w-full py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center text-sm font-medium transition-colors shadow-sm"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
           Buy{" "}
-          <span className="ml-2 font-bold">
-            ${(product.discountPrice || product.originalPrice).toFixed(2)}
+          <span className="ml-1.5 font-bold">
+            ${Number(price).toFixed(2)}
           </span>
         </motion.button>
         <motion.button
           onClick={handleAddToCart}
-          className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 transition-colors shadow-sm flex items-center justify-center"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          aria-label="Add to cart"
         >
           <ShoppingBag className="w-5 h-5" />
         </motion.button>

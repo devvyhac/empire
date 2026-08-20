@@ -72,31 +72,35 @@ const WishlistItemCard = ({ item, onRemove, onAddToCart }) => {
 
       {/* Product Image */}
       <img
-        src={item.images[0].url}
-        alt={item.name}
+        src={
+          item?.images?.[0]?.url ||
+          item?.image ||
+          "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&h=500&fit=crop"
+        }
+        alt={item?.name || "Product"}
         className="w-full h-48 object-cover rounded-lg mb-4"
       />
 
       {/* Product Info */}
       <div className="flex-grow">
-        <h3 className="font-poppins text-lg font-semibold">{item.name}</h3>
+        <h3 className="font-poppins text-lg font-semibold">{item?.name}</h3>
         <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-          SKU: {item.sku}
+          SKU: {item?.sku || "SKU-001"}
         </p>
 
         <div className="flex items-center space-x-2 my-2">
-          {item.discountPrice ? (
+          {item?.discountPrice ? (
             <>
               <p className="font-bold text-xl text-gray-900 dark:text-gray-100">
-                ${item.discountPrice.toFixed(2)}
+                ${Number(item.discountPrice).toFixed(2)}
               </p>
               <p className="text-sm text-gray-400 dark:text-gray-500 line-through">
-                ${item.originalPrice.toFixed(2)}
+                ${Number(item.originalPrice || 0).toFixed(2)}
               </p>
             </>
           ) : (
             <p className="font-bold text-xl text-gray-900 dark:text-gray-100">
-              ${item.originalPrice.toFixed(2)}
+              ${Number(item?.originalPrice || item?.price || 0).toFixed(2)}
             </p>
           )}
         </div>

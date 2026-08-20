@@ -5,7 +5,7 @@ const ShippingSectionForm = ({ formData, handleInputChange, errors }) => {
     <div className="space-y-4">
       <div>
         <label
-          htmlFor="shipping-fullName"
+          htmlFor="shipping-email"
           className="block text-sm font-medium text-gray-700 dark:text-gray-300"
         >
           Email
@@ -16,15 +16,15 @@ const ShippingSectionForm = ({ formData, handleInputChange, errors }) => {
           name="email"
           value={formData.email}
           onChange={(e) => handleInputChange(e)}
-          className={`p-2 focus:outline-gray-100 mt-1 block w-full rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors ${
+          className={`p-2.5 mt-1 block w-full rounded-lg border shadow-sm text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${
             errors.email
-              ? "border-error-light dark:border-error-dark"
+              ? "border-red-500"
               : "border-gray-300 dark:border-gray-700"
           }`}
         />
         {errors.email && (
           <p
-            className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            className="p-3 mt-2 text-sm text-red-700 rounded-lg bg-red-50 dark:bg-red-950/50 dark:text-red-400 border border-red-200 dark:border-red-800"
             role="alert"
           >
             {errors.email}
@@ -45,15 +45,15 @@ const ShippingSectionForm = ({ formData, handleInputChange, errors }) => {
             name="address"
             value={formData.address}
             onChange={(e) => handleInputChange(e)}
-            className={`p-2 focus:outline-gray-100 mt-1 block w-full rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors ${
+            className={`p-2.5 mt-1 block w-full rounded-lg border shadow-sm text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${
               errors.address
-                ? "border-error-light dark:border-error-dark"
+                ? "border-red-500"
                 : "border-gray-300 dark:border-gray-700"
             }`}
           />
           {errors.address && (
             <p
-              className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+              className="p-3 mt-2 text-sm text-red-700 rounded-lg bg-red-50 dark:bg-red-950/50 dark:text-red-400 border border-red-200 dark:border-red-800"
               role="alert"
             >
               {errors.address}
@@ -73,15 +73,15 @@ const ShippingSectionForm = ({ formData, handleInputChange, errors }) => {
             name="country"
             value={formData.country}
             onChange={(e) => handleInputChange(e)}
-            className={`p-2 focus:outline-gray-100 mt-1 block w-full rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors ${
+            className={`p-2.5 mt-1 block w-full rounded-lg border shadow-sm text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${
               errors.country
-                ? "border-error-light dark:border-error-dark"
+                ? "border-red-500"
                 : "border-gray-300 dark:border-gray-700"
             }`}
           />
           {errors.country && (
             <p
-              className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+              className="p-3 mt-2 text-sm text-red-700 rounded-lg bg-red-50 dark:bg-red-950/50 dark:text-red-400 border border-red-200 dark:border-red-800"
               role="alert"
             >
               {errors.country}
@@ -103,15 +103,15 @@ const ShippingSectionForm = ({ formData, handleInputChange, errors }) => {
             name="city"
             value={formData.city}
             onChange={(e) => handleInputChange(e)}
-            className={`p-2 focus:outline-gray-100 mt-1 block w-full rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors ${
+            className={`p-2.5 mt-1 block w-full rounded-lg border shadow-sm text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${
               errors.city
-                ? "border-error-light dark:border-error-dark"
+                ? "border-red-500"
                 : "border-gray-300 dark:border-gray-700"
             }`}
           />
           {errors.city && (
             <p
-              className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+              className="p-3 mt-2 text-sm text-red-700 rounded-lg bg-red-50 dark:bg-red-950/50 dark:text-red-400 border border-red-200 dark:border-red-800"
               role="alert"
             >
               {errors.city}
@@ -131,15 +131,15 @@ const ShippingSectionForm = ({ formData, handleInputChange, errors }) => {
             name="state"
             value={formData.state}
             onChange={(e) => handleInputChange(e)}
-            className={`mt-1 block w-full rounded-md shadow-sm sm:text-lg p-2 focus:outline-gray-100 dark:bg-gray-900 dark:text-gray-100 transition-colors ${
+            className={`p-2.5 mt-1 block w-full rounded-lg border shadow-sm text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${
               errors.state
-                ? "border-error-light dark:border-error-dark"
+                ? "border-red-500"
                 : "border-gray-300 dark:border-gray-700"
             }`}
           />
           {errors.state && (
             <p
-              className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+              className="p-3 mt-2 text-sm text-red-700 rounded-lg bg-red-50 dark:bg-red-950/50 dark:text-red-400 border border-red-200 dark:border-red-800"
               role="alert"
             >
               {errors.state}
@@ -159,15 +159,15 @@ const ShippingSectionForm = ({ formData, handleInputChange, errors }) => {
             name="zipCode"
             value={formData.zipCode}
             onChange={(e) => handleInputChange(e)}
-            className={`mt-1 block w-full rounded-md shadow-sm sm:text-lg p-2 focus:outline-gray-100 dark:bg-gray-900 dark:text-gray-100 transition-colors ${
+            className={`p-2.5 mt-1 block w-full rounded-lg border shadow-sm text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${
               errors.zipCode
-                ? "border-error-light dark:border-error-dark"
+                ? "border-red-500"
                 : "border-gray-300 dark:border-gray-700"
             }`}
           />
           {errors.zipCode && (
             <p
-              className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+              className="p-3 mt-2 text-sm text-red-700 rounded-lg bg-red-50 dark:bg-red-950/50 dark:text-red-400 border border-red-200 dark:border-red-800"
               role="alert"
             >
               {errors.zipCode}

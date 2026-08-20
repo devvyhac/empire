@@ -16,14 +16,27 @@ import { ProductContext } from "../../context/ProductContext.jsx";
 
 import { FilterSection } from "./components/FilterSection.jsx";
 
+const getCategoryName = (item) =>
+  typeof item?.category === "object"
+    ? item?.category?.name || ""
+    : typeof item?.category === "string"
+    ? item.category
+    : "";
+
 const Catalog = () => {
-  const { products: rawProducts, productLoading } = useContext(ProductContext);
+  const { products: rawProducts = [], productLoading = false } =
+    useContext(ProductContext) || {};
+
+  const safeRawProducts = Array.isArray(rawProducts) ? rawProducts : [];
 
   const categories = [
     "All",
-    ...new Set(rawProducts.map((item) => item.category.name)),
+    ...new Set(safeRawProducts.map(getCategoryName).filter(Boolean)),
   ];
-  const brands = ["All", ...new Set(rawProducts.map((item) => item.brand))];
+  const brands = [
+    "All",
+    ...new Set(safeRawProducts.map((item) => item?.brand).filter(Boolean)),
+  ];
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,26 +58,40 @@ const Catalog = () => {
   });
 
   const productsPerPage = 6;
-  const totalPages = Math.ceil(rawProducts.length / productsPerPage);
+  const totalPages = Math.max(
+    1,
+    Math.ceil(safeRawProducts.length / productsPerPage)
+  );
 
   useEffect(() => {
     if (productLoading) {
       return;
     }
     setLoading(true);
-    let filteredProducts = rawProducts.filter((product) => {
+    let filteredProducts = safeRawProducts.filter((product) => {
+      const catName = getCategoryName(product);
       const matchesSearch =
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchQuery.toLowerCase());
+        (product?.name || "")
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        catName.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory =
-        filters.category === "All" || product.category === filters.category;
+        filters.category === "All" || catName === filters.category;
       const matchesBrand =
-        filters.brand === "All" || product.brand === filters.brand;
+        filters.brand === "All" || product?.brand === filters.brand;
+      const price =
+        product?.discountPrice ??
+        product?.discountedPrice ??
+        product?.originalPrice ??
+        0;
       const matchesPrice =
-        product.originalPrice >= filters.priceRange[0] &&
-        product.originalPrice <= filters.priceRange[1];
-      const matchesColor = filters.color === "All" || filters.color === "Blue";
-      const matchesInStock = !filters.inStock || product.inStock;
+        price >= filters.priceRange[0] && price <= filters.priceRange[1];
+      const matchesColor =
+        filters.color === "All" ||
+        product?.color === filters.color ||
+        filters.color === "Blue";
+      const matchesInStock =
+        !filters.inStock || product?.inStock || (product?.stock && product.stock > 0);
       return (
         matchesSearch &&
         matchesCategory &&
@@ -77,10 +104,18 @@ const Catalog = () => {
 
     switch (sortOrder) {
       case "price_asc":
-        filteredProducts.sort((a, b) => a.originalPrice - b.originalPrice);
+        filteredProducts.sort(
+          (a, b) =>
+            (a.discountPrice ?? a.originalPrice ?? 0) -
+            (b.discountPrice ?? b.originalPrice ?? 0)
+        );
         break;
       case "price_desc":
-        filteredProducts.sort((a, b) => b.originalPrice - a.originalPrice);
+        filteredProducts.sort(
+          (a, b) =>
+            (b.discountPrice ?? b.originalPrice ?? 0) -
+            (a.discountPrice ?? a.originalPrice ?? 0)
+        );
         break;
       case "rating_desc":
       default:
@@ -89,7 +124,7 @@ const Catalog = () => {
 
     setProducts(filteredProducts);
     setLoading(false);
-  }, [searchQuery, filters, sortOrder, rawProducts]);
+  }, [searchQuery, filters, sortOrder, safeRawProducts, productLoading]);
 
   const handlePriceRangeChange = (e) => {
     const { name, value } = e.target;
@@ -116,7 +151,7 @@ const Catalog = () => {
   return (
     <div className="container mx-auto min-h-screen bg-white dark:bg-gray-900 font-inter sm:px-4 text-gray-900 dark:text-gray-100">
       {/* Sticky Search Bar */}
-      <div className=" dark:bg-gray-800 p-4 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
         <div className="flex items-center w-full md:w-auto">
           <h1 className="font-poppins text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 flex-shrink-0">
             <span className="text-base text-gray-400">Home/ </span>Catalog
@@ -139,7 +174,7 @@ const Catalog = () => {
             placeholder="Search products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#4c51bf]"
+            className="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
 
@@ -148,14 +183,14 @@ const Catalog = () => {
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className="w-full py-2 px-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#4c51bf] appearance-none"
+            className="w-full py-2 pl-4 pr-10 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none"
           >
             <option value="newness">Sort by: Newest</option>
             <option value="price_asc">Sort by: Price, Low to High</option>
             <option value="price_desc">Sort by: Price, High to Low</option>
             <option value="rating_desc">Sort by: Rating</option>
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 dark:text-gray-400">
             <ChevronDown className="w-4 h-4" />
           </div>
         </div>
@@ -275,8 +310,8 @@ const Catalog = () => {
                 }
                 className={`relative w-10 h-5 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
                   filters.inStock
-                    ? "bg-[#4c51bf]"
-                    : "bg-gray-300 dark:bg-gray-600"
+                    ? "bg-indigo-600"
+                    : "bg-gray-300 dark:bg-gray-700"
                 }`}
               >
                 <div
@@ -289,7 +324,7 @@ const Catalog = () => {
 
             {/* Filter Count Button */}
             <motion.button
-              className="mt-6 w-full py-3 rounded-lg bg-[#4c51bf] text-white font-bold"
+              className="mt-6 w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-colors shadow-sm"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               disabled={loading}
@@ -322,8 +357,8 @@ const Catalog = () => {
                   disabled={currentPage === 1}
                   className={`p-2 rounded-lg text-white ${
                     currentPage === 1
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-[#4c51bf] dark:bg-[#3a41a3]"
+                      ? "bg-gray-400 dark:bg-gray-700 cursor-not-allowed opacity-50"
+                      : "bg-indigo-600 hover:bg-indigo-700"
                   }`}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -334,10 +369,10 @@ const Catalog = () => {
                   <motion.button
                     key={i}
                     onClick={() => handlePageChange(i + 1)}
-                    className={`py-2 px-4 rounded-lg font-bold ${
+                    className={`py-2 px-4 rounded-lg font-bold transition-colors ${
                       currentPage === i + 1
-                        ? "bg-[#4c51bf] dark:bg-[#3a41a3] text-white"
-                        : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                        ? "bg-indigo-600 text-white shadow-sm"
+                        : "bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
                     }`}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -350,8 +385,8 @@ const Catalog = () => {
                   disabled={currentPage === totalPages}
                   className={`p-2 rounded-lg text-white ${
                     currentPage === totalPages
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-[#4c51bf] dark:bg-[#3a41a3]"
+                      ? "bg-gray-400 dark:bg-gray-700 cursor-not-allowed opacity-50"
+                      : "bg-indigo-600 hover:bg-indigo-700"
                   }`}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -377,37 +412,40 @@ const Catalog = () => {
       <AnimatePresence>
         {isFiltersModalOpen && (
           <motion.div
-            className="md:hidden fixed inset-0 z-[100] bg-black bg-opacity-50 flex items-center justify-center"
+            className="md:hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsFiltersModalOpen(false)}
           >
             <motion.div
-              className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-11/12 max-w-sm relative"
-              initial={{ scale: 0.9, y: 50 }}
+              className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-2xl w-full max-w-sm max-h-[85vh] overflow-y-auto border border-gray-100 dark:border-gray-700 relative"
+              initial={{ scale: 0.9, y: 30 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 50 }}
+              exit={{ scale: 0.9, y: 30 }}
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={() => setIsFiltersModalOpen(false)}
-                className="absolute top-4 right-4 p-1 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                aria-label="Close filters"
               >
                 <X className="w-5 h-5" />
               </button>
-              <h2 className="font-poppins text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              <h2 className="font-poppins text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">
                 Refine Your Search
               </h2>
-              <p className="font-inter text-base text-gray-700 dark:text-gray-300 mb-6">
+              <p className="font-inter text-sm text-gray-600 dark:text-gray-400 mb-6">
                 Narrow down by category, price, or brand.
               </p>
 
               <div className="space-y-6">
                 {/* Category Filter */}
                 <div>
-                  <h3 className="font-semibold mb-2">Category</h3>
-                  <div className="flex flex-col space-y-2">
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                    Category
+                  </h3>
+                  <div className="flex flex-col space-y-2.5 max-h-44 overflow-y-auto pr-1">
                     {categories.map((category) => (
                       <CustomCheckbox
                         key={category}
@@ -424,30 +462,36 @@ const Catalog = () => {
 
                 {/* Price Range Filter */}
                 <div>
-                  <h3 className="font-semibold mb-4">Price Range</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                    Price Range ($)
+                  </h3>
                   <div className="flex items-center space-x-2">
                     <input
                       type="number"
                       name="min"
                       value={filters.priceRange[0]}
                       onChange={handlePriceRangeChange}
-                      className="w-1/2 p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                      className="w-1/2 p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      placeholder="Min"
                     />
-                    <span>-</span>
+                    <span className="text-gray-500 dark:text-gray-400 font-bold">-</span>
                     <input
                       type="number"
                       name="max"
                       value={filters.priceRange[1]}
                       onChange={handlePriceRangeChange}
-                      className="w-1/2 p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                      className="w-1/2 p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      placeholder="Max"
                     />
                   </div>
                 </div>
 
                 {/* Brand Filter */}
                 <div>
-                  <h3 className="font-semibold mb-2">Brand</h3>
-                  <div className="flex flex-col space-y-2">
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                    Brand
+                  </h3>
+                  <div className="flex flex-col space-y-2.5 max-h-44 overflow-y-auto pr-1">
                     {brands.map((brand) => (
                       <CustomCheckbox
                         key={brand}
@@ -464,7 +508,7 @@ const Catalog = () => {
               </div>
               <button
                 onClick={() => setIsFiltersModalOpen(false)}
-                className="w-full mt-6 py-2 rounded-lg bg-[#4c51bf] dark:bg-[#3a41a3] text-white font-bold"
+                className="w-full mt-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition-colors"
               >
                 Apply Filters
               </button>

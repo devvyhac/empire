@@ -14,8 +14,6 @@ import {
 // Main App component that orchestrates the entire page.
 // It holds the blog post data and renders all sub-components.
 export default function Blogs() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
   // Example data for blog posts. In a real application, this would be fetched from an API.
   const posts = [
     {
@@ -76,11 +74,7 @@ export default function Blogs() {
 
   // The main layout of the blog page. It uses flexbox for responsive layout on different screen sizes.
   return (
-    <div
-      className={`${
-        isDarkMode ? "dark" : ""
-      } bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen font-sans transition-colors duration-300`}
-    >
+    <div className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen font-sans transition-colors duration-300">
       <main className="container mx-auto px-4 py-8">
         {/* Featured post section at the top of the page */}
         <FeaturedPost post={posts[0]} />
@@ -101,7 +95,6 @@ export default function Blogs() {
           <Sidebar />
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
@@ -220,41 +213,4 @@ function Sidebar() {
   );
 }
 
-// Footer component with copyright and social links.
-function Footer() {
-  return (
-    <footer className="bg-gray-800 dark:bg-gray-950 text-white py-8">
-      <div className="container mx-auto px-4 text-center">
-        <p className="text-sm text-gray-400">
-          &copy; 2025 BlogPulse. All rights reserved.
-        </p>
-        <div className="flex justify-center space-x-6 mt-4">
-          <a
-            href="#"
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            <Twitter size={20} />
-          </a>
-          <a
-            href="#"
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            <Github size={20} />
-          </a>
-          <a
-            href="#"
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            <Linkedin size={20} />
-          </a>
-          <a
-            href="#"
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            <Dribbble size={20} />
-          </a>
-        </div>
-      </div>
-    </footer>
-  );
-}
+

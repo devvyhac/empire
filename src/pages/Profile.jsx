@@ -709,8 +709,8 @@ export default function App() {
   }, [activeTab]);
 
   return (
-    <main className="flex items-center justify-center min-h-auto bg-gray-100 dark:bg-gray-900 px-4 py-10 bg-white">
-      <div className="w-full container dark:bg-gray-800 rounded-xl px-8 md:px-10 transition-colors duration-300">
+    <main className="flex items-center justify-center min-h-auto bg-gray-100 dark:bg-gray-900 px-4 py-10 text-gray-900 dark:text-gray-100">
+      <div className="w-full container bg-white dark:bg-gray-800 rounded-xl p-6 md:p-10 shadow-md transition-colors duration-300">
         <div className="text-center mb-8">
           <h1 className="font-poppins text-4xl font-extrabold text-gray-900 dark:text-gray-100">
             Your Account
@@ -777,10 +777,11 @@ export default function App() {
             id="tab-select"
             value={activeTab}
             onChange={(e) => setActiveTab(e.target.value)}
-            className="block w-full p-3 rounded-md border-gray-300 dark:border-gray-700 shadow-sm dark:bg-gray-900 dark:text-gray-100 transition-colors"
+            className="block w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="settings">Settings</option>
             <option value="orders">Orders</option>
+            <option value="transactions">Transactions</option>
             <option value="addresses">Addresses</option>
             <option value="payments">Payments</option>
             {lastOrder && <option value="confirmation">Confirmation</option>}

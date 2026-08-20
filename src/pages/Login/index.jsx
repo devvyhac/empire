@@ -122,7 +122,8 @@ export default function LoginPage() {
                   id="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`mt-1  block w-full p-3 text-xl rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors`}
+                  className="mt-1 block w-full p-3 text-base rounded-lg border border-gray-300 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="name@example.com"
                 />
               </div>
 
@@ -139,7 +140,8 @@ export default function LoginPage() {
                   id="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`mt-1  block w-full p-3 text-lg rounded-md shadow-sm sm:text-lg dark:bg-gray-900 dark:text-gray-100 transition-colors`}
+                  className="mt-1 block w-full p-3 text-base rounded-lg border border-gray-300 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="••••••••"
                 />
               </div>
 

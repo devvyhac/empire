@@ -28,7 +28,7 @@ export default function AboutPage() {
   const y = useTransform(scrollY, [0, 500], [0, 200]);
 
   return (
-    <main className="flex-grow">
+    <main className="flex-grow min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       {/* Hero Section with Parallax Effect */}
       <div className="relative w-full h-[60vh] md:h-[80vh] overflow-hidden bg-gray-900 dark:bg-gray-800">
         <motion.div style={{ y }} className="absolute inset-0 w-full h-full">

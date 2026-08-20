@@ -15,14 +15,21 @@ export const AuthContextProvider = ({ children }) => {
   const [orders, setOrders] = useState(null);
 
   const checkAuth = async () => {
+    if (!VITE_GET_USER_URL) {
+      setUserData(null);
+      return;
+    }
+
     try {
       const res = await axios.get(VITE_GET_USER_URL, {
         withCredentials: true,
       });
 
-      setUserData(res.data.user);
+      if (res.data && res.data.user) {
+        setUserData(res.data.user);
+      }
     } catch (error) {
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401 && VITE_REFRESH_TOKEN_URL) {
         try {
           const refreshRes = await axios.post(
             VITE_REFRESH_TOKEN_URL,
@@ -31,35 +38,35 @@ export const AuthContextProvider = ({ children }) => {
               withCredentials: true,
             }
           );
-          console.log(refreshRes);
-          setUserData(refreshRes);
+          setUserData(refreshRes.data?.user || null);
         } catch (refreshError) {
           setUserData(null);
         }
+      } else {
+        setUserData(null);
       }
     }
   };
 
   const isLoggedIn = !!user;
+
   useEffect(() => {
     checkAuth();
   }, []);
 
   useEffect(() => {
     const fetchOrders = async () => {
+      if (!user || !VITE_PLACE_ORDER_URL) return;
       try {
-        if (user) {
-          const res = await axios.get(`${VITE_PLACE_ORDER_URL}/me`, {
-            withCredentials: true,
-          });
-
-          setOrders(res.data);
-        }
+        const res = await axios.get(`${VITE_PLACE_ORDER_URL}/me`, {
+          withCredentials: true,
+        });
+        setOrders(res.data);
       } catch (error) {
-        console.log(error);
+        console.warn("Could not fetch user orders:", error?.message);
       }
     };
-    
+
     fetchOrders();
   }, [user]);
 

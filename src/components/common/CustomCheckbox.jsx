@@ -11,7 +11,7 @@ export const CustomCheckbox = ({ id, label, isChecked, onChange }) => {
       <div
         className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-300 ${
           isChecked
-            ? "bg-[#4c51bf] border-[#4c51bf]"
+            ? "bg-[#3B82F6] border-[#3B82F6]"
             : "bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-700"
         }`}
       >
@@ -28,7 +28,10 @@ export const CustomCheckbox = ({ id, label, isChecked, onChange }) => {
           )}
         </AnimatePresence>
       </div>
-      <label htmlFor={id} className="text-sm cursor-pointer">
+      <label
+        htmlFor={id}
+        className="text-sm cursor-pointer text-gray-700 dark:text-gray-200"
+      >
         {label}
       </label>
     </div>
