@@ -26,7 +26,7 @@ import { getProductImage } from "../utils/productUtils.js";
 const DEFAULT_FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&auto=format&fit=crop&q=80";
 
-// Pre-defined demo orders with exact realistic item definitions
+// Pre-defined demo orders with distinct, rich items
 const sampleTrackingDatabase = {
   "ORD-9281": {
     orderId: "ORD-9281",
@@ -45,18 +45,18 @@ const sampleTrackingDatabase = {
     },
     items: [
       {
-        id: "item-1",
-        name: "Wireless Noise-Cancelling Headphones Pro",
+        id: "item-ord-9281-1",
+        name: allProducts[0]?.name || "Wireless Headphones",
         quantity: 1,
         price: 99.99,
-        image: "https://images.pexels.com/photos/3945667/pexels-photo-3945667.jpeg",
+        image: getProductImage(allProducts[0]),
       },
       {
-        id: "item-2",
-        name: "Fast Charging USB-C Dock 100W",
+        id: "item-ord-9281-2",
+        name: allProducts[2]?.name || "Handcrafted Wooden Chair",
         quantity: 1,
         price: 50.0,
-        image: "https://images.pexels.com/photos/4526407/pexels-photo-4526407.jpeg",
+        image: getProductImage(allProducts[2]),
       },
     ],
     timeline: [
@@ -114,11 +114,11 @@ const sampleTrackingDatabase = {
     },
     items: [
       {
-        id: "item-3",
-        name: "Ergonomic Mechanical Keyboard RGB",
+        id: "item-ord-8412-1",
+        name: allProducts[1]?.name || "Smart Watch X-1",
         quantity: 1,
         price: 89.5,
-        image: "https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg",
+        image: getProductImage(allProducts[1]),
       },
     ],
     timeline: [
@@ -176,11 +176,25 @@ const sampleTrackingDatabase = {
     },
     items: [
       {
-        id: "item-4",
-        name: "Ultra-Wide Gaming Monitor 34-inch",
+        id: "item-ord-7193-1",
+        name: allProducts[3]?.name || "Running Shoes Pro",
         quantity: 1,
-        price: 249.0,
-        image: "https://images.pexels.com/photos/777001/pexels-photo-777001.jpeg",
+        price: 95.0,
+        image: getProductImage(allProducts[3]),
+      },
+      {
+        id: "item-ord-7193-2",
+        name: allProducts[4]?.name || "Classic Denim Jacket",
+        quantity: 1,
+        price: 59.99,
+        image: getProductImage(allProducts[4]),
+      },
+      {
+        id: "item-ord-7193-3",
+        name: allProducts[5]?.name || "Espresso Machine 3000",
+        quantity: 1,
+        price: 94.01,
+        image: getProductImage(allProducts[5]),
       },
     ],
     timeline: [
@@ -223,69 +237,111 @@ const sampleTrackingDatabase = {
   },
 };
 
-// Helper to resolve product images, titles, and prices from any order payload schema
+// Helper to resolve product details from ANY schema format
+const resolveProductDetails = (rawItem, idx) => {
+  if (!rawItem) {
+    const p = allProducts[idx % allProducts.length];
+    return {
+      id: `item-${idx}`,
+      name: p?.name || `Package Item #${idx + 1}`,
+      image: getProductImage(p),
+      price: p?.discountPrice || p?.price || 49.99,
+      quantity: 1,
+    };
+  }
+
+  // 1. Check product reference
+  const prodRef = rawItem.product || rawItem;
+  let matchedProduct = null;
+
+  if (typeof prodRef === "string") {
+    matchedProduct = allProducts.find(
+      (p) =>
+        p._id === prodRef ||
+        p.id === prodRef ||
+        p.sku === prodRef ||
+        p.name?.toLowerCase() === prodRef.toLowerCase()
+    );
+  } else if (prodRef && typeof prodRef === "object") {
+    if (prodRef.name || prodRef.images || prodRef.image) {
+      matchedProduct = prodRef;
+    } else if (prodRef._id || prodRef.id) {
+      const pId = prodRef._id || prodRef.id;
+      matchedProduct = allProducts.find(
+        (p) => p._id === pId || p.id === pId
+      );
+    }
+  }
+
+  // 2. Also check if rawItem itself has an ID or name
+  if (!matchedProduct) {
+    const rawId = rawItem._id || rawItem.id;
+    if (rawId) {
+      matchedProduct = allProducts.find(
+        (p) => p._id === rawId || p.id === rawId
+      );
+    }
+  }
+
+  if (!matchedProduct && rawItem.name) {
+    matchedProduct = allProducts.find(
+      (p) => p.name?.toLowerCase() === rawItem.name?.toLowerCase()
+    );
+  }
+
+  // 3. Fallback to distinct product index
+  if (!matchedProduct) {
+    matchedProduct = allProducts[idx % allProducts.length];
+  }
+
+  // Extract distinct properties
+  const name =
+    rawItem.name ||
+    matchedProduct?.name ||
+    `Product Item #${idx + 1}`;
+
+  const image =
+    (typeof rawItem.image === "string" && rawItem.image.trim() ? rawItem.image.trim() : null) ||
+    getProductImage(matchedProduct, allProducts[idx % allProducts.length]?.image || DEFAULT_FALLBACK_IMAGE);
+
+  const price =
+    typeof rawItem.price === "number"
+      ? rawItem.price
+      : typeof rawItem.unitPrice === "number"
+      ? rawItem.unitPrice
+      : matchedProduct?.discountPrice || matchedProduct?.price || 49.99;
+
+  const quantity = Number(rawItem.quantity) || 1;
+
+  return {
+    id: rawItem.id || rawItem._id || `item-${idx}`,
+    name,
+    image,
+    price,
+    quantity,
+  };
+};
+
+// Helper to resolve all items in an order
 const resolveOrderItems = (rawItems, totalAmount, orderId) => {
   if (Array.isArray(rawItems) && rawItems.length > 0) {
-    return rawItems.map((rawItem, idx) => {
-      const rawProd = rawItem.product || rawItem;
-      let matchedProduct = null;
-
-      if (typeof rawProd === "string") {
-        matchedProduct = allProducts.find(
-          (p) => p._id === rawProd || p.id === rawProd
-        );
-      } else if (rawProd && typeof rawProd === "object") {
-        matchedProduct = rawProd;
-      }
-
-      if (!matchedProduct) {
-        matchedProduct = allProducts[idx % allProducts.length];
-      }
-
-      const name =
-        rawItem.name ||
-        matchedProduct?.name ||
-        `Item #${idx + 1}`;
-
-      const image =
-        (typeof rawItem.image === "string" && rawItem.image.trim()
-          ? rawItem.image.trim()
-          : null) ||
-        getProductImage(matchedProduct, DEFAULT_FALLBACK_IMAGE);
-
-      const price =
-        typeof rawItem.price === "number"
-          ? rawItem.price
-          : typeof rawItem.unitPrice === "number"
-          ? rawItem.unitPrice
-          : matchedProduct?.discountPrice || matchedProduct?.price || 49.99;
-
-      const quantity = Number(rawItem.quantity) || 1;
-
-      return {
-        id: rawItem.id || rawItem._id || `item-${idx}`,
-        name,
-        image,
-        price,
-        quantity,
-      };
-    });
+    return rawItems.map((item, idx) => resolveProductDetails(item, idx));
   }
 
-  // If orderId matches a demo order in database
   if (orderId && sampleTrackingDatabase[orderId]?.items) {
-    return sampleTrackingDatabase[orderId].items;
+    return sampleTrackingDatabase[orderId].items.map((item, idx) =>
+      resolveProductDetails(item, idx)
+    );
   }
 
-  // Clean fallback for custom order ID
-  const defaultItem = allProducts[0];
+  const distinctFallback = allProducts[0];
   return [
     {
       id: `pkg-${orderId || "item"}`,
-      name: defaultItem?.name || `Order Package Item`,
+      name: distinctFallback?.name || "Order Package Item",
       quantity: 1,
       price: totalAmount ? totalAmount / 100 : 99.99,
-      image: getProductImage(defaultItem, DEFAULT_FALLBACK_IMAGE),
+      image: getProductImage(distinctFallback),
     },
   ];
 };
@@ -409,7 +465,7 @@ export default function TrackOrderPage() {
       };
     }
 
-    // 3. Fallback dynamic order for any custom entered ID
+    // 3. Dynamic lookup fallback for any entered custom ID
     return {
       orderId: cleanId,
       status: "In Transit",
