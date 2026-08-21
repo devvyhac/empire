@@ -20,6 +20,68 @@ import {
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import { AuthContext } from "../context/AuthContext.jsx";
+import { allProducts } from "../context/mockData.jsx";
+import { getProductImage } from "../utils/productUtils.js";
+
+const DEFAULT_FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&auto=format&fit=crop&q=80";
+
+// Helper to resolve product images and names from any schema format
+const resolveOrderItems = (rawItems, totalAmount) => {
+  if (!Array.isArray(rawItems) || rawItems.length === 0) {
+    const fallbackProd = allProducts[0];
+    return [
+      {
+        id: "item-default",
+        name: fallbackProd?.name || "Premium Marketplace Item",
+        quantity: 1,
+        price: totalAmount ? totalAmount / 100 : 99.99,
+        image: getProductImage(fallbackProd, DEFAULT_FALLBACK_IMAGE),
+      },
+    ];
+  }
+
+  return rawItems.map((rawItem, idx) => {
+    const rawProd = rawItem.product || rawItem;
+    let matchedProduct = null;
+
+    if (typeof rawProd === "string") {
+      matchedProduct = allProducts.find(
+        (p) => p._id === rawProd || p.id === rawProd
+      );
+    } else if (rawProd && typeof rawProd === "object") {
+      matchedProduct = rawProd;
+    }
+
+    if (!matchedProduct) {
+      matchedProduct = allProducts[idx % allProducts.length];
+    }
+
+    const name =
+      rawItem.name ||
+      matchedProduct?.name ||
+      `Package Item #${idx + 1}`;
+
+    const image =
+      (typeof rawItem.image === "string" && rawItem.image.trim() ? rawItem.image.trim() : null) ||
+      getProductImage(matchedProduct, DEFAULT_FALLBACK_IMAGE);
+
+    const price =
+      typeof rawItem.price === "number"
+        ? rawItem.price
+        : matchedProduct?.discountPrice || matchedProduct?.price || 49.99;
+
+    const quantity = Number(rawItem.quantity) || 1;
+
+    return {
+      id: rawItem.id || rawItem._id || `item-${idx}`,
+      name,
+      image,
+      price,
+      quantity,
+    };
+  });
+};
 
 // Pre-defined demo fallback orders if not found in live state
 const sampleTrackingDatabase = {
@@ -44,16 +106,14 @@ const sampleTrackingDatabase = {
         name: "Wireless Noise-Cancelling Headphones Pro",
         quantity: 1,
         price: 99.99,
-        image:
-          "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&auto=format&fit=crop&q=80",
+        image: "https://images.pexels.com/photos/3945667/pexels-photo-3945667.jpeg",
       },
       {
         id: "item-2",
         name: "Fast Charging USB-C Dock 100W",
         quantity: 1,
         price: 50.0,
-        image:
-          "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=300&auto=format&fit=crop&q=80",
+        image: "https://images.pexels.com/photos/4526407/pexels-photo-4526407.jpeg",
       },
     ],
     timeline: [
@@ -115,8 +175,7 @@ const sampleTrackingDatabase = {
         name: "Ergonomic Mechanical Keyboard RGB",
         quantity: 1,
         price: 89.5,
-        image:
-          "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=300&auto=format&fit=crop&q=80",
+        image: "https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg",
       },
     ],
     timeline: [
@@ -178,8 +237,7 @@ const sampleTrackingDatabase = {
         name: "Ultra-Wide Gaming Monitor 34-inch",
         quantity: 1,
         price: 249.0,
-        image:
-          "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=300&auto=format&fit=crop&q=80",
+        image: "https://images.pexels.com/photos/777001/pexels-photo-777001.jpeg",
       },
     ],
     timeline: [
@@ -269,16 +327,7 @@ export default function TrackOrderPage() {
             zipCode: "97477",
             country: "United States",
           },
-          items: match.items || [
-            {
-              id: "item-live",
-              name: "Purchased Product Items",
-              quantity: match.itemsCount || 1,
-              price: match.totalAmount ? match.totalAmount / 100 : 99.99,
-              image:
-                "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&auto=format&fit=crop&q=80",
-            },
-          ],
+          items: resolveOrderItems(match.items, match.totalAmount),
           timeline: [
             {
               title: "Delivered",
@@ -337,7 +386,11 @@ export default function TrackOrderPage() {
 
     // 2. Check sample tracking database
     if (sampleTrackingDatabase[cleanId]) {
-      return sampleTrackingDatabase[cleanId];
+      const order = sampleTrackingDatabase[cleanId];
+      return {
+        ...order,
+        items: resolveOrderItems(order.items),
+      };
     }
 
     // 3. Fallback dynamic order for any entered ID
@@ -356,16 +409,26 @@ export default function TrackOrderPage() {
         zipCode: "97477",
         country: "United States",
       },
-      items: [
+      items: resolveOrderItems([
         {
-          id: "item-custom",
-          name: "Standard Delivery Order Package",
+          id: `item-${cleanId}-1`,
+          product: allProducts[0]?._id,
           quantity: 1,
-          price: 129.99,
-          image:
-            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&auto=format&fit=crop&q=80",
+          price: 150.0,
         },
-      ],
+        {
+          id: `item-${cleanId}-2`,
+          product: allProducts[1]?._id,
+          quantity: 1,
+          price: 71.99,
+        },
+        {
+          id: `item-${cleanId}-3`,
+          product: allProducts[2]?._id,
+          quantity: 1,
+          price: 299.5,
+        },
+      ]),
       timeline: [
         {
           title: "Delivered",
@@ -426,7 +489,7 @@ export default function TrackOrderPage() {
         setSearchError("No tracking data found for this Order ID.");
       }
       setIsLoading(false);
-    }, 400);
+    }, 300);
   };
 
   // Auto-search on page load if ?id= is in the query params
@@ -437,7 +500,10 @@ export default function TrackOrderPage() {
     } else {
       // Default to the first sample order so page is never empty
       const defaultOrder = sampleTrackingDatabase["ORD-9281"];
-      setActiveOrder(defaultOrder);
+      setActiveOrder({
+        ...defaultOrder,
+        items: resolveOrderItems(defaultOrder.items),
+      });
       setOrderQuery("ORD-9281");
     }
   }, [initialId]);
@@ -772,18 +838,24 @@ export default function TrackOrderPage() {
                     {activeOrder.items?.map((item) => (
                       <div
                         key={item.id}
-                        className="pt-3 first:pt-0 flex items-center space-x-3"
+                        className="pt-3 first:pt-0 flex items-center space-x-3.5"
                       >
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-12 h-12 rounded-xl object-cover border border-gray-100 dark:border-gray-700 shrink-0"
-                        />
+                        <div className="w-14 h-14 rounded-xl overflow-hidden border border-gray-200/80 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 shrink-0">
+                          <img
+                            src={item.image || DEFAULT_FALLBACK_IMAGE}
+                            alt={item.name || "Product Item"}
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = DEFAULT_FALLBACK_IMAGE;
+                            }}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                         <div className="flex-grow min-w-0">
-                          <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
-                            {item.name}
+                          <p className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white truncate">
+                            {item.name || "Marketplace Product"}
                           </p>
-                          <p className="text-[11px] text-gray-400">
+                          <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
                             Qty: {item.quantity}
                           </p>
                         </div>
