@@ -49,6 +49,22 @@ const defaultMockOrders = [
       country: "United States",
       zipCode: "97477",
     },
+    items: [
+      {
+        id: "item-1",
+        name: "Wireless Noise-Cancelling Headphones Pro",
+        quantity: 1,
+        price: 99.99,
+        image: "https://images.pexels.com/photos/3945667/pexels-photo-3945667.jpeg",
+      },
+      {
+        id: "item-2",
+        name: "Fast Charging USB-C Dock 100W",
+        quantity: 1,
+        price: 50.0,
+        image: "https://images.pexels.com/photos/4526407/pexels-photo-4526407.jpeg",
+      },
+    ],
   },
   {
     id: "ORD-8412",
@@ -63,6 +79,15 @@ const defaultMockOrders = [
       country: "United States",
       zipCode: "97477",
     },
+    items: [
+      {
+        id: "item-3",
+        name: "Ergonomic Mechanical Keyboard RGB",
+        quantity: 1,
+        price: 89.5,
+        image: "https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg",
+      },
+    ],
   },
   {
     id: "ORD-7193",
@@ -70,13 +95,22 @@ const defaultMockOrders = [
     updatedAt: "2025-04-29T18:40:00Z",
     totalAmount: 24900,
     status: "Processing",
-    itemsCount: 3,
+    itemsCount: 1,
     shippingDetails: {
       address: "123 Business Plaza, Suite 400",
       city: "New York",
       country: "United States",
       zipCode: "10001",
     },
+    items: [
+      {
+        id: "item-4",
+        name: "Ultra-Wide Gaming Monitor 34-inch",
+        quantity: 1,
+        price: 249.0,
+        image: "https://images.pexels.com/photos/777001/pexels-photo-777001.jpeg",
+      },
+    ],
   },
 ];
 

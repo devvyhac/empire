@@ -26,64 +26,7 @@ import { getProductImage } from "../utils/productUtils.js";
 const DEFAULT_FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&auto=format&fit=crop&q=80";
 
-// Helper to resolve product images and names from any schema format
-const resolveOrderItems = (rawItems, totalAmount) => {
-  if (!Array.isArray(rawItems) || rawItems.length === 0) {
-    const fallbackProd = allProducts[0];
-    return [
-      {
-        id: "item-default",
-        name: fallbackProd?.name || "Premium Marketplace Item",
-        quantity: 1,
-        price: totalAmount ? totalAmount / 100 : 99.99,
-        image: getProductImage(fallbackProd, DEFAULT_FALLBACK_IMAGE),
-      },
-    ];
-  }
-
-  return rawItems.map((rawItem, idx) => {
-    const rawProd = rawItem.product || rawItem;
-    let matchedProduct = null;
-
-    if (typeof rawProd === "string") {
-      matchedProduct = allProducts.find(
-        (p) => p._id === rawProd || p.id === rawProd
-      );
-    } else if (rawProd && typeof rawProd === "object") {
-      matchedProduct = rawProd;
-    }
-
-    if (!matchedProduct) {
-      matchedProduct = allProducts[idx % allProducts.length];
-    }
-
-    const name =
-      rawItem.name ||
-      matchedProduct?.name ||
-      `Package Item #${idx + 1}`;
-
-    const image =
-      (typeof rawItem.image === "string" && rawItem.image.trim() ? rawItem.image.trim() : null) ||
-      getProductImage(matchedProduct, DEFAULT_FALLBACK_IMAGE);
-
-    const price =
-      typeof rawItem.price === "number"
-        ? rawItem.price
-        : matchedProduct?.discountPrice || matchedProduct?.price || 49.99;
-
-    const quantity = Number(rawItem.quantity) || 1;
-
-    return {
-      id: rawItem.id || rawItem._id || `item-${idx}`,
-      name,
-      image,
-      price,
-      quantity,
-    };
-  });
-};
-
-// Pre-defined demo fallback orders if not found in live state
+// Pre-defined demo orders with exact realistic item definitions
 const sampleTrackingDatabase = {
   "ORD-9281": {
     orderId: "ORD-9281",
@@ -280,6 +223,73 @@ const sampleTrackingDatabase = {
   },
 };
 
+// Helper to resolve product images, titles, and prices from any order payload schema
+const resolveOrderItems = (rawItems, totalAmount, orderId) => {
+  if (Array.isArray(rawItems) && rawItems.length > 0) {
+    return rawItems.map((rawItem, idx) => {
+      const rawProd = rawItem.product || rawItem;
+      let matchedProduct = null;
+
+      if (typeof rawProd === "string") {
+        matchedProduct = allProducts.find(
+          (p) => p._id === rawProd || p.id === rawProd
+        );
+      } else if (rawProd && typeof rawProd === "object") {
+        matchedProduct = rawProd;
+      }
+
+      if (!matchedProduct) {
+        matchedProduct = allProducts[idx % allProducts.length];
+      }
+
+      const name =
+        rawItem.name ||
+        matchedProduct?.name ||
+        `Item #${idx + 1}`;
+
+      const image =
+        (typeof rawItem.image === "string" && rawItem.image.trim()
+          ? rawItem.image.trim()
+          : null) ||
+        getProductImage(matchedProduct, DEFAULT_FALLBACK_IMAGE);
+
+      const price =
+        typeof rawItem.price === "number"
+          ? rawItem.price
+          : typeof rawItem.unitPrice === "number"
+          ? rawItem.unitPrice
+          : matchedProduct?.discountPrice || matchedProduct?.price || 49.99;
+
+      const quantity = Number(rawItem.quantity) || 1;
+
+      return {
+        id: rawItem.id || rawItem._id || `item-${idx}`,
+        name,
+        image,
+        price,
+        quantity,
+      };
+    });
+  }
+
+  // If orderId matches a demo order in database
+  if (orderId && sampleTrackingDatabase[orderId]?.items) {
+    return sampleTrackingDatabase[orderId].items;
+  }
+
+  // Clean fallback for custom order ID
+  const defaultItem = allProducts[0];
+  return [
+    {
+      id: `pkg-${orderId || "item"}`,
+      name: defaultItem?.name || `Order Package Item`,
+      quantity: 1,
+      price: totalAmount ? totalAmount / 100 : 99.99,
+      image: getProductImage(defaultItem, DEFAULT_FALLBACK_IMAGE),
+    },
+  ];
+};
+
 const statusOrder = ["Processing", "Shipped", "Out for Delivery", "Delivered"];
 
 export default function TrackOrderPage() {
@@ -298,8 +308,14 @@ export default function TrackOrderPage() {
     const cleanId = lookupId.trim().toUpperCase();
 
     // 1. Check live auth orders first
-    if (Array.isArray(authOrders) && authOrders.length > 0) {
-      const match = authOrders.find(
+    const ordersList = Array.isArray(authOrders)
+      ? authOrders
+      : Array.isArray(authOrders?.orders)
+      ? authOrders.orders
+      : [];
+
+    if (ordersList.length > 0) {
+      const match = ordersList.find(
         (o) =>
           (o.orderId && o.orderId.toUpperCase() === cleanId) ||
           (o.id && o.id.toString().toUpperCase() === cleanId) ||
@@ -327,7 +343,7 @@ export default function TrackOrderPage() {
             zipCode: "97477",
             country: "United States",
           },
-          items: resolveOrderItems(match.items, match.totalAmount),
+          items: resolveOrderItems(match.items, match.totalAmount, cleanId),
           timeline: [
             {
               title: "Delivered",
@@ -389,11 +405,11 @@ export default function TrackOrderPage() {
       const order = sampleTrackingDatabase[cleanId];
       return {
         ...order,
-        items: resolveOrderItems(order.items),
+        items: resolveOrderItems(order.items, null, cleanId),
       };
     }
 
-    // 3. Fallback dynamic order for any entered ID
+    // 3. Fallback dynamic order for any custom entered ID
     return {
       orderId: cleanId,
       status: "In Transit",
@@ -409,26 +425,7 @@ export default function TrackOrderPage() {
         zipCode: "97477",
         country: "United States",
       },
-      items: resolveOrderItems([
-        {
-          id: `item-${cleanId}-1`,
-          product: allProducts[0]?._id,
-          quantity: 1,
-          price: 150.0,
-        },
-        {
-          id: `item-${cleanId}-2`,
-          product: allProducts[1]?._id,
-          quantity: 1,
-          price: 71.99,
-        },
-        {
-          id: `item-${cleanId}-3`,
-          product: allProducts[2]?._id,
-          quantity: 1,
-          price: 299.5,
-        },
-      ]),
+      items: resolveOrderItems([], null, cleanId),
       timeline: [
         {
           title: "Delivered",
@@ -489,7 +486,7 @@ export default function TrackOrderPage() {
         setSearchError("No tracking data found for this Order ID.");
       }
       setIsLoading(false);
-    }, 300);
+    }, 250);
   };
 
   // Auto-search on page load if ?id= is in the query params
@@ -498,11 +495,11 @@ export default function TrackOrderPage() {
       setOrderQuery(initialId);
       handleSearch(initialId);
     } else {
-      // Default to the first sample order so page is never empty
+      // Default to the first order so page is never blank
       const defaultOrder = sampleTrackingDatabase["ORD-9281"];
       setActiveOrder({
         ...defaultOrder,
-        items: resolveOrderItems(defaultOrder.items),
+        items: resolveOrderItems(defaultOrder.items, null, "ORD-9281"),
       });
       setOrderQuery("ORD-9281");
     }
@@ -605,7 +602,7 @@ export default function TrackOrderPage() {
           {/* Quick Demo Order Chips */}
           <div className="flex flex-wrap items-center gap-2 pt-1">
             <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">
-              Demo tracking orders:
+              Quick select orders:
             </span>
             {["ORD-9281", "ORD-8412", "ORD-7193"].map((id) => (
               <button
