@@ -526,8 +526,9 @@ export default function ProfileDashboard() {
                       </button>
                     </div>
 
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left text-xs sm:text-sm">
+                    {/* Scrollable Table Wrapper on Mobile */}
+                    <div className="overflow-x-auto -mx-5 px-5 sm:mx-0 sm:px-0 pb-1.5 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700">
+                      <table className="w-full text-left text-xs sm:text-sm min-w-[520px]">
                         <thead>
                           <tr className="text-gray-400 border-b border-gray-100 dark:border-gray-700/60">
                             <th className="pb-3 font-semibold">Order ID</th>
@@ -547,16 +548,16 @@ export default function ProfileDashboard() {
                               : "Recently";
                             return (
                               <tr key={order.id || order.orderId} className="group">
-                                <td className="py-3.5 font-semibold text-gray-900 dark:text-white">
+                                <td className="py-3.5 font-semibold text-gray-900 dark:text-white whitespace-nowrap">
                                   #{order.orderId || order.id}
                                 </td>
-                                <td className="py-3.5 text-gray-500 dark:text-gray-400">
+                                <td className="py-3.5 text-gray-500 dark:text-gray-400 whitespace-nowrap">
                                   {formattedDate}
                                 </td>
-                                <td className="py-3.5 font-semibold text-gray-900 dark:text-white">
+                                <td className="py-3.5 font-semibold text-gray-900 dark:text-white whitespace-nowrap">
                                   {formattedTotal}
                                 </td>
-                                <td className="py-3.5">
+                                <td className="py-3.5 whitespace-nowrap">
                                   <span
                                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
                                       order.status === "Delivered"
@@ -569,7 +570,7 @@ export default function ProfileDashboard() {
                                     {order.status || "Processing"}
                                   </span>
                                 </td>
-                                <td className="py-3.5 text-right">
+                                <td className="py-3.5 text-right whitespace-nowrap">
                                   <Link
                                     to={`/track-order?id=${order.orderId || order.id}`}
                                     className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center"
@@ -688,24 +689,24 @@ export default function ProfileDashboard() {
                           key={order.id || order.orderId}
                           className="border border-gray-200 dark:border-gray-700/80 rounded-xl p-4 sm:p-5 bg-gray-50/50 dark:bg-gray-900/40 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all space-y-3"
                         >
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-gray-200/60 dark:border-gray-700/60 text-xs">
-                            <div className="flex items-center space-x-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-gray-200/60 dark:border-gray-700/60 text-xs">
+                            <div className="flex flex-wrap items-center gap-1.5 sm:gap-3">
                               <span className="font-poppins font-bold text-sm text-gray-900 dark:text-white">
                                 #{order.orderId || order.id}
                               </span>
-                              <span className="text-gray-400">&bull;</span>
+                              <span className="text-gray-400 hidden sm:inline">&bull;</span>
                               <span className="text-gray-500 dark:text-gray-400">
                                 Placed on {formattedDate}
                               </span>
                             </div>
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-2 shrink-0">
                               <span
                                 className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                                   order.status === "Delivered"
-                                    ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200"
+                                    ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40"
                                     : order.status === "Shipped"
-                                    ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200"
-                                    : "bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200"
+                                    ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/40"
+                                    : "bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40"
                                 }`}
                               >
                                 {order.status || "Processing"}
@@ -714,7 +715,7 @@ export default function ProfileDashboard() {
                           </div>
 
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs sm:text-sm">
-                            <div className="space-y-1">
+                            <div className="space-y-1 min-w-0">
                               <p className="text-gray-600 dark:text-gray-400">
                                 Total Paid:{" "}
                                 <strong className="text-gray-900 dark:text-white">
@@ -729,7 +730,7 @@ export default function ProfileDashboard() {
                               )}
                             </div>
 
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-2 shrink-0 self-start sm:self-auto">
                               <Link
                                 to={`/track-order?id=${order.orderId || order.id}`}
                                 className="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition-all inline-flex items-center space-x-1"
