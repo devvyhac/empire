@@ -26,6 +26,7 @@ import {
   Sparkles,
   Heart,
   BadgeCheck,
+  X,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
@@ -130,6 +131,7 @@ export default function ProfileDashboard() {
   const initialTab = searchParams.get("tab") || "overview";
 
   const [activeTab, setActiveTab] = useState(initialTab);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const { user, orders: apiOrders, setUserData, VITE_LOGOUT_URL } =
     useContext(AuthContext) || {};
   const { cartItems = [], cartQuantity = 0 } = useContext(CartContext) || {};
@@ -318,7 +320,15 @@ export default function ProfileDashboard() {
             </div>
           </div>
 
-          <div className="flex items-center space-x-3 self-end md:self-auto">
+          <div className="flex items-center space-x-2.5 self-end md:self-auto">
+            <button
+              type="button"
+              onClick={() => setIsMobileNavOpen(true)}
+              className="lg:hidden flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-700/80 text-gray-700 dark:text-gray-200 text-xs font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors shadow-xs"
+            >
+              <LayoutDashboard className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+              <span>Menu</span>
+            </button>
             <Link
               to="/shop"
               className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold shadow-sm transition-all"
@@ -330,8 +340,8 @@ export default function ProfileDashboard() {
 
         {/* Dashboard Main Grid (Sidebar + Content Panel) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-          {/* Sidebar (3.5 cols) */}
-          <aside className="lg:col-span-4 xl:col-span-3">
+          {/* Sidebar (Hidden on mobile, sticky on desktop) */}
+          <aside className="hidden lg:block lg:col-span-4 xl:col-span-3">
             <div className="bg-white dark:bg-gray-800/90 border border-gray-200/80 dark:border-gray-700/80 rounded-2xl shadow-sm p-4 sm:p-5 sticky top-[76px] lg:top-[84px] space-y-4">
               {/* Navigation Menu */}
               <div className="space-y-1">
@@ -1013,6 +1023,162 @@ export default function ProfileDashboard() {
           </section>
         </div>
       </div>
+
+      {/* Mobile Floating Action Button */}
+      <div className="fixed bottom-6 right-6 z-40 lg:hidden">
+        <motion.button
+          type="button"
+          onClick={() => setIsMobileNavOpen(true)}
+          className="flex items-center space-x-2 px-4 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-2xl shadow-indigo-600/40 border border-indigo-400/30 active:scale-95 transition-all"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          aria-label="Open Dashboard Menu"
+        >
+          <LayoutDashboard className="w-4 h-4" />
+          <span>Dashboard Menu</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        </motion.button>
+      </div>
+
+      {/* Collapsible Mobile Navigation Drawer */}
+      <AnimatePresence>
+        {isMobileNavOpen && (
+          <motion.div
+            className="fixed inset-0 z-50 lg:hidden bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMobileNavOpen(false)}
+          >
+            <motion.div
+              className="w-full max-w-md bg-white dark:bg-gray-800 rounded-t-3xl sm:rounded-2xl p-5 sm:p-6 shadow-2xl border border-gray-100 dark:border-gray-700 max-h-[85vh] overflow-y-auto space-y-4"
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 100, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-700/60">
+                <div className="flex items-center space-x-2">
+                  <LayoutDashboard className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <h3 className="font-poppins text-base font-bold text-gray-900 dark:text-white">
+                    Dashboard Navigation
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsMobileNavOpen(false)}
+                  className="p-1.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                  aria-label="Close menu"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Navigation Menu */}
+              <div className="space-y-1">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                  Navigation
+                </span>
+                <nav className="mt-1 space-y-1">
+                  {navItems.map((item) => {
+                    const isActive = activeTab === item.id;
+                    const Icon = item.icon;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          handleTabChange(item.id);
+                          setIsMobileNavOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+                          isActive
+                            ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-semibold shadow-sm"
+                            : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60"
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <Icon
+                            className={`w-4 h-4 ${
+                              isActive
+                                ? "text-indigo-600 dark:text-indigo-400"
+                                : "text-gray-400 dark:text-gray-500"
+                            }`}
+                          />
+                          <span>{item.label}</span>
+                        </div>
+                        {item.badge && (
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              isActive
+                                ? "bg-indigo-600 text-white"
+                                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                            }`}
+                          >
+                            {item.badge}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </nav>
+              </div>
+
+              {/* Quick Access */}
+              <div className="pt-3 border-t border-gray-100 dark:border-gray-700/60 space-y-1">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                  Quick Access
+                </span>
+                <div className="mt-1 space-y-1 text-xs sm:text-sm font-medium">
+                  <Link
+                    to="/wishlist"
+                    onClick={() => setIsMobileNavOpen(false)}
+                    className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors"
+                  >
+                    <div className="flex items-center space-x-2.5">
+                      <Heart className="w-4 h-4 text-red-500" />
+                      <span>My Wishlist</span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 font-bold text-xs">
+                      {totalWishlistCount}
+                    </span>
+                  </Link>
+                  <Link
+                    to="/cart"
+                    onClick={() => setIsMobileNavOpen(false)}
+                    className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors"
+                  >
+                    <div className="flex items-center space-x-2.5">
+                      <ShoppingCart className="w-4 h-4 text-indigo-500" />
+                      <span>Active Cart</span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold text-xs">
+                      {totalCartCount}
+                    </span>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Logout Action */}
+              <div className="pt-3 border-t border-gray-100 dark:border-gray-700/60">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMobileNavOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full flex items-center justify-center space-x-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Log Out</span>
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
